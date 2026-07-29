@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "2026-07-29",
+  "labels": {
+    "gambling": "Domínio operacional autorizado a ofertar apostas de quota fixa no Brasil.",
+    "benign": "Serviço, documentação, comércio, instituição pública, banco, universidade ou conteúdo informativo que não oferece apostas."
+  },
+  "sources": [
+    {
+      "id": "gov-br-authorized-operators",
+      "title": "Lista de empresas e domínios autorizados pela Secretaria de Prêmios e Apostas",
+      "url": "https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/lista-de-empresas/planilha-de-autorizacoes_15-07-26.pdf",
+      "publishedAt": "2026-07-15"
+    }
+  ],
+  "cases": [
+    { "id": "bet-vaidebet", "label": "gambling", "url": "https://vaidebet.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-betpix365", "label": "gambling", "url": "https://betpix365.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-obabet", "label": "gambling", "url": "https://obabet.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-jogajunto", "label": "gambling", "url": "https://jogajunto.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-bra", "label": "gambling", "url": "https://bra.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-tropino", "label": "gambling", "url": "https://tropino.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-bz", "label": "gambling", "url": "https://bz.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-ice", "label": "gambling", "url": "https://ice.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-kbet", "label": "gambling", "url": "https://kbet.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-nossa", "label": "gambling", "url": "https://nossa.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-1xbet", "label": "gambling", "url": "https://1xbet.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-caixa", "label": "gambling", "url": "https://betcaixa.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-megabet", "label": "gambling", "url": "https://megabet.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-pix", "label": "gambling", "url": "https://pix.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-ganhei", "label": "gambling", "url": "https://ganhei.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-betdasorte", "label": "gambling", "url": "https://betdasorte.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-play", "label": "gambling", "url": "https://play.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-meridianbet", "label": "gambling", "url": "https://meridianbet.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-blaze", "label": "gambling", "url": "https://blaze.bet.br/", "sourceId": "gov-br-authorized-operators" },
+    { "id": "bet-brazino777", "label": "gambling", "url": "https://brazino777.bet.br/", "sourceId": "gov-br-authorized-operators" },
+
+    { "id": "safe-chatgpt", "label": "benign", "url": "https://chatgpt.com/" },
+    { "id": "safe-openai", "label": "benign", "url": "https://openai.com/" },
+    { "id": "safe-google", "label": "benign", "url": "https://www.google.com/" },
+    { "id": "safe-github", "label": "benign", "url": "https://github.com/" },
+    { "id": "safe-gitlab", "label": "benign", "url": "https://gitlab.com/" },
+    { "id": "safe-microsoft", "label": "benign", "url": "https://www.microsoft.com/" },
+    { "id": "safe-claude", "label": "benign", "url": "https://claude.ai/" },
+    { "id": "safe-gemini", "label": "benign", "url": "https://gemini.google.com/" },
+    { "id": "safe-wikipedia", "label": "benign", "url": "https://pt.wikipedia.org/wiki/Aposta" },
+    { "id": "safe-stackoverflow", "label": "benign", "url": "https://stackoverflow.com/" },
+    { "id": "safe-youtube", "label": "benign", "url": "https://www.youtube.com/" },
+    { "id": "safe-amazon", "label": "benign", "url": "https://www.amazon.com.br/" },
+    { "id": "safe-mercadolivre", "label": "benign", "url": "https://www.mercadolivre.com.br/" },
+    { "id": "safe-gov", "label": "benign", "url": "https://www.gov.br/" },
+    { "id": "safe-gov-betting-news", "label": "benign", "url": "https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/lista-de-empresas/confira-a-lista-de-empresas-autorizadas-a-ofertar-apostas-de-quota-fixa-em-2025" },
+    { "id": "safe-caixa", "label": "benign", "url": "https://www.caixa.gov.br/" },
+    { "id": "safe-itau", "label": "benign", "url": "https://www.itau.com.br/" },
+    { "id": "safe-usp", "label": "benign", "url": "https://www5.usp.br/" },
+    { "id": "safe-unicamp", "label": "benign", "url": "https://www.unicamp.br/" },
+    { "id": "safe-fiocruz", "label": "benign", "url": "https://portal.fiocruz.br/" },
+    { "id": "safe-mozilla", "label": "benign", "url": "https://www.mozilla.org/" },
+    { "id": "safe-mdn", "label": "benign", "url": "https://developer.mozilla.org/" },
+    { "id": "safe-vercel", "label": "benign", "url": "https://vercel.com/" },
+    { "id": "safe-stripe", "label": "benign", "url": "https://stripe.com/" },
+    { "id": "safe-betterstack", "label": "benign", "url": "https://betterstack.com/" },
+    { "id": "safe-betaflight", "label": "benign", "url": "https://betaflight.com/" },
+    { "id": "safe-alphabet", "label": "benign", "url": "https://abc.xyz/" }
+  ]
+}

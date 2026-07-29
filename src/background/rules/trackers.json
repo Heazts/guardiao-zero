@@ -1,0 +1,104 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||facebook.com/tr", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 2,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||google-analytics.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 3,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||hotjar.com^", "resourceTypes": ["script", "image", "xmlhttprequest"] }
+  },
+  {
+    "id": 4,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||mixpanel.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 5,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||segment.io^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 6,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||scorecardresearch.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 7,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||quantserve.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 8,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||fullstory.com^", "resourceTypes": ["script", "image", "xmlhttprequest"] }
+  },
+  {
+    "id": 9,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||mouseflow.com^", "resourceTypes": ["script", "image", "xmlhttprequest"] }
+  },
+  {
+    "id": 10,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||crazyegg.com^", "resourceTypes": ["script", "image", "xmlhttprequest"] }
+  },
+  {
+    "id": 11,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||kissmetrics.io^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 12,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||amplitude.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 13,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||heapanalytics.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 14,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||mc.yandex.ru^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 15,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||clarity.ms^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 16,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||analytics.tiktok.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  },
+  {
+    "id": 17,
+    "priority": 1,
+    "action": { "type": "block" },
+    "condition": { "urlFilter": "||appsflyer.com^", "resourceTypes": ["script", "image", "xmlhttprequest", "ping"] }
+  }
+]
