@@ -11,54 +11,55 @@
 <body>
     <div class="help-shell animate-fade-in">
         <header class="help-header">
-            <a href="../options/options.html" class="back-link">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Configurações
-            </a>
-            <div>
-                <span class="eyebrow">Suporte</span>
-                <h1>Central de ajuda</h1>
-                <p>Entenda as decisões do Guardião Zero Pro e ajuste a proteção com segurança.</p>
+            <div class="page-topline">
+                <a href="../options/options.html" class="back-link">← Configurações</a>
+                <span>DOCUMENTO / 06</span>
+            </div>
+            <div class="help-intro">
+                <div class="intro-code" aria-hidden="true">?</div>
+                <div>
+                    <span class="eyebrow">Suporte local</span>
+                    <h1>Entenda cada decisão.</h1>
+                    <p>Como o Guardião Zero diferencia operação, contexto informativo e regras pessoais.</p>
+                </div>
             </div>
         </header>
 
         <main>
-            <section class="faq-list card" aria-label="Perguntas frequentes">
+            <section class="faq-list" aria-label="Perguntas frequentes">
                 <details class="faq-item" open>
-                    <summary><span>O que a extensão bloqueia?</span></summary>
+                    <summary><span class="faq-number">01</span><span>O que a extensão bloqueia?</span></summary>
                     <div class="faq-content">
                         <p>Plataformas operacionais de apostas são identificadas por uma combinação de domínio, conteúdo, controles de aposta e integrações técnicas. Anúncios e rastreadores são bloqueados separadamente na camada de rede.</p>
                     </div>
                 </details>
                 <details class="faq-item">
-                    <summary><span>Meus dados de navegação são enviados?</span></summary>
+                    <summary><span class="faq-number">02</span><span>Meus dados de navegação são enviados?</span></summary>
                     <div class="faq-content">
                         <p>Não. A classificação multifator é determinística e ocorre no navegador. Sinais transitórios não viram histórico, e preferências, listas e contadores ficam somente em <code>storage.local</code>.</p>
-                        <a href="../privacy/privacy.html">Leia a política de privacidade completa</a>
+                        <a href="../privacy/privacy.html">Ler a política de privacidade ↗</a>
                     </div>
                 </details>
                 <details class="faq-item">
-                    <summary><span>Como a detecção reduz falsos positivos?</span></summary>
+                    <summary><span class="faq-number">03</span><span>Como a detecção reduz falsos positivos?</span></summary>
                     <div class="faq-content">
                         <p>Nenhum termo isolado basta. O motor exige pontuação mínima, grupos independentes de evidência e confirmação operacional, além de descontar contexto jornalístico, educacional e documental.</p>
                     </div>
                 </details>
                 <details class="faq-item">
-                    <summary><span>Um site legítimo foi bloqueado. O que fazer?</span></summary>
+                    <summary><span class="faq-number">04</span><span>Um site legítimo foi bloqueado. O que fazer?</span></summary>
                     <div class="faq-content">
                         <p>Use a liberação temporária na página de bloqueio ou crie uma entrada na lista de permissão. A lista de permissão tem prioridade sobre a classificação e aceita domínio, subdomínio, URL, regex, hash ou assinatura.</p>
                     </div>
                 </details>
                 <details class="faq-item">
-                    <summary><span>Como importar EasyList, EasyPrivacy, AdGuard ou uBlock?</span></summary>
+                    <summary><span class="faq-number">05</span><span>Como importar EasyList, EasyPrivacy, AdGuard ou uBlock?</span></summary>
                     <div class="faq-content">
                         <p>Em Configurações → Listas de filtros, escolha a categoria e selecione o arquivo local. Regras de rede compatíveis são convertidas com limites de segurança. Filtros cosméticos, scriptlets e ações que executam código são rejeitados.</p>
                     </div>
                 </details>
                 <details class="faq-item">
-                    <summary><span>A proteção afeta o desempenho?</span></summary>
+                    <summary><span class="faq-number">06</span><span>A proteção afeta o desempenho?</span></summary>
                     <div class="faq-content">
                         <p>O navegador aplica regras de anúncios e rastreadores antes de carregar recursos. A análise DOM é limitada ao frame principal, usa coleta com tetos fixos e observação temporária, e só roda quando a proteção contra apostas está ativa.</p>
                     </div>
@@ -67,8 +68,8 @@
         </main>
 
         <footer class="help-footer">
-            <span>Processamento local</span>
-            <a href="../diagnostics/diagnostics.html">Abrir diagnóstico</a>
+            <span>Processamento local / sem telemetria</span>
+            <a href="../diagnostics/diagnostics.html">Abrir diagnóstico ↗</a>
         </footer>
     </div>
 

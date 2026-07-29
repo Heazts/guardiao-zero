@@ -259,33 +259,36 @@ function percentage(value) {
 
 function svgGraph(metrics, generatedAt) {
     const series = [
-        ['Precisão', metrics.precision, '#5B5BD6'],
-        ['Recall', metrics.recall, '#2F74E5'],
-        ['Especificidade', metrics.specificity, '#087454'],
-        ['Acurácia', metrics.accuracy, '#9A4F00']
+        ['Precisão', metrics.precision, '#111111'],
+        ['Recall', metrics.recall, '#3F3F3F'],
+        ['Especificidade', metrics.specificity, '#737373'],
+        ['Acurácia', metrics.accuracy, '#A3A3A3']
     ];
     const bars = series.map(([label, value, color], index) => {
         const y = 102 + index * 58;
         const width = value === null ? 0 : Math.round(value * 430);
         return `<text x="32" y="${y + 16}" class="label">${label}</text>
-        <rect x="168" y="${y}" width="430" height="24" rx="7" fill="#E7E9F0"/>
-        <rect x="168" y="${y}" width="${width}" height="24" rx="7" fill="${color}"/>
+        <rect x="168" y="${y}" width="430" height="24" rx="4" fill="#EDEDED"/>
+        <rect x="168" y="${y}" width="${width}" height="24" rx="4" fill="${color}"/>
         <text x="614" y="${y + 17}" class="value">${percentage(value)}</text>`;
     }).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="390" viewBox="0 0 760 390" role="img" aria-labelledby="title desc">
     <title id="title">Métricas reais do bloqueio</title>
     <desc id="desc">Resultados de ${metrics.evaluated} URLs reais disponíveis; ${metrics.unavailable} indisponíveis e excluídas.</desc>
     <style>
-        text { font-family: Inter, "Segoe UI", sans-serif; fill: #171921; }
-        .title { font-size: 22px; font-weight: 700; }
-        .subtitle { font-size: 12px; fill: #626B7B; }
+        text { font-family: Inter, "Segoe UI", sans-serif; fill: #111111; }
+        .title { font-family: Newsreader, Georgia, serif; font-size: 27px; font-weight: 560; }
+        .subtitle { font-size: 12px; fill: #666666; }
         .label { font-size: 13px; font-weight: 650; }
         .value { font-size: 12px; font-weight: 700; text-anchor: start; }
-        .foot { font-size: 11px; fill: #626B7B; }
+        .foot { font-size: 11px; fill: #666666; }
     </style>
-    <rect width="760" height="390" rx="18" fill="#FFFFFF"/>
-    <text x="32" y="42" class="title">Avaliação em URLs reais</text>
-    <text x="32" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução ${generatedAt.slice(0, 10)}</text>
+    <rect width="760" height="390" fill="#FFFFFF"/>
+    <rect x="32" y="24" width="34" height="34" rx="5" fill="#111111"/>
+    <path d="M51.6 32.8C43.3 30 37.2 34 37.2 41.3s6.1 11.3 14.4 8.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="square"/>
+    <path d="M48.2 41.3h7.6M55.8 30.8v21" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="square"/>
+    <text x="82" y="45" class="title">Avaliação em URLs reais</text>
+    <text x="82" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução ${generatedAt.slice(0, 10)}</text>
     ${bars}
     <text x="32" y="348" class="foot">Matriz: TP ${metrics.tp} · FP ${metrics.fp} · TN ${metrics.tn} · FN ${metrics.fn}</text>
     <text x="32" y="369" class="foot">Indisponíveis (${metrics.unavailable}) não entram nas métricas. Resultados não representam toda a web.</text>

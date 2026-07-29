@@ -34,9 +34,9 @@ test('normaliza preferências válidas e mantém defaults seguros', () => {
 
 test('converte cores e calcula contraste WCAG', () => {
     assert.deepEqual(
-        structuredClone(appearance.rgbFromHex('#5B5BD6')),
-        [91, 91, 214]
+        structuredClone(appearance.rgbFromHex('#111111')),
+        [17, 17, 17]
     );
     assert.equal(appearance.contrastRatio([0, 0, 0], [255, 255, 255]), 21);
-    assert.ok(appearance.contrastRatio([91, 91, 214], [255, 255, 255]) >= 4.5);
+    assert.ok(appearance.contrastRatio([17, 17, 17], [255, 255, 255]) >= 4.5);
 });

@@ -1,9 +1,19 @@
 # Guardião Zero Pro
 
+<p>
+  <img src="assets/brand/limiar-orbital.svg" width="72" height="72" alt="Símbolo Limiar Orbital">
+</p>
+
 Extensão Manifest V3 para Firefox e Chromium que reduz a exposição a
 plataformas de apostas, anúncios e rastreadores. A classificação é
 determinística, multifator e executada localmente. Não há telemetria, conta,
 servidor próprio ou envio de conteúdo de navegação.
+
+![Benchmark antes e depois](docs/assets/benchmark-evolution.svg)
+
+O gráfico é gerado por `npm run benchmark` a partir dos 391 cenários
+determinísticos versionados. Os dados completos, incluindo ambiente e tempos,
+ficam em [`docs/reports/benchmark-results.json`](docs/reports/benchmark-results.json).
 
 ## Recursos
 
@@ -19,7 +29,8 @@ servidor próprio ou envio de conteúdo de navegação.
   4.900 regras importadas;
 - temas claro, escuro ou sistema, accent color, alto contraste, densidade e
   redução de movimento;
-- interface acessível e responsiva, com fonte Inter e ícones empacotados;
+- identidade própria Limiar Orbital, composição editorial numerada, Newsreader
+  nos títulos, Inter nos controles e ícones próprios empacotados;
 - backup e restauração locais;
 - política de privacidade navegável dentro da extensão.
 
@@ -100,6 +111,13 @@ O comando usa `web-ext` 10, exige zero warnings e grava o ZIP em
 `npm test` executa testes unitários, de integração e centenas de cenários de
 regressão determinísticos. Eles não são apresentados como tráfego real.
 
+No benchmark local de 29 de julho de 2026, o corpus passou de 98,98% para 100%
+de acurácia, de 1 para 0 falso positivo e de 3 para 0 falsos negativos. O
+classificador multifator usa mais CPU por decisão; em contrapartida, a
+blocklist deixa de materializar aproximadamente 18,25 MiB adicionais de heap.
+Essa é uma medição de regressão reproduzível, não uma promessa de precisão na
+web.
+
 `npm run test:real` acessa somente as URLs públicas declaradas em
 `tests/real-world-corpus.json`, descarta respostas indisponíveis ou
 intersticiais e registra hash, status e fatores sem salvar o HTML.
@@ -119,7 +137,7 @@ e o [gráfico gerado](docs/assets/precision-real-world.svg).
 ## Estrutura
 
 ```text
-assets/                  ícones, fonte Inter e licença OFL
+assets/                  marca, ícones, fontes Inter/Newsreader e licenças OFL
 src/background/          estado, políticas, DNR e índice local
 src/content/             coleta limitada e orquestração da análise
 src/shared/detection/    constantes, score e decisão multifator
@@ -134,6 +152,9 @@ tools/                   validação, benchmark, build, avaliação e pacote AMO
 docs/                    arquitetura, segurança e relatórios
 ```
 
+As regras de marca, tipografia, iconografia, linguagem e movimento estão
+documentadas em [docs/BRAND_SYSTEM.md](docs/BRAND_SYSTEM.md).
+
 ## Permissões
 
 - `storage`: dados funcionais locais;
@@ -147,7 +168,7 @@ downloads, identidade ou acesso remoto a código.
 
 ## Licenças e publicação
 
-O código original está sob MIT. Inter está sob OFL-1.1. Consulte
+O código original está sob MIT. Inter e Newsreader estão sob OFL-1.1. Consulte
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) antes de redistribuir:
 a proveniência e a licença de `src/filters/heazts-blocklist.txt` ainda precisam
 ser confirmadas pelo mantenedor.
