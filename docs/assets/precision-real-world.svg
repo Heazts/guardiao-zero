@@ -2,32 +2,32 @@
     <title id="title">Métricas reais do bloqueio</title>
     <desc id="desc">Resultados de 23 URLs reais disponíveis; 24 indisponíveis e excluídas.</desc>
     <style>
-        text { font-family: Inter, "Segoe UI", sans-serif; fill: #171921; }
+        text { font-family: Inter, "Segoe UI", sans-serif; fill: #111111; }
         .title { font-size: 22px; font-weight: 700; }
-        .subtitle { font-size: 12px; fill: #626B7B; }
+        .subtitle { font-size: 12px; fill: #666666; }
         .label { font-size: 13px; font-weight: 650; }
         .value { font-size: 12px; font-weight: 700; text-anchor: start; }
-        .foot { font-size: 11px; fill: #626B7B; }
+        .foot { font-size: 11px; fill: #666666; }
     </style>
-    <rect width="760" height="390" rx="18" fill="#FFFFFF"/>
+    <rect width="760" height="390" fill="#FFFFFF"/>
     <text x="32" y="42" class="title">Avaliação em URLs reais</text>
     <text x="32" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução 2026-07-29</text>
 
         <text x="32" y="118" class="label">Precisão</text>
-        <rect x="168" y="102" width="430" height="24" rx="7" fill="#E7E9F0"/>
-        <rect x="168" y="102" width="430" height="24" rx="7" fill="#5B5BD6"/>
+        <rect x="168" y="102" width="430" height="24" rx="4" fill="#EDEDED"/>
+        <rect x="168" y="102" width="430" height="24" rx="4" fill="#111111"/>
         <text x="614" y="119" class="value">100.00%</text>
         <text x="32" y="176" class="label">Recall</text>
-        <rect x="168" y="160" width="430" height="24" rx="7" fill="#E7E9F0"/>
-        <rect x="168" y="160" width="358" height="24" rx="7" fill="#2F74E5"/>
+        <rect x="168" y="160" width="430" height="24" rx="4" fill="#EDEDED"/>
+        <rect x="168" y="160" width="358" height="24" rx="4" fill="#3F3F3F"/>
         <text x="614" y="177" class="value">83.33%</text>
         <text x="32" y="234" class="label">Especificidade</text>
-        <rect x="168" y="218" width="430" height="24" rx="7" fill="#E7E9F0"/>
-        <rect x="168" y="218" width="430" height="24" rx="7" fill="#087454"/>
+        <rect x="168" y="218" width="430" height="24" rx="4" fill="#EDEDED"/>
+        <rect x="168" y="218" width="430" height="24" rx="4" fill="#737373"/>
         <text x="614" y="235" class="value">100.00%</text>
         <text x="32" y="292" class="label">Acurácia</text>
-        <rect x="168" y="276" width="430" height="24" rx="7" fill="#E7E9F0"/>
-        <rect x="168" y="276" width="411" height="24" rx="7" fill="#9A4F00"/>
+        <rect x="168" y="276" width="430" height="24" rx="4" fill="#EDEDED"/>
+        <rect x="168" y="276" width="411" height="24" rx="4" fill="#A3A3A3"/>
         <text x="614" y="293" class="value">95.65%</text>
     <text x="32" y="348" class="foot">Matriz: TP 5 · FP 0 · TN 17 · FN 1</text>
     <text x="32" y="369" class="foot">Indisponíveis (24) não entram nas métricas. Resultados não representam toda a web.</text>

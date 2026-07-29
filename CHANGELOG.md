@@ -2,8 +2,8 @@
 
 ## 3.1.0
 
-- cria identidade visual própria com nova marca, Inter local e design system
-  semântico;
+- cria identidade visual editorial monocromática, nova marca preto e branco,
+  Inter local e design system semântico;
 - reformula popup, opções, bloqueio, ajuda e diagnóstico;
 - adiciona página e política de privacidade;
 - adiciona tema claro/escuro/sistema, accent color, alto contraste, densidade
@@ -16,7 +16,10 @@
 - evita varredura DOM quando apenas anúncios/rastreadores estão ativos;
 - separa builds Firefox e Chromium;
 - adiciona licença MIT, OFL, avisos de terceiros e checklist AMO;
-- adiciona corpus real reproduzível, resultados com hashes e gráfico derivado;
+- adiciona corpus real reproduzível, resultados com hashes e gráficos
+  derivados;
+- publica no README um benchmark em SVG com fundo branco, gerado diretamente
+  das métricas locais e acompanhado dos dados JSON completos;
 - valida o pacote Firefox com `web-ext` 10 sem erros, notices ou warnings.
 
 ## 3.0.0

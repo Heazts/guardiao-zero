@@ -10,7 +10,7 @@
 globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
     const DEFAULT_APPEARANCE = Object.freeze({
         theme: 'system',
-        accent: '#5B5BD6',
+        accent: '#111111',
         contrast: 'normal',
         density: 'comfortable',
         motion: 'system'
@@ -100,7 +100,7 @@ globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
         const accent = rgbFromHex(appearance.accent);
         const accentForeground = contrastRatio(accent, [255, 255, 255]) >= 4.5
             ? [255, 255, 255]
-            : [10, 13, 20];
+            : [10, 10, 10];
 
         root.dataset.theme = appearance.theme;
         root.dataset.contrast = appearance.contrast;
@@ -110,7 +110,7 @@ globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
         root.style.setProperty('--accent-rgb', accent.join(' '));
         root.style.setProperty('--accent-foreground', rgbCss(accentForeground));
         root.style.setProperty('--accent-on-light', rgbCss(readableAccent(accent, [255, 255, 255])));
-        root.style.setProperty('--accent-on-dark', rgbCss(readableAccent(accent, [10, 13, 20])));
+        root.style.setProperty('--accent-on-dark', rgbCss(readableAccent(accent, [10, 10, 10])));
         root.style.colorScheme = appearance.theme === 'system'
             ? 'light dark'
             : appearance.theme;

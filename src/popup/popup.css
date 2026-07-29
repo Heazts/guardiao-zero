@@ -5,9 +5,7 @@ html.appearance-pending body {
 body {
     width: 372px;
     min-height: 438px;
-    background:
-        radial-gradient(circle at 100% 0, var(--accent-soft), transparent 34%),
-        var(--canvas);
+    background: var(--canvas);
 }
 
 .popup-shell {
@@ -33,10 +31,8 @@ body {
     align-items: center;
     gap: 13px;
     padding: 17px;
-    border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
-    background:
-        linear-gradient(115deg, var(--accent-soft), transparent 48%),
-        var(--surface);
+    border-color: var(--border);
+    background: var(--surface);
 }
 
 .hero-icon {
@@ -44,10 +40,9 @@ body {
     width: 46px;
     height: 46px;
     place-items: center;
-    border-radius: 14px;
+    border-radius: var(--radius-md);
     background: var(--accent);
     color: var(--accent-foreground);
-    box-shadow: 0 8px 24px rgb(var(--accent-rgb) / 24%);
 }
 
 .hero-icon.paused {
@@ -107,11 +102,10 @@ body {
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
     background: var(--surface);
-    box-shadow: var(--shadow-xs);
 }
 
 .stat-card:hover {
-    border-color: color-mix(in srgb, var(--accent) 38%, var(--border));
+    border-color: var(--border-strong);
     background: var(--surface-hover);
 }
 
@@ -180,9 +174,9 @@ body {
 }
 
 .quick-action:hover {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-    color: var(--accent-ink);
+    border-color: var(--text);
+    background: var(--surface-hover);
+    color: var(--text);
 }
 
 .popup-footer {
