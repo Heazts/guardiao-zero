@@ -18,8 +18,8 @@
     </style>
     <g transform="translate(64 58)">
         <rect width="42" height="42" rx="6" fill="#111"/>
-        <ellipse cx="16" cy="21" rx="7" ry="11" fill="none" stroke="#fff" stroke-width="4"/>
-        <path d="M30 10v22" stroke="#fff" stroke-width="4"/>
+        <path d="M25.7 10.5C15.4 7 7.9 12 7.9 21s7.5 14 17.8 10.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square"/>
+        <path d="M21.5 21h9.4M30.9 8v26" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square"/>
         <text x="58" y="14" class="kicker">GUARDIÃO ZERO PRO</text>
         <text x="58" y="58" class="title">Benchmark antes e depois</text>
         <text x="58" y="88" class="subtitle">391 cenários · 7.820 classificações · 29 de julho de 2026</text>
@@ -80,9 +80,9 @@
         <text x="24" y="112" class="caption">de heap adicional observado no Set anterior; índice atual: 0 MiB adicionais persistentes</text>
         <line x1="650" y1="22" x2="650" y2="120" stroke="#dedede"/>
         <text x="680" y="43" class="note-title">Custo consciente de precisão</text>
-        <text x="680" y="70" class="note">Legado: 0,0385 ms/op</text>
-        <text x="680" y="94" class="note">Multifator: 0,2656 ms/op</text>
-        <text x="680" y="118" class="caption">6,9× mais análise por página para eliminar erros no corpus.</text>
+        <text x="680" y="70" class="note">Legado: 0,0335 ms/op</text>
+        <text x="680" y="94" class="note">Multifator: 0,2861 ms/op</text>
+        <text x="680" y="118" class="caption">8,5× mais análise por página para eliminar erros no corpus.</text>
     </g>
     <line x1="64" y1="636" x2="1136" y2="636" stroke="#111"/>
     <text x="64" y="680" class="footer">Fonte: npm run benchmark · execução local reproduzível · dados completos em docs/reports/benchmark-results.json</text>

@@ -3,17 +3,22 @@
 ## Ideia central
 
 O Guardião Zero existe para impedir que um conteúdo atravesse um limite
-definido pelo usuário. A identidade traduz esse comportamento no monograma
-`0|`:
+definido pelo usuário. A identidade traduz esse comportamento no símbolo
+**Limiar Orbital**:
 
-- `0` representa a meta de exposição e telemetria zero;
-- `|` representa o limiar local que uma navegação bloqueada não atravessa;
-- a forma permanece legível em 16 px e não depende de uma fonte;
+- a órbita aberta representa a meta de exposição e telemetria zero;
+- a abertura e o braço central sugerem o `G` de Guardião sem desenhar uma letra
+  convencional;
+- o braço registra a interceptação da navegação;
+- a haste vertical representa o limiar local que o conteúdo não atravessa;
+- a forma é desenhada por geometria própria, permanece legível em 16 px e não
+  depende de uma fonte;
 - o símbolo substitui o escudo genérico, removido de todas as superfícies
   principais.
 
-O arquivo vetorial canônico é `assets/brand/limiar-zero.svg`. Os ícones raster
+O arquivo vetorial canônico é `assets/brand/limiar-orbital.svg`. Os ícones raster
 do manifesto são derivados da mesma geometria por `tools/make_icons.py`.
+O símbolo não deve ser substituído por texto, emoji ou glifo tipográfico.
 
 ## Voz visual
 
@@ -38,6 +43,10 @@ A interface segue uma linguagem editorial operacional:
 - caixa óptica de 16 ou 20 px;
 - nenhum fundo colorido ou container circular;
 - setas `←` e `↗` identificam navegação de forma textual e consistente.
+
+O Limiar Orbital é a única exceção de marca à regra de ícones funcionais. Ele
+deve preservar a órbita aberta, o braço central e a haste, sem efeitos 3D,
+contorno extra ou preenchimento colorido.
 
 ## Movimento
 

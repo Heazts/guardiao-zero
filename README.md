@@ -1,5 +1,9 @@
 # Guardião Zero Pro
 
+<p>
+  <img src="assets/brand/limiar-orbital.svg" width="72" height="72" alt="Símbolo Limiar Orbital">
+</p>
+
 Extensão Manifest V3 para Firefox e Chromium que reduz a exposição a
 plataformas de apostas, anúncios e rastreadores. A classificação é
 determinística, multifator e executada localmente. Não há telemetria, conta,
@@ -25,8 +29,8 @@ ficam em [`docs/reports/benchmark-results.json`](docs/reports/benchmark-results.
   4.900 regras importadas;
 - temas claro, escuro ou sistema, accent color, alto contraste, densidade e
   redução de movimento;
-- identidade própria Limiar Zero (`0|`), composição editorial numerada,
-  Newsreader nos títulos, Inter nos controles e ícones próprios empacotados;
+- identidade própria Limiar Orbital, composição editorial numerada, Newsreader
+  nos títulos, Inter nos controles e ícones próprios empacotados;
 - backup e restauração locais;
 - política de privacidade navegável dentro da extensão.
 

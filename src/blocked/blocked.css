@@ -38,9 +38,35 @@ body {
 
 .blocked-signal > span {
     display: block;
+    position: relative;
+    width: clamp(72px, 10vw, 104px);
+    height: clamp(72px, 10vw, 104px);
+    background: linear-gradient(currentColor, currentColor) 61% 50% / 34% 6px no-repeat;
     color: var(--text);
-    font: 520 clamp(64px, 12vw, 112px)/0.8 var(--font-mono);
-    letter-spacing: -0.12em;
+}
+
+.blocked-signal > span::before,
+.blocked-signal > span::after {
+    position: absolute;
+    content: "";
+}
+
+.blocked-signal > span::before {
+    top: 8%;
+    left: 5%;
+    width: 58%;
+    height: 76%;
+    border: 6px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+}
+
+.blocked-signal > span::after {
+    top: 4%;
+    left: 76%;
+    width: 6px;
+    height: 92%;
+    background: currentColor;
 }
 
 .blocked-signal small {
@@ -151,7 +177,17 @@ body {
     }
 
     .blocked-signal > span {
-        font-size: 72px;
+        width: 72px;
+        height: 72px;
+        background-size: 34% 5px;
+    }
+
+    .blocked-signal > span::before {
+        border-width: 5px;
+    }
+
+    .blocked-signal > span::after {
+        width: 5px;
     }
 
     .blocked-signal small {

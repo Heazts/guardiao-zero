@@ -26,11 +26,37 @@
 
 #gzp-block-overlay .gzp-icon-container {
     display: block !important;
+    position: relative !important;
+    width: 88px !important;
+    height: 88px !important;
     padding-top: 7px !important;
     border-top: 4px solid #f5f5ef !important;
+    background: linear-gradient(#f5f5ef, #f5f5ef) 61% 56% / 34% 6px no-repeat !important;
     color: #f5f5ef !important;
-    font: 650 35px/1 ui-monospace, "SFMono-Regular", Consolas, monospace !important;
-    letter-spacing: -0.08em !important;
+}
+
+#gzp-block-overlay .gzp-icon-container::before,
+#gzp-block-overlay .gzp-icon-container::after {
+    position: absolute !important;
+    content: "" !important;
+}
+
+#gzp-block-overlay .gzp-icon-container::before {
+    top: 18px !important;
+    left: 4px !important;
+    width: 48px !important;
+    height: 58px !important;
+    border: 6px solid #f5f5ef !important;
+    border-right-color: transparent !important;
+    border-radius: 50% !important;
+}
+
+#gzp-block-overlay .gzp-icon-container::after {
+    top: 15px !important;
+    left: 67px !important;
+    width: 6px !important;
+    height: 67px !important;
+    background: #f5f5ef !important;
 }
 
 #gzp-block-overlay h1 {

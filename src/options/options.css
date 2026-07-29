@@ -600,17 +600,36 @@ body {
 }
 
 .preview-mark {
-    display: grid;
+    display: block;
+    position: relative;
     width: 56px;
     height: 56px;
-    place-items: center;
-    border-right: 3px solid var(--accent);
+    background: linear-gradient(var(--text), var(--text)) 61% 50% / 34% 4px no-repeat;
     color: var(--text);
-    font: 620 16px/1 var(--font-mono);
+}
+
+.preview-mark::before,
+.preview-mark::after {
+    position: absolute;
+    content: "";
 }
 
 .preview-mark::before {
-    content: "0|";
+    top: 8%;
+    left: 5%;
+    width: 58%;
+    height: 76%;
+    border: 4px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+}
+
+.preview-mark::after {
+    top: 4%;
+    left: 76%;
+    width: 4px;
+    height: 92%;
+    background: var(--accent);
 }
 
 .appearance-preview strong,

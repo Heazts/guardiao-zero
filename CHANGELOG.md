@@ -2,8 +2,8 @@
 
 ## 3.1.0
 
-- cria a identidade Limiar Zero, com monograma `0|`, marca vetorial, família de
-  ícones e regras de uso documentadas;
+- cria a identidade Limiar Orbital, com símbolo autoral que reúne zero, Guardião
+  e barreira local, marca vetorial, família de ícones e regras documentadas;
 - combina Newsreader local para voz editorial, Inter para controles e
   numeração monoespaçada para estados e metadados;
 - reformula popup, opções, bloqueio, ajuda, diagnóstico, privacidade e overlay

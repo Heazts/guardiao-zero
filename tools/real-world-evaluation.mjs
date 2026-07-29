@@ -285,8 +285,8 @@ function svgGraph(metrics, generatedAt) {
     </style>
     <rect width="760" height="390" fill="#FFFFFF"/>
     <rect x="32" y="24" width="34" height="34" rx="5" fill="#111111"/>
-    <ellipse cx="45" cy="41" rx="5.5" ry="9" fill="none" stroke="#FFFFFF" stroke-width="3"/>
-    <path d="M57 32v18" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M51.6 32.8C43.3 30 37.2 34 37.2 41.3s6.1 11.3 14.4 8.5" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="square"/>
+    <path d="M48.2 41.3h7.6M55.8 30.8v21" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="square"/>
     <text x="82" y="45" class="title">Avaliação em URLs reais</text>
     <text x="82" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução ${generatedAt.slice(0, 10)}</text>
     ${bars}
