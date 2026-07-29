@@ -359,8 +359,8 @@ function benchmarkSvg(data) {
     </style>
     <g transform="translate(64 58)">
         <rect width="42" height="42" rx="6" fill="#111"/>
-        <ellipse cx="16" cy="21" rx="7" ry="11" fill="none" stroke="#fff" stroke-width="4"/>
-        <path d="M30 10v22" stroke="#fff" stroke-width="4"/>
+        <path d="M25.7 10.5C15.4 7 7.9 12 7.9 21s7.5 14 17.8 10.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square"/>
+        <path d="M21.5 21h9.4M30.9 8v26" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square"/>
         <text x="58" y="14" class="kicker">GUARDIÃO ZERO PRO</text>
         <text x="58" y="58" class="title">Benchmark antes e depois</text>
         <text x="58" y="88" class="subtitle">${data.corpus.total} cenários · ${data.classifierPerformance.operations.toLocaleString('pt-BR')} classificações · ${created}</text>

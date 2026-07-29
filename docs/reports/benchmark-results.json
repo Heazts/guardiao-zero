@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-29T22:50:28.197Z",
+  "generatedAt": "2026-07-29T23:22:35.878Z",
   "methodology": {
     "kind": "deterministic-regression-corpus",
     "classifierIterations": 20,
@@ -34,23 +34,23 @@
   "classifierPerformance": {
     "operations": 7820,
     "repetitions": 5,
-    "legacyTotalMs": 300.73,
-    "multifactorTotalMs": 2077.14,
-    "legacyMeanMs": 0.0385,
-    "multifactorMeanMs": 0.2656,
+    "legacyTotalMs": 261.62,
+    "multifactorTotalMs": 2237.26,
+    "legacyMeanMs": 0.0335,
+    "multifactorMeanMs": 0.2861,
     "legacySamplesMs": [
-      300.73,
-      470.01,
-      430.36,
-      192.04,
-      171.27
+      261.62,
+      144.56,
+      356.68,
+      348.57,
+      240.55
     ],
     "multifactorSamplesMs": [
-      2084.52,
-      3007.49,
-      2077.14,
-      1728.11,
-      1644.3
+      2693.32,
+      2456.12,
+      2224.44,
+      2237.26,
+      1997.67
     ]
   },
   "blocklist": {
@@ -58,25 +58,25 @@
     "compactTextUtf8Bytes": 4382602,
     "observedSetHeapDeltaBytes": 19137360,
     "repetitions": 7,
-    "setLookup10kMs": 0.19,
-    "binaryLookup10kMs": 113.55,
+    "setLookup10kMs": 0.18,
+    "binaryLookup10kMs": 112.41,
     "setLookupSamplesMs": [
-      0.25,
       0.19,
       0.18,
-      0.19,
+      0.17,
       0.18,
-      0.19,
+      0.17,
+      0.33,
       0.18
     ],
     "binaryLookupSamplesMs": [
-      123.47,
-      111.96,
-      104.89,
-      123.64,
-      99.17,
-      117.55,
-      113.55
+      112.41,
+      86.29,
+      121.5,
+      99.46,
+      102.62,
+      290.55,
+      118.19
     ]
   }
 }

@@ -1,8 +1,8 @@
-"""Gera os ícones raster da identidade Limiar Zero.
+"""Gera os ícones raster da identidade Limiar Orbital.
 
-O zero representa a meta do produto; a barra vertical representa o limite que
-o conteúdo bloqueado não atravessa. A geometria deliberadamente simples
-continua reconhecível em 16 px e não depende de glifos ou fontes.
+A órbita aberta reúne o zero e o G de Guardião. O braço central registra a
+interceptação, enquanto a haste vertical representa o limiar local. A
+geometria continua reconhecível em 16 px e não depende de glifos ou fontes.
 """
 
 from pathlib import Path
@@ -17,23 +17,29 @@ INK = (17, 17, 17)
 
 
 def limiar_mask(canvas_size, box):
-    """Retorna o monograma 0| da marca em uma máscara monocromática."""
+    """Retorna o símbolo Limiar Orbital em uma máscara monocromática."""
     mask = Image.new("L", (canvas_size, canvas_size), 0)
     draw = ImageDraw.Draw(mask)
     x0, y0, x1, y1 = box
     width = x1 - x0
     height = y1 - y0
     stroke = max(1, round(width * 0.13))
-    zero_box = (
-        x0 + width * 0.04,
-        y0 + height * 0.08,
-        x0 + width * 0.56,
-        y0 + height * 0.92,
+    orbit_box = (
+        x0 + width * 0.02,
+        y0 + height * 0.06,
+        x0 + width * 0.67,
+        y0 + height * 0.94,
     )
-    draw.ellipse(zero_box, outline=255, width=stroke)
+    draw.arc(orbit_box, start=42, end=318, fill=255, width=stroke)
+    center_y = y0 + height * 0.50
     barrier_x = x0 + width * 0.84
     draw.line(
-        (barrier_x, y0 + height * 0.08, barrier_x, y0 + height * 0.92),
+        (x0 + width * 0.49, center_y, barrier_x, center_y),
+        fill=255,
+        width=stroke,
+    )
+    draw.line(
+        (barrier_x, y0 + height * 0.03, barrier_x, y0 + height * 0.97),
         fill=255,
         width=stroke,
     )

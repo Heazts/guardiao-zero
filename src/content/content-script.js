@@ -96,7 +96,6 @@
         card.className = 'gzp-block-panel';
         const icon = document.createElement('div');
         icon.className = 'gzp-icon-container';
-        icon.textContent = '0|';
         icon.setAttribute('aria-hidden', 'true');
 
         const title = document.createElement('h1');

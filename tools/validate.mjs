@@ -209,7 +209,7 @@ export async function validateProject(options = {}) {
         join('assets', 'fonts', 'OFL.txt'),
         join('assets', 'fonts', 'NewsreaderVariable.woff2'),
         join('assets', 'fonts', 'NEWSREADER-OFL.txt'),
-        join('assets', 'brand', 'limiar-zero.svg'),
+        join('assets', 'brand', 'limiar-orbital.svg'),
         join('src', 'privacy', 'privacy.html'),
         join('docs', 'BRAND_SYSTEM.md'),
         'PRIVACY.md',
