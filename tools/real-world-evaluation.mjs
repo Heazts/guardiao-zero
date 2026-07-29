@@ -277,15 +277,18 @@ function svgGraph(metrics, generatedAt) {
     <desc id="desc">Resultados de ${metrics.evaluated} URLs reais disponíveis; ${metrics.unavailable} indisponíveis e excluídas.</desc>
     <style>
         text { font-family: Inter, "Segoe UI", sans-serif; fill: #111111; }
-        .title { font-size: 22px; font-weight: 700; }
+        .title { font-family: Newsreader, Georgia, serif; font-size: 27px; font-weight: 560; }
         .subtitle { font-size: 12px; fill: #666666; }
         .label { font-size: 13px; font-weight: 650; }
         .value { font-size: 12px; font-weight: 700; text-anchor: start; }
         .foot { font-size: 11px; fill: #666666; }
     </style>
     <rect width="760" height="390" fill="#FFFFFF"/>
-    <text x="32" y="42" class="title">Avaliação em URLs reais</text>
-    <text x="32" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução ${generatedAt.slice(0, 10)}</text>
+    <rect x="32" y="24" width="34" height="34" rx="5" fill="#111111"/>
+    <ellipse cx="45" cy="41" rx="5.5" ry="9" fill="none" stroke="#FFFFFF" stroke-width="3"/>
+    <path d="M57 32v18" stroke="#FFFFFF" stroke-width="3"/>
+    <text x="82" y="45" class="title">Avaliação em URLs reais</text>
+    <text x="82" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução ${generatedAt.slice(0, 10)}</text>
     ${bars}
     <text x="32" y="348" class="foot">Matriz: TP ${metrics.tp} · FP ${metrics.fp} · TN ${metrics.tn} · FN ${metrics.fn}</text>
     <text x="32" y="369" class="foot">Indisponíveis (${metrics.unavailable}) não entram nas métricas. Resultados não representam toda a web.</text>

@@ -2,9 +2,13 @@
 
 ## 3.1.0
 
-- cria identidade visual editorial monocromática, nova marca preto e branco,
-  Inter local e design system semântico;
-- reformula popup, opções, bloqueio, ajuda e diagnóstico;
+- cria a identidade Limiar Zero, com monograma `0|`, marca vetorial, família de
+  ícones e regras de uso documentadas;
+- combina Newsreader local para voz editorial, Inter para controles e
+  numeração monoespaçada para estados e metadados;
+- reformula popup, opções, bloqueio, ajuda, diagnóstico, privacidade e overlay
+  de conteúdo como registros operacionais, sem escudos, mosaicos de cards ou
+  iconografia decorativa genérica;
 - adiciona página e política de privacidade;
 - adiciona tema claro/escuro/sistema, accent color, alto contraste, densidade
   e redução de movimento em `storage.local`;

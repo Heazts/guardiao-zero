@@ -207,7 +207,11 @@ export async function validateProject(options = {}) {
     for (const required of [
         join('assets', 'fonts', 'InterVariable.woff2'),
         join('assets', 'fonts', 'OFL.txt'),
+        join('assets', 'fonts', 'NewsreaderVariable.woff2'),
+        join('assets', 'fonts', 'NEWSREADER-OFL.txt'),
+        join('assets', 'brand', 'limiar-zero.svg'),
         join('src', 'privacy', 'privacy.html'),
+        join('docs', 'BRAND_SYSTEM.md'),
         'PRIVACY.md',
         'LICENSE',
         'THIRD_PARTY_NOTICES.md'

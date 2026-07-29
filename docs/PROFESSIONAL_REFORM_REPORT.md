@@ -6,10 +6,13 @@ performance, testes, privacidade e preparação para publicação.
 
 ## Resultado executivo
 
-O Guardião Zero Pro passou de uma interface monocromática inconsistente para um
-produto editorial preto e branco, com hierarquia inspirada em ferramentas de
-produtividade, superfícies discretas e personalização local. A arquitetura de
-proteção ganhou importação conservadora de filtros,
+O Guardião Zero Pro passou de uma interface monocromática inconsistente para o
+sistema de identidade próprio Limiar Zero. O monograma `0|` representa,
+respectivamente, exposição/telemetria zero e o limite local que uma navegação
+bloqueada não atravessa. A composição editorial numerada, a tipografia
+Newsreader e a ausência deliberada de iconografia decorativa diferenciam o
+produto de dashboards genéricos. A arquitetura de proteção ganhou importação
+conservadora de filtros,
 precedência DNR para a whitelist, persistência transacional e builds separados
 para Firefox e Chromium.
 
@@ -65,8 +68,10 @@ também depende da confirmação de proveniência da blocklist.
 | Área | Alteração | Justificativa |
 |---|---|---|
 | Design | tokens semânticos para canvas, superfície, texto, borda, foco, estados e accent | consistência e contraste independente do tema |
-| Marca | ícone exclusivo “escudo + zero” em preto e branco | reconhecimento forte, legibilidade em 16 px e coerência com o produto |
-| Tipografia | Inter Variable WOFF2 local + OFL integral | qualidade visual sem CDN ou rastreamento |
+| Marca | monograma vetorial `0|`, derivado em todos os ícones raster | expressa zero exposição e o limiar local sem recorrer ao escudo genérico |
+| Estrutura visual | registro editorial numerado, regras horizontais e superfícies sem cards decorativos | cria hierarquia reconhecível e reduz ruído |
+| Tipografia | Newsreader Variable para títulos + Inter Variable para interface, ambas locais e com OFL integral | voz própria sem CDN ou rastreamento |
+| Iconografia | símbolos somente quando funcionais; setas e numeração seguem uma gramática única | evita o conjunto heterogêneo típico de interfaces geradas |
 | Personalização | tema, accent, contraste, densidade e movimento | autonomia do usuário; persistência apenas local |
 | A11y | foco de 3 px, labels, `aria-describedby`, logs, alerts e 40–44 px targets | teclado, leitores de tela e baixa visão |
 | UX | skeletons, status de salvamento, toasts, confirmações e estados de erro | elimina ambiguidade em operações assíncronas |
@@ -134,11 +139,11 @@ Benchmark local, 7.820 classificações:
 
 | Medida | Legado | Multifator 3.1 |
 |---|---:|---:|
-| média do classificador | 0,0256 ms | 0,2701 ms |
-| total mediano | 200,51 ms | 2.112,30 ms |
+| média do classificador | 0,0385 ms | 0,2656 ms |
+| total mediano | 300,73 ms | 2.077,14 ms |
 
 O classificador isolado é mais caro porque produz score, fatores e safeguards,
-mas permaneceu próximo de 0,27 ms por amostra nessa execução. Não foi
+mas permaneceu abaixo de 0,27 ms por amostra nessa execução. Não foi
 classificado como “ganho de performance”: trata-se de um custo consciente para
 eliminar os quatro erros observados no corpus. Os valores são medianas de cinco
 repetições alternadas após aquecimento; as amostras brutas estão no relatório
@@ -152,7 +157,7 @@ JSON. O custo sistêmico é limitado por:
 - busca binária sem materializar 272.868 strings em `Set`.
 
 Memória observada evitada ao não criar o `Set`: aproximadamente 18,25 MiB. Dez
-mil lookups binários levaram 140,68 ms, ou cerca de 0,0141 ms por consulta
+mil lookups binários levaram 113,55 ms, ou cerca de 0,0114 ms por consulta
 (mediana de sete repetições).
 A consulta binária é mais lenta que `Set.has`, porém evita manter 272.868
 strings como objetos no heap.
@@ -189,18 +194,21 @@ Não há percentual honesto de melhoria total sem profiling no navegador.
 - `docs/reports/benchmark-results.json`;
 - `docs/assets/precision-real-world.svg`;
 - `docs/assets/benchmark-evolution.svg`;
-- fonte Inter WOFF2 e licença OFL.
+- `assets/brand/limiar-zero.svg`;
+- `docs/BRAND_SYSTEM.md`;
+- fontes Inter/Newsreader WOFF2 e respectivas licenças OFL.
 
 ### Reformulados
 
 - manifesto, background, schema de mensagens e matcher de listas;
-- popup, opções, bloqueio, ajuda e diagnóstico;
-- design system monocromático compartilhado, ícones e gerador de ícones;
+- popup, opções, bloqueio, ajuda, diagnóstico, privacidade e overlay;
+- design system Limiar Zero compartilhado, família de ícones e gerador;
 - build, validação, README, changelog e testes de integração.
 
 ### Código removido ou evitado
 
 - alegações de inteligência artificial sem implementação;
+- escudos genéricos, ícones decorativos e grades de cards sem função;
 - tokens visuais legados e estilos de inversão quebrados;
 - dependência de tooltip somente por `title`;
 - substituição destrutiva de `textContent` em botões;
@@ -222,7 +230,9 @@ auditável; inventar um “diff anterior” seria tecnicamente incorreto.
 - `npm run test:real`: concluído com indisponíveis explicitamente registrados;
 - `npm run build:firefox`: aprovado;
 - `web-ext@10 lint --warnings-as-errors`: 0 erros, 0 notices, 0 warnings;
-- pacote: `web-ext-artifacts/guardi_o_zero_pro-3.1.0.zip`.
+- pacote: `web-ext-artifacts/guardi_o_zero_pro-3.1.0.zip`;
+- SHA-256:
+  `D296EAEA716E851E3DB384AABB461263D528BEAE8B1CDF4A0553713D06F8F052`.
 
 ## Limitações e bloqueadores
 

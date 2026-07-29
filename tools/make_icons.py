@@ -1,8 +1,8 @@
-"""Gera a identidade visual monocromática do Guardião Zero Pro.
+"""Gera os ícones raster da identidade Limiar Zero.
 
-O símbolo combina um escudo com um zero em espaço negativo. O quadrado preto,
-as proporções compactas e a ausência de efeitos mantêm a marca legível desde a
-barra do navegador até a página do gerenciador.
+O zero representa a meta do produto; a barra vertical representa o limite que
+o conteúdo bloqueado não atravessa. A geometria deliberadamente simples
+continua reconhecível em 16 px e não depende de glifos ou fontes.
 """
 
 from pathlib import Path
@@ -16,55 +16,27 @@ THEME_SIZES = (16, 32, 48)
 INK = (17, 17, 17)
 
 
-def cubic(p0, p1, p2, p3, count=48):
-    points = []
-    for index in range(count + 1):
-        t = index / count
-        inverse = 1 - t
-        points.append((
-            inverse**3 * p0[0]
-            + 3 * inverse * inverse * t * p1[0]
-            + 3 * inverse * t * t * p2[0]
-            + t**3 * p3[0],
-            inverse**3 * p0[1]
-            + 3 * inverse * inverse * t * p1[1]
-            + 3 * inverse * t * t * p2[1]
-            + t**3 * p3[1],
-        ))
-    return points
-
-
-def shield_points():
-    points = [(12, 22)]
-    points += cubic((12, 22), (12, 22), (20, 18), (20, 12))[1:]
-    points += [(20, 5), (12, 2), (4, 5), (4, 12)]
-    points += cubic((4, 12), (4, 18), (12, 22), (12, 22))[1:]
-    return points
-
-
-def map_points(points, box):
-    x0, y0, x1, y1 = box
-    scale_x = (x1 - x0) / 24
-    scale_y = (y1 - y0) / 24
-    return [(x0 + x * scale_x, y0 + y * scale_y) for x, y in points]
-
-
-def zero_shield_mask(canvas_size, box):
-    """Retorna um escudo sólido com um zero vazado no centro."""
+def limiar_mask(canvas_size, box):
+    """Retorna o monograma 0| da marca em uma máscara monocromática."""
     mask = Image.new("L", (canvas_size, canvas_size), 0)
     draw = ImageDraw.Draw(mask)
-    draw.polygon(map_points(shield_points(), box), fill=255)
-
     x0, y0, x1, y1 = box
     width = x1 - x0
     height = y1 - y0
+    stroke = max(1, round(width * 0.13))
     zero_box = (
-        x0 + width * 0.34,
-        y0 + height * 0.30,
-        x0 + width * 0.66,
-        y0 + height * 0.67,
+        x0 + width * 0.04,
+        y0 + height * 0.08,
+        x0 + width * 0.56,
+        y0 + height * 0.92,
     )
-    draw.ellipse(zero_box, fill=0)
+    draw.ellipse(zero_box, outline=255, width=stroke)
+    barrier_x = x0 + width * 0.84
+    draw.line(
+        (barrier_x, y0 + height * 0.08, barrier_x, y0 + height * 0.92),
+        fill=255,
+        width=stroke,
+    )
     return mask
 
 
@@ -77,17 +49,17 @@ def make_badge(size, supersampling=8):
     inset = max(1, round(canvas * 0.025))
     rounded_draw.rounded_rectangle(
         (inset, inset, canvas - inset - 1, canvas - inset - 1),
-        radius=round(canvas * 0.19),
+        radius=round(canvas * 0.15),
         fill=255,
     )
     badge = Image.new("RGBA", (canvas, canvas), (*INK, 0))
     badge.putalpha(rounded_mask)
     image = Image.alpha_composite(image, badge)
 
-    padding = canvas * 0.205
-    symbol_mask = zero_shield_mask(
+    padding = canvas * 0.19
+    symbol_mask = limiar_mask(
         canvas,
-        (padding, padding * 0.84, canvas - padding, canvas - padding * 0.92),
+        (padding, padding, canvas - padding, canvas - padding),
     )
     symbol = Image.new("RGBA", (canvas, canvas), (255, 255, 255, 0))
     symbol.putalpha(symbol_mask)
@@ -97,10 +69,10 @@ def make_badge(size, supersampling=8):
 
 def make_monochrome(size, color, supersampling=8):
     canvas = size * supersampling
-    padding = canvas * 0.105
-    mask = zero_shield_mask(
+    padding = canvas * 0.10
+    mask = limiar_mask(
         canvas,
-        (padding, padding * 0.8, canvas - padding, canvas - padding * 0.75),
+        (padding, padding, canvas - padding, canvas - padding),
     )
     image = Image.new("RGBA", (canvas, canvas), (*color, 0))
     image.putalpha(mask)

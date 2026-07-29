@@ -93,14 +93,14 @@
         overlay.setAttribute('aria-live', 'assertive');
 
         const card = document.createElement('section');
-        card.className = 'gzp-block-card';
+        card.className = 'gzp-block-panel';
         const icon = document.createElement('div');
         icon.className = 'gzp-icon-container';
-        icon.textContent = '!';
+        icon.textContent = '0|';
         icon.setAttribute('aria-hidden', 'true');
 
         const title = document.createElement('h1');
-        title.textContent = 'Conteúdo restrito';
+        title.textContent = 'Limiar atingido';
         const description = document.createElement('p');
         description.textContent = payload?.reason
             ? `O Guardião Zero Pro bloqueou esta página: ${payload.reason}.`

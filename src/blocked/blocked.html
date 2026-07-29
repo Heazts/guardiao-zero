@@ -10,60 +10,58 @@
 </head>
 <body>
     <main class="blocked-shell animate-fade-in">
-        <a class="app-brand" href="../options/options.html" aria-label="Abrir configurações do Guardião Zero Pro">
-            <img class="brand-mark" src="../../assets/icons/icon-48.png" alt="">
-            <span class="brand-copy">
-                <span class="brand-name">Guardião Zero Pro</span>
-                <span class="brand-tagline">Proteção local multifator</span>
-            </span>
-        </a>
+        <header class="blocked-header">
+            <a class="app-brand" href="../options/options.html" aria-label="Abrir configurações do Guardião Zero Pro">
+                <img class="brand-mark" src="../../assets/brand/limiar-zero.svg" alt="" width="32" height="32">
+                <span class="brand-copy">
+                    <span class="brand-name">Guardião Zero</span>
+                    <span class="brand-tagline">Limiar local</span>
+                </span>
+            </a>
+            <span class="document-code">EVENTO / 01</span>
+        </header>
 
-        <section class="blocked-card card card-raised" aria-labelledby="blocked-title">
-            <div class="alert-mark" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                    <path d="M12 7.5v5.25M12 16.5h.01" stroke-linecap="round"/>
-                </svg>
-            </div>
+        <section class="blocked-layout" aria-labelledby="blocked-title">
+            <aside class="blocked-signal" aria-hidden="true">
+                <span>0|</span>
+                <small>Limiar atingido</small>
+            </aside>
 
-            <div class="blocked-heading">
-                <span class="status-badge danger">Navegação interrompida</span>
-                <h1 id="blocked-title">Este destino parece ser uma plataforma de apostas</h1>
-                <p>A classificação local encontrou múltiplas evidências independentes. Nenhum fator isolado causou este bloqueio.</p>
-            </div>
-
-            <dl class="evidence-panel">
-                <div>
-                    <dt>Destino</dt>
-                    <dd><code id="blocked-url">Carregando…</code></dd>
+            <div class="blocked-content">
+                <div class="blocked-heading">
+                    <span class="status-badge danger">Navegação interrompida</span>
+                    <h1 id="blocked-title">Este destino apresenta sinais operacionais de apostas.</h1>
+                    <p>A decisão combinou evidências independentes. Uma palavra, domínio ou imagem isolada nunca é suficiente.</p>
                 </div>
-                <div id="reason-row">
-                    <dt>Motivo principal</dt>
-                    <dd id="blocked-reason">Classificação multifator</dd>
-                </div>
-                <div id="blocked-score" hidden>
-                    <dt>Pontuação local</dt>
-                    <dd id="blocked-score-value"></dd>
-                </div>
-            </dl>
 
-            <div class="actions">
-                <button id="btn-back" class="btn btn-primary" type="button">
-                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    Voltar para uma página segura
-                </button>
-                <button id="btn-allow" class="btn btn-secondary" type="button">
-                    <span id="allow-label">Liberar este domínio por 5 minutos</span>
-                </button>
+                <dl class="evidence-panel">
+                    <div>
+                        <dt>01 / Destino</dt>
+                        <dd><code id="blocked-url">Carregando…</code></dd>
+                    </div>
+                    <div id="reason-row">
+                        <dt>02 / Motivo principal</dt>
+                        <dd id="blocked-reason">Classificação multifator</dd>
+                    </div>
+                    <div id="blocked-score" hidden>
+                        <dt>03 / Pontuação local</dt>
+                        <dd id="blocked-score-value"></dd>
+                    </div>
+                </dl>
+
+                <div class="actions">
+                    <button id="btn-back" class="btn btn-primary" type="button">Voltar para uma página segura</button>
+                    <button id="btn-allow" class="btn btn-secondary" type="button">
+                        <span id="allow-label">Liberar este domínio por 5 minutos</span>
+                    </button>
+                </div>
+
+                <p id="blocked-feedback" class="blocked-feedback" role="alert" hidden></p>
+                <p class="privacy-note">
+                    Análise local. Nenhum endereço ou conteúdo foi transmitido.
+                    <a href="../privacy/privacy.html">Política de privacidade</a>
+                </p>
             </div>
-
-            <p id="blocked-feedback" class="blocked-feedback" role="alert" hidden></p>
-            <p class="privacy-note">
-                A análise ocorreu no seu navegador. O Guardião Zero Pro não envia o endereço nem o conteúdo desta página.
-                <a href="../privacy/privacy.html">Ver política de privacidade</a>
-            </p>
         </section>
     </main>
 
