@@ -7,8 +7,9 @@ performance, testes, privacidade e preparação para publicação.
 ## Resultado executivo
 
 O Guardião Zero Pro passou de uma interface monocromática inconsistente para um
-produto com identidade própria, seis superfícies coerentes e personalização
-local. A arquitetura de proteção ganhou importação conservadora de filtros,
+produto editorial preto e branco, com hierarquia inspirada em ferramentas de
+produtividade, superfícies discretas e personalização local. A arquitetura de
+proteção ganhou importação conservadora de filtros,
 precedência DNR para a whitelist, persistência transacional e builds separados
 para Firefox e Chromium.
 
@@ -64,7 +65,7 @@ também depende da confirmação de proveniência da blocklist.
 | Área | Alteração | Justificativa |
 |---|---|---|
 | Design | tokens semânticos para canvas, superfície, texto, borda, foco, estados e accent | consistência e contraste independente do tema |
-| Marca | ícone exclusivo “escudo + zero” e gradiente índigo/azul | reconhecimento sem depender de um shield genérico |
+| Marca | ícone exclusivo “escudo + zero” em preto e branco | reconhecimento forte, legibilidade em 16 px e coerência com o produto |
 | Tipografia | Inter Variable WOFF2 local + OFL integral | qualidade visual sem CDN ou rastreamento |
 | Personalização | tema, accent, contraste, densidade e movimento | autonomia do usuário; persistência apenas local |
 | A11y | foco de 3 px, labels, `aria-describedby`, logs, alerts e 40–44 px targets | teclado, leitores de tela e baixa visão |
@@ -92,6 +93,11 @@ também depende da confirmação de proveniência da blocklist.
 | acurácia | 98,98% | 100% |
 
 Esses cenários são testes de software, não tráfego real.
+
+O gráfico publicado no GitHub é gerado pelo mesmo comando, tem fundo branco
+explícito e não contém números inseridos manualmente:
+`docs/assets/benchmark-evolution.svg`. A saída completa é preservada em
+`docs/reports/benchmark-results.json`.
 
 ### Execução real
 
@@ -128,12 +134,15 @@ Benchmark local, 7.820 classificações:
 
 | Medida | Legado | Multifator 3.1 |
 |---|---:|---:|
-| média do classificador | 0,0332 ms | 0,2802 ms |
-| total | 259,78 ms | 2.190,85 ms |
+| média do classificador | 0,0256 ms | 0,2701 ms |
+| total mediano | 200,51 ms | 2.112,30 ms |
 
 O classificador isolado é mais caro porque produz score, fatores e safeguards,
-mas permanece abaixo de 0,3 ms por amostra no benchmark. O custo sistêmico foi
-reduzido por:
+mas permaneceu próximo de 0,27 ms por amostra nessa execução. Não foi
+classificado como “ganho de performance”: trata-se de um custo consciente para
+eliminar os quatro erros observados no corpus. Os valores são medianas de cinco
+repetições alternadas após aquecimento; as amostras brutas estão no relatório
+JSON. O custo sistêmico é limitado por:
 
 - nenhuma varredura DOM quando somente anúncios/rastreadores estão ativos;
 - frame principal apenas;
@@ -142,8 +151,11 @@ reduzido por:
 - DNR antes do carregamento;
 - busca binária sem materializar 272.868 strings em `Set`.
 
-Memória observada evitada ao não criar o `Set`: aproximadamente 19,14 MB. Dez
-mil lookups binários levaram 97,75 ms, ou cerca de 0,0098 ms por consulta.
+Memória observada evitada ao não criar o `Set`: aproximadamente 18,25 MiB. Dez
+mil lookups binários levaram 140,68 ms, ou cerca de 0,0141 ms por consulta
+(mediana de sete repetições).
+A consulta binária é mais lenta que `Set.has`, porém evita manter 272.868
+strings como objetos no heap.
 Não há percentual honesto de melhoria total sem profiling no navegador.
 
 ## Segurança
@@ -174,14 +186,16 @@ Não há percentual honesto de melhoria total sem profiling no navegador.
 - `PRIVACY.md`, `LICENSE`, `THIRD_PARTY_NOTICES.md`;
 - `docs/AMO_SUBMISSION.md`;
 - `docs/reports/real-world-results.json`;
+- `docs/reports/benchmark-results.json`;
 - `docs/assets/precision-real-world.svg`;
+- `docs/assets/benchmark-evolution.svg`;
 - fonte Inter WOFF2 e licença OFL.
 
 ### Reformulados
 
 - manifesto, background, schema de mensagens e matcher de listas;
 - popup, opções, bloqueio, ajuda e diagnóstico;
-- design system compartilhado, ícones e gerador de ícones;
+- design system monocromático compartilhado, ícones e gerador de ícones;
 - build, validação, README, changelog e testes de integração.
 
 ### Código removido ou evitado

@@ -1,0 +1,82 @@
+{
+  "generatedAt": "2026-07-29T22:06:00.561Z",
+  "methodology": {
+    "kind": "deterministic-regression-corpus",
+    "classifierIterations": 20,
+    "classifierRepetitions": 5,
+    "blocklistLookups": 10000,
+    "blocklistRepetitions": 7,
+    "deadCodeEliminationGuard": "result-checksum",
+    "runtime": "v24.18.0",
+    "integrityChecksum": 164376
+  },
+  "corpus": {
+    "total": 391,
+    "safe": 246,
+    "gambling": 145
+  },
+  "accuracy": {
+    "before": {
+      "truePositive": 142,
+      "falseNegative": 3,
+      "trueNegative": 245,
+      "falsePositive": 1,
+      "accuracyPercent": 98.98
+    },
+    "after": {
+      "truePositive": 145,
+      "falseNegative": 0,
+      "trueNegative": 246,
+      "falsePositive": 0,
+      "accuracyPercent": 100
+    }
+  },
+  "classifierPerformance": {
+    "operations": 7820,
+    "repetitions": 5,
+    "legacyTotalMs": 200.51,
+    "multifactorTotalMs": 2112.3,
+    "legacyMeanMs": 0.0256,
+    "multifactorMeanMs": 0.2701,
+    "legacySamplesMs": [
+      215.82,
+      207.98,
+      181.7,
+      170.65,
+      200.51
+    ],
+    "multifactorSamplesMs": [
+      2633.34,
+      2112.3,
+      2002.98,
+      1956.29,
+      2146.07
+    ]
+  },
+  "blocklist": {
+    "domains": 272868,
+    "compactTextUtf8Bytes": 4382602,
+    "observedSetHeapDeltaBytes": 19137376,
+    "repetitions": 7,
+    "setLookup10kMs": 0.21,
+    "binaryLookup10kMs": 140.68,
+    "setLookupSamplesMs": [
+      0.21,
+      0.21,
+      0.2,
+      0.22,
+      0.21,
+      0.2,
+      0.2
+    ],
+    "binaryLookupSamplesMs": [
+      185.08,
+      142.27,
+      142.49,
+      138.12,
+      127.74,
+      140.68,
+      105.88
+    ]
+  }
+}

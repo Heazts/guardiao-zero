@@ -259,31 +259,31 @@ function percentage(value) {
 
 function svgGraph(metrics, generatedAt) {
     const series = [
-        ['Precisão', metrics.precision, '#5B5BD6'],
-        ['Recall', metrics.recall, '#2F74E5'],
-        ['Especificidade', metrics.specificity, '#087454'],
-        ['Acurácia', metrics.accuracy, '#9A4F00']
+        ['Precisão', metrics.precision, '#111111'],
+        ['Recall', metrics.recall, '#3F3F3F'],
+        ['Especificidade', metrics.specificity, '#737373'],
+        ['Acurácia', metrics.accuracy, '#A3A3A3']
     ];
     const bars = series.map(([label, value, color], index) => {
         const y = 102 + index * 58;
         const width = value === null ? 0 : Math.round(value * 430);
         return `<text x="32" y="${y + 16}" class="label">${label}</text>
-        <rect x="168" y="${y}" width="430" height="24" rx="7" fill="#E7E9F0"/>
-        <rect x="168" y="${y}" width="${width}" height="24" rx="7" fill="${color}"/>
+        <rect x="168" y="${y}" width="430" height="24" rx="4" fill="#EDEDED"/>
+        <rect x="168" y="${y}" width="${width}" height="24" rx="4" fill="${color}"/>
         <text x="614" y="${y + 17}" class="value">${percentage(value)}</text>`;
     }).join('');
     return `<svg xmlns="http://www.w3.org/2000/svg" width="760" height="390" viewBox="0 0 760 390" role="img" aria-labelledby="title desc">
     <title id="title">Métricas reais do bloqueio</title>
     <desc id="desc">Resultados de ${metrics.evaluated} URLs reais disponíveis; ${metrics.unavailable} indisponíveis e excluídas.</desc>
     <style>
-        text { font-family: Inter, "Segoe UI", sans-serif; fill: #171921; }
+        text { font-family: Inter, "Segoe UI", sans-serif; fill: #111111; }
         .title { font-size: 22px; font-weight: 700; }
-        .subtitle { font-size: 12px; fill: #626B7B; }
+        .subtitle { font-size: 12px; fill: #666666; }
         .label { font-size: 13px; font-weight: 650; }
         .value { font-size: 12px; font-weight: 700; text-anchor: start; }
-        .foot { font-size: 11px; fill: #626B7B; }
+        .foot { font-size: 11px; fill: #666666; }
     </style>
-    <rect width="760" height="390" rx="18" fill="#FFFFFF"/>
+    <rect width="760" height="390" fill="#FFFFFF"/>
     <text x="32" y="42" class="title">Avaliação em URLs reais</text>
     <text x="32" y="65" class="subtitle">Somente respostas HTTP utilizáveis • execução ${generatedAt.slice(0, 10)}</text>
     ${bars}
