@@ -109,7 +109,14 @@ function classificationMetrics(safe, gambling) {
         result.after[newBlocked ? 'falsePositive' : 'trueNegative'] += 1;
     }
     for (const scenario of gambling) {
-        const systemMatch = scenario.url.includes('bet365.com');
+        let systemMatch = false;
+        try {
+            const { hostname } = new URL(scenario.url);
+            const normalizedHost = hostname.toLowerCase();
+            systemMatch = normalizedHost === 'bet365.com' || normalizedHost.endsWith('.bet365.com');
+        } catch {
+            systemMatch = false;
+        }
         const legacyBlocked = legacyDecision(scenario, systemMatch);
         const newBlocked = detector.analyze(scenario, {
             threshold: 120,
