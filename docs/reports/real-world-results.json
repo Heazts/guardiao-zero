@@ -1,0 +1,898 @@
+{
+  "schemaVersion": 1,
+  "generatedAt": "2026-07-29T21:11:44.894Z",
+  "methodology": {
+    "corpus": "tests/real-world-corpus.json",
+    "classifierVersion": "3.1.0",
+    "timeoutMs": 12000,
+    "maxResponseBytes": 2097152,
+    "unavailablePolicy": "excluded-from-metrics",
+    "predictionPolicy": "only-verdict-block-counts-as-blocked",
+    "storedContentPolicy": "metadata-and-sha256-only-no-html-body"
+  },
+  "sources": [
+    {
+      "id": "gov-br-authorized-operators",
+      "title": "Lista de empresas e domínios autorizados pela Secretaria de Prêmios e Apostas",
+      "url": "https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/lista-de-empresas/planilha-de-autorizacoes_15-07-26.pdf",
+      "publishedAt": "2026-07-15"
+    }
+  ],
+  "metrics": {
+    "tp": 5,
+    "fp": 0,
+    "tn": 17,
+    "fn": 1,
+    "evaluated": 23,
+    "unavailable": 24,
+    "accuracy": 0.9565217391304348,
+    "precision": 1,
+    "recall": 0.8333333333333334,
+    "specificity": 1,
+    "falsePositiveRate": 0
+  },
+  "results": [
+    {
+      "id": "bet-vaidebet",
+      "label": "gambling",
+      "requestedUrl": "https://vaidebet.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-betpix365",
+      "label": "gambling",
+      "requestedUrl": "https://betpix365.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-obabet",
+      "label": "gambling",
+      "requestedUrl": "https://obabet.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-jogajunto",
+      "label": "gambling",
+      "requestedUrl": "https://jogajunto.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-bra",
+      "label": "gambling",
+      "requestedUrl": "https://bra.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-tropino",
+      "label": "gambling",
+      "requestedUrl": "https://tropino.bet.br/",
+      "available": false,
+      "error": "fetch failed"
+    },
+    {
+      "id": "bet-bz",
+      "label": "gambling",
+      "requestedUrl": "https://bz.bet.br/",
+      "available": false,
+      "error": "fetch failed"
+    },
+    {
+      "id": "bet-ice",
+      "label": "gambling",
+      "requestedUrl": "https://ice.bet.br/",
+      "finalUrl": "https://ice.bet.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "6cd9f1acca4f62b0c2bb0c673038a4c049e42048e2fdb68c73c8066858d7e6ac",
+      "contentBytes": 810439,
+      "systemBlockMatch": "bet.br",
+      "predicted": "block",
+      "score": 230,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "system-blocklist",
+          "group": "domain",
+          "weight": 90
+        },
+        {
+          "id": "domain-gambling-token",
+          "group": "domain",
+          "weight": 5
+        },
+        {
+          "id": "meta-sportsbook",
+          "group": "metadata",
+          "weight": 35
+        },
+        {
+          "id": "meta-online-casino",
+          "group": "metadata",
+          "weight": 25
+        },
+        {
+          "id": "content-sportsbook",
+          "group": "content",
+          "weight": 30
+        },
+        {
+          "id": "content-casino",
+          "group": "content",
+          "weight": 35
+        },
+        {
+          "id": "content-responsible",
+          "group": "content",
+          "weight": 5
+        },
+        {
+          "id": "content-game-cluster",
+          "group": "content",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "id": "bet-kbet",
+      "label": "gambling",
+      "requestedUrl": "https://kbet.bet.br/",
+      "available": false,
+      "error": "fetch failed"
+    },
+    {
+      "id": "bet-nossa",
+      "label": "gambling",
+      "requestedUrl": "https://nossa.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-1xbet",
+      "label": "gambling",
+      "requestedUrl": "https://1xbet.bet.br/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "bet-caixa",
+      "label": "gambling",
+      "requestedUrl": "https://betcaixa.bet.br/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "bet-megabet",
+      "label": "gambling",
+      "requestedUrl": "https://megabet.bet.br/",
+      "available": false,
+      "error": "fetch failed"
+    },
+    {
+      "id": "bet-pix",
+      "label": "gambling",
+      "requestedUrl": "https://pix.bet.br/",
+      "finalUrl": "https://pix.bet.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "contentSha256": "c981ef25d87b83dc44c1749d0776a15a98aad72d20f107c6e2329b8d7089bc1e",
+      "contentBytes": 685886,
+      "systemBlockMatch": "bet.br",
+      "predicted": "block",
+      "score": 230,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "system-blocklist",
+          "group": "domain",
+          "weight": 90
+        },
+        {
+          "id": "domain-gambling-token",
+          "group": "domain",
+          "weight": 5
+        },
+        {
+          "id": "meta-sportsbook",
+          "group": "metadata",
+          "weight": 35
+        },
+        {
+          "id": "meta-online-casino",
+          "group": "metadata",
+          "weight": 25
+        },
+        {
+          "id": "content-sportsbook",
+          "group": "content",
+          "weight": 30
+        },
+        {
+          "id": "content-casino",
+          "group": "content",
+          "weight": 35
+        },
+        {
+          "id": "content-responsible",
+          "group": "content",
+          "weight": 5
+        },
+        {
+          "id": "content-game-cluster",
+          "group": "content",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "id": "bet-ganhei",
+      "label": "gambling",
+      "requestedUrl": "https://ganhei.bet.br/",
+      "finalUrl": "https://ganhei.bet.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "contentSha256": "b40f19686151d07c6b5e2ffb88f463bd485c5ab4511191281fdff2d503ca3c37",
+      "contentBytes": 701357,
+      "systemBlockMatch": "bet.br",
+      "predicted": "block",
+      "score": 210,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "system-blocklist",
+          "group": "domain",
+          "weight": 90
+        },
+        {
+          "id": "domain-gambling-token",
+          "group": "domain",
+          "weight": 5
+        },
+        {
+          "id": "meta-online-casino",
+          "group": "metadata",
+          "weight": 40
+        },
+        {
+          "id": "content-sportsbook",
+          "group": "content",
+          "weight": 30
+        },
+        {
+          "id": "content-casino",
+          "group": "content",
+          "weight": 35
+        },
+        {
+          "id": "content-responsible",
+          "group": "content",
+          "weight": 5
+        },
+        {
+          "id": "content-game-cluster",
+          "group": "content",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "id": "bet-betdasorte",
+      "label": "gambling",
+      "requestedUrl": "https://betdasorte.bet.br/",
+      "finalUrl": "https://www.betdasorte.bet.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "contentSha256": "435ef155ab71f1f59eb09c4500b381d4c6b9c36273ff922e46d1fe3d180e8ddf",
+      "contentBytes": 702952,
+      "systemBlockMatch": "bet.br",
+      "predicted": "block",
+      "score": 205,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "system-blocklist",
+          "group": "domain",
+          "weight": 90
+        },
+        {
+          "id": "domain-gambling-token",
+          "group": "domain",
+          "weight": 5
+        },
+        {
+          "id": "meta-sportsbook",
+          "group": "metadata",
+          "weight": 35
+        },
+        {
+          "id": "content-sportsbook",
+          "group": "content",
+          "weight": 30
+        },
+        {
+          "id": "content-casino",
+          "group": "content",
+          "weight": 35
+        },
+        {
+          "id": "content-responsible",
+          "group": "content",
+          "weight": 5
+        },
+        {
+          "id": "content-game-cluster",
+          "group": "content",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "id": "bet-play",
+      "label": "gambling",
+      "requestedUrl": "https://play.bet.br/",
+      "available": false,
+      "error": "empty-or-non-content-page"
+    },
+    {
+      "id": "bet-meridianbet",
+      "label": "gambling",
+      "requestedUrl": "https://meridianbet.bet.br/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "bet-blaze",
+      "label": "gambling",
+      "requestedUrl": "https://blaze.bet.br/",
+      "finalUrl": "https://blaze.bet.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "contentSha256": "980782a8db4138f61d4e4a58fc7b9c004e615711bf36d1daf33b96bbba9628a4",
+      "contentBytes": 23472,
+      "systemBlockMatch": "bet.br",
+      "predicted": "allow",
+      "score": 95,
+      "threshold": 120,
+      "confidence": "low",
+      "factors": [
+        {
+          "id": "system-blocklist",
+          "group": "domain",
+          "weight": 90
+        },
+        {
+          "id": "domain-gambling-token",
+          "group": "domain",
+          "weight": 5
+        }
+      ]
+    },
+    {
+      "id": "bet-brazino777",
+      "label": "gambling",
+      "requestedUrl": "https://brazino777.bet.br/",
+      "finalUrl": "https://www.brazino777.bet.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "contentSha256": "7cd93b4e240278a52fb7d40017e8e6b316033eb9e655fca26142ff417e25e14e",
+      "contentBytes": 266851,
+      "systemBlockMatch": "bet.br",
+      "predicted": "block",
+      "score": 230,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "system-blocklist",
+          "group": "domain",
+          "weight": 90
+        },
+        {
+          "id": "domain-gambling-token",
+          "group": "domain",
+          "weight": 5
+        },
+        {
+          "id": "meta-sportsbook",
+          "group": "metadata",
+          "weight": 35
+        },
+        {
+          "id": "meta-online-casino",
+          "group": "metadata",
+          "weight": 25
+        },
+        {
+          "id": "content-casino",
+          "group": "content",
+          "weight": 35
+        },
+        {
+          "id": "content-games",
+          "group": "content",
+          "weight": 25
+        },
+        {
+          "id": "content-game-cluster",
+          "group": "content",
+          "weight": 15
+        }
+      ]
+    },
+    {
+      "id": "safe-chatgpt",
+      "label": "benign",
+      "requestedUrl": "https://chatgpt.com/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "safe-openai",
+      "label": "benign",
+      "requestedUrl": "https://openai.com/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "safe-google",
+      "label": "benign",
+      "requestedUrl": "https://www.google.com/",
+      "finalUrl": "https://www.google.com/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=ISO-8859-1",
+      "contentSha256": "2ef937b4dd4359bc4ae884b603948ce1d130fadbad5c36d5405b18285bd6ec1c",
+      "contentBytes": 81295,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-github",
+      "label": "benign",
+      "requestedUrl": "https://github.com/",
+      "finalUrl": "https://github.com/?locale=pt-br",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "6f29ee54d1cee88f6f232de1a710d53106c5f9e07fb1a63e5891baea5a257059",
+      "contentBytes": 594676,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-gitlab",
+      "label": "benign",
+      "requestedUrl": "https://gitlab.com/",
+      "finalUrl": "https://about.gitlab.com/pt-br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "contentSha256": "08009fcdc7c412fc3077a7ec8574c4bc350d6b914bf1744f08d98b813f2e36b5",
+      "contentBytes": 228399,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-microsoft",
+      "label": "benign",
+      "requestedUrl": "https://www.microsoft.com/",
+      "available": false,
+      "error": "interstitial-or-anti-bot-page"
+    },
+    {
+      "id": "safe-claude",
+      "label": "benign",
+      "requestedUrl": "https://claude.ai/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "safe-gemini",
+      "label": "benign",
+      "requestedUrl": "https://gemini.google.com/",
+      "available": false,
+      "error": "fetch failed"
+    },
+    {
+      "id": "safe-wikipedia",
+      "label": "benign",
+      "requestedUrl": "https://pt.wikipedia.org/wiki/Aposta",
+      "available": false,
+      "error": "http-404"
+    },
+    {
+      "id": "safe-stackoverflow",
+      "label": "benign",
+      "requestedUrl": "https://stackoverflow.com/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "safe-youtube",
+      "label": "benign",
+      "requestedUrl": "https://www.youtube.com/",
+      "finalUrl": "https://www.youtube.com/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "a0a14812ff9e0079b1cbee74e8e102f316470c1e37f418a97b59243467764f49",
+      "contentBytes": 854818,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-amazon",
+      "label": "benign",
+      "requestedUrl": "https://www.amazon.com.br/",
+      "finalUrl": "https://www.amazon.com.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html;charset=UTF-8",
+      "contentSha256": "f7476bd618b6ee1f769a807fbdab3d62e99b5e5fce75977d2256cfd57e2ee95a",
+      "contentBytes": 1097266,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-mercadolivre",
+      "label": "benign",
+      "requestedUrl": "https://www.mercadolivre.com.br/",
+      "available": false,
+      "error": "http-403"
+    },
+    {
+      "id": "safe-gov",
+      "label": "benign",
+      "requestedUrl": "https://www.gov.br/",
+      "finalUrl": "https://www.gov.br/pt-br",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "contentSha256": "47b036c705a1386654274f8c8d8f6f940c1295f65024a321a1abb4d990134cf7",
+      "contentBytes": 131278,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-gov-betting-news",
+      "label": "benign",
+      "requestedUrl": "https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/lista-de-empresas/confira-a-lista-de-empresas-autorizadas-a-ofertar-apostas-de-quota-fixa-em-2025",
+      "finalUrl": "https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/lista-de-empresas/confira-a-lista-de-empresas-autorizadas-a-ofertar-apostas-de-quota-fixa-em-2025",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html;charset=utf-8",
+      "contentSha256": "b77edbe31b0ca88885e8fedf6d6f1d248a1e20a942f39ddb7becf66db1682ee6",
+      "contentBytes": 103108,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-caixa",
+      "label": "benign",
+      "requestedUrl": "https://www.caixa.gov.br/",
+      "available": false,
+      "error": "fetch failed"
+    },
+    {
+      "id": "safe-itau",
+      "label": "benign",
+      "requestedUrl": "https://www.itau.com.br/",
+      "finalUrl": "https://www.itau.com.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "147017b8c38d35a154717ce659ea48b5f76860d0a1d641b3cfab1fea6f2b6344",
+      "contentBytes": 136008,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-usp",
+      "label": "benign",
+      "requestedUrl": "https://www5.usp.br/",
+      "finalUrl": "https://www5.usp.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "contentSha256": "9c5ca946879f1e1095edd74a67f15ac9a1fe5dbfafbd05480b0589db0d085d3b",
+      "contentBytes": 187441,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": -30,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "informational-context",
+          "group": "informational",
+          "weight": -30
+        }
+      ]
+    },
+    {
+      "id": "safe-unicamp",
+      "label": "benign",
+      "requestedUrl": "https://www.unicamp.br/",
+      "finalUrl": "https://www.unicamp.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=UTF-8",
+      "contentSha256": "3fb9f0c29e30bcfa92c471fbd6e7ba4ed855d1f27462bb82277d5fa6373901a7",
+      "contentBytes": 243689,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": -45,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "informational-context-strong",
+          "group": "informational",
+          "weight": -45
+        }
+      ]
+    },
+    {
+      "id": "safe-fiocruz",
+      "label": "benign",
+      "requestedUrl": "https://portal.fiocruz.br/",
+      "finalUrl": "https://fiocruz.br/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "54c37af854e0b0484cb456139ce9bda7127cab22a0c306c81484094f4b83eb01",
+      "contentBytes": 223440,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-mozilla",
+      "label": "benign",
+      "requestedUrl": "https://www.mozilla.org/",
+      "finalUrl": "https://www.mozilla.org/pt-BR/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "af35ebb41440e12e9535cda79855fe3b1c99436e98a5a182b579dd5b34610be0",
+      "contentBytes": 117058,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-mdn",
+      "label": "benign",
+      "requestedUrl": "https://developer.mozilla.org/",
+      "finalUrl": "https://developer.mozilla.org/pt-BR/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html",
+      "contentSha256": "3aeedde19c8cd863aeb2fa240337eb38e8b84c6d79015d1a4301b04c0c714f93",
+      "contentBytes": 120987,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-vercel",
+      "label": "benign",
+      "requestedUrl": "https://vercel.com/",
+      "finalUrl": "https://vercel.com/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "4c524183124a5aae4f519fecc8965e9192f8a3726283573d7124db18ac4e8294",
+      "contentBytes": 584713,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-stripe",
+      "label": "benign",
+      "requestedUrl": "https://stripe.com/",
+      "finalUrl": "https://stripe.com/br",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "e47e63a53d2a8a246bd6de7f738a4432de45a544fb1a1887f5ea7b19c9b56785",
+      "contentBytes": 661395,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 10,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "payment-provider",
+          "group": "integration",
+          "weight": 10
+        }
+      ]
+    },
+    {
+      "id": "safe-betterstack",
+      "label": "benign",
+      "requestedUrl": "https://betterstack.com/",
+      "finalUrl": "https://betterstack.com/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "5c83cd20d2e018210c456b4c786a5bca22c75a47012839c952135834b3fe22b7",
+      "contentBytes": 262458,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-betaflight",
+      "label": "benign",
+      "requestedUrl": "https://betaflight.com/",
+      "finalUrl": "https://betaflight.com/",
+      "available": true,
+      "httpStatus": 200,
+      "contentType": "text/html; charset=utf-8",
+      "contentSha256": "b3155a7443e86b814205223c7ebe9f0d23c0abd1874cc628d8b56027bed27388",
+      "contentBytes": 52600,
+      "systemBlockMatch": null,
+      "predicted": "allow",
+      "score": 0,
+      "threshold": 120,
+      "confidence": "high",
+      "factors": [
+        {
+          "id": "trusted-domain",
+          "group": "informational",
+          "weight": 0
+        }
+      ]
+    },
+    {
+      "id": "safe-alphabet",
+      "label": "benign",
+      "requestedUrl": "https://abc.xyz/",
+      "available": false,
+      "error": "http-403"
+    }
+  ]
+}
