@@ -304,7 +304,6 @@ function formatNumber(value, maximumFractionDigits = 2) {
 }
 
 function metricCard({ x, eyebrow, before, after, unit = '', lowerIsBetter = false }) {
-    const width = 344;
     const beforeValue = Number(before);
     const afterValue = Number(after);
     const scale = Math.max(beforeValue, afterValue, 1);
@@ -313,7 +312,6 @@ function metricCard({ x, eyebrow, before, after, unit = '', lowerIsBetter = fals
     const afterWidth = Math.max(afterValue > 0 ? 4 : 0, (afterValue / scale) * 200);
     return `
         <g transform="translate(${x} 236)">
-            <rect width="${width}" height="232" rx="12" fill="#fff" stroke="#dedede"/>
             <text x="24" y="34" class="eyebrow">${eyebrow}</text>
             <text x="24" y="74" class="metric">${formatNumber(afterValue, fractionDigits)}${unit}</text>
             <text x="24" y="98" class="caption">resultado atual</text>
@@ -348,10 +346,10 @@ function benchmarkSvg(data) {
     <style>
         text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111; }
         .kicker { font-size: 14px; font-weight: 700; letter-spacing: 2px; }
-        .title { font-size: 46px; font-weight: 720; letter-spacing: -1.8px; }
+        .title { font-family: Newsreader, Georgia, serif; font-size: 52px; font-weight: 560; letter-spacing: -2px; }
         .subtitle { font-size: 17px; fill: #595959; }
         .eyebrow { font-size: 12px; font-weight: 720; letter-spacing: 1.2px; text-transform: uppercase; }
-        .metric { font-size: 34px; font-weight: 720; letter-spacing: -1px; }
+        .metric { font-family: Newsreader, Georgia, serif; font-size: 38px; font-weight: 560; letter-spacing: -1px; }
         .caption, .label, .value { font-size: 12px; fill: #666; }
         .value { fill: #333; font-weight: 650; }
         .delta { font-size: 11px; fill: #777; }
@@ -360,13 +358,17 @@ function benchmarkSvg(data) {
         .footer { font-size: 11px; fill: #777; }
     </style>
     <g transform="translate(64 58)">
-        <rect width="42" height="42" rx="8" fill="#111"/>
-        <path d="M21 8.5 32 12.6v9.7c0 7.5-7 12.5-11 14.2-4-1.7-11-6.7-11-14.2v-9.7L21 8.5Z" fill="#fff"/>
-        <ellipse cx="21" cy="21.5" rx="3.7" ry="5.1" fill="#111"/>
+        <rect width="42" height="42" rx="6" fill="#111"/>
+        <ellipse cx="16" cy="21" rx="7" ry="11" fill="none" stroke="#fff" stroke-width="4"/>
+        <path d="M30 10v22" stroke="#fff" stroke-width="4"/>
         <text x="58" y="14" class="kicker">GUARDIÃO ZERO PRO</text>
         <text x="58" y="58" class="title">Benchmark antes e depois</text>
         <text x="58" y="88" class="subtitle">${data.corpus.total} cenários · ${data.classifierPerformance.operations.toLocaleString('pt-BR')} classificações · ${created}</text>
     </g>
+    <line x1="64" y1="210" x2="1136" y2="210" stroke="#111" stroke-width="2"/>
+    <line x1="408" y1="236" x2="408" y2="468" stroke="#dedede"/>
+    <line x1="772" y1="236" x2="772" y2="468" stroke="#dedede"/>
+    <line x1="64" y1="468" x2="1136" y2="468" stroke="#111"/>
     ${metricCard({
         x: 64,
         eyebrow: 'Acurácia',
@@ -389,7 +391,6 @@ function benchmarkSvg(data) {
         lowerIsBetter: true
     })}
     <g transform="translate(64 494)">
-        <rect width="1072" height="142" rx="12" fill="#fafafa" stroke="#dedede"/>
         <text x="24" y="34" class="note-title">Memória da blocklist</text>
         <text x="24" y="59" class="note">O índice binário consulta o texto compacto sem materializar um Set persistente.</text>
         <text x="24" y="88" class="metric">${formatNumber(heapMiB)} MiB</text>
@@ -400,6 +401,7 @@ function benchmarkSvg(data) {
         <text x="680" y="94" class="note">Multifator: ${formatNumber(data.classifierPerformance.multifactorMeanMs, 4)} ms/op</text>
         <text x="680" y="118" class="caption">${formatNumber(classifierRatio, 1)}× mais análise por página para eliminar erros no corpus.</text>
     </g>
+    <line x1="64" y1="636" x2="1136" y2="636" stroke="#111"/>
     <text x="64" y="680" class="footer">Fonte: npm run benchmark · execução local reproduzível · dados completos em docs/reports/benchmark-results.json</text>
 </svg>
 `;

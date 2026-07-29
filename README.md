@@ -25,8 +25,8 @@ ficam em [`docs/reports/benchmark-results.json`](docs/reports/benchmark-results.
   4.900 regras importadas;
 - temas claro, escuro ou sistema, accent color, alto contraste, densidade e
   redução de movimento;
-- identidade monocromática minimalista, interface acessível e responsiva, fonte
-  Inter e ícones próprios empacotados;
+- identidade própria Limiar Zero (`0|`), composição editorial numerada,
+  Newsreader nos títulos, Inter nos controles e ícones próprios empacotados;
 - backup e restauração locais;
 - política de privacidade navegável dentro da extensão.
 
@@ -133,7 +133,7 @@ e o [gráfico gerado](docs/assets/precision-real-world.svg).
 ## Estrutura
 
 ```text
-assets/                  ícones, fonte Inter e licença OFL
+assets/                  marca, ícones, fontes Inter/Newsreader e licenças OFL
 src/background/          estado, políticas, DNR e índice local
 src/content/             coleta limitada e orquestração da análise
 src/shared/detection/    constantes, score e decisão multifator
@@ -148,6 +148,9 @@ tools/                   validação, benchmark, build, avaliação e pacote AMO
 docs/                    arquitetura, segurança e relatórios
 ```
 
+As regras de marca, tipografia, iconografia, linguagem e movimento estão
+documentadas em [docs/BRAND_SYSTEM.md](docs/BRAND_SYSTEM.md).
+
 ## Permissões
 
 - `storage`: dados funcionais locais;
@@ -161,7 +164,7 @@ downloads, identidade ou acesso remoto a código.
 
 ## Licenças e publicação
 
-O código original está sob MIT. Inter está sob OFL-1.1. Consulte
+O código original está sob MIT. Inter e Newsreader estão sob OFL-1.1. Consulte
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) antes de redistribuir:
 a proveniência e a licença de `src/filters/heazts-blocklist.txt` ainda precisam
 ser confirmadas pelo mantenedor.

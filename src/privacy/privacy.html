@@ -11,57 +11,62 @@
 <body>
     <div class="privacy-shell animate-fade-in">
         <header class="privacy-header">
-            <a href="../options/options.html" class="back-link">
-                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-                Configurações
-            </a>
-            <div class="privacy-hero">
-                <div class="privacy-mark" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                        <path d="m8.5 12 2.2 2.2 4.8-5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
-                <span class="eyebrow">Zero Data</span>
-                <h1>Seus dados não saem do navegador</h1>
-                <p>O Guardião Zero Pro não coleta, armazena remotamente, compartilha nem transmite dados do usuário. Todo o processamento da extensão é local.</p>
-            </div>
+            <a href="../options/options.html" class="back-link">← Configurações</a>
+            <span class="document-code">MANIFESTO / 00</span>
         </header>
 
-        <main class="privacy-content">
-            <section class="promise-grid" aria-label="Compromissos de privacidade">
-                <article class="card"><strong>Sem telemetria</strong><p>Nenhum analytics, pixel próprio, perfil ou identificador remoto.</p></article>
-                <article class="card"><strong>Storage local</strong><p>Preferências, listas e contadores ficam somente em <code>storage.local</code>.</p></article>
-                <article class="card"><strong>Análise transitória</strong><p>Sinais de página são usados apenas para a decisão atual e não viram histórico.</p></article>
+        <main>
+            <section class="privacy-hero">
+                <div class="hero-code" aria-hidden="true">0</div>
+                <div>
+                    <span class="eyebrow">Zero data</span>
+                    <h1>O que acontece no navegador permanece no navegador.</h1>
+                    <p>O Guardião Zero Pro não coleta, armazena remotamente, compartilha nem transmite dados do usuário. Todo o processamento da extensão é local.</p>
+                </div>
             </section>
 
-            <section class="policy-card card">
-                <h2>O que é analisado localmente</h2>
-                <p>Para diferenciar uma plataforma operacional de conteúdo informativo, a extensão pode analisar URL, título, metadados, texto público limitado, botões, formulários e integrações técnicas visíveis.</p>
-                <p>Ela não lê valores digitados, senhas, dados de pagamento, conteúdo de IndexedDB, valores de cookies, <code>localStorage</code> ou <code>sessionStorage</code>.</p>
+            <section class="promise-ledger" aria-label="Compromissos de privacidade">
+                <article><span>01</span><strong>Sem telemetria</strong><p>Nenhum analytics, pixel próprio, perfil ou identificador remoto.</p></article>
+                <article><span>02</span><strong>Storage local</strong><p>Preferências, listas e contadores ficam somente em <code>storage.local</code>.</p></article>
+                <article><span>03</span><strong>Análise transitória</strong><p>Sinais de página são usados apenas para a decisão atual e não viram histórico.</p></article>
             </section>
 
-            <section class="policy-card card">
-                <h2>Dados mantidos no dispositivo</h2>
-                <ul>
-                    <li>configurações de proteção e aparência;</li>
-                    <li>contadores agregados de bloqueio;</li>
-                    <li>listas de permissão, bloqueio e filtros importados;</li>
-                    <li>liberações temporárias e versão do esquema local.</li>
-                </ul>
-                <p>Esses dados podem ser redefinidos pela interface e são removidos com a desinstalação, exceto backups que você mesmo exportar.</p>
-            </section>
+            <div class="policy-sections">
+                <section>
+                    <span class="section-number">01 / Análise</span>
+                    <div>
+                        <h2>O que é analisado localmente</h2>
+                        <p>Para diferenciar uma plataforma operacional de conteúdo informativo, a extensão pode analisar URL, título, metadados, texto público limitado, botões, formulários e integrações técnicas visíveis.</p>
+                        <p>Ela não lê valores digitados, senhas, dados de pagamento, conteúdo de IndexedDB, valores de cookies, <code>localStorage</code> ou <code>sessionStorage</code>.</p>
+                    </div>
+                </section>
 
-            <section class="policy-card card">
-                <h2>Bloqueio de rede e listas importadas</h2>
-                <p>O navegador aplica regras locais por <code>declarativeNetRequest</code>. A extensão não recebe cópias dos corpos das requisições bloqueadas. Arquivos de filtro escolhidos por você são analisados e armazenados localmente, sem upload.</p>
-            </section>
+                <section>
+                    <span class="section-number">02 / Persistência</span>
+                    <div>
+                        <h2>Dados mantidos no dispositivo</h2>
+                        <ul>
+                            <li>configurações de proteção e aparência;</li>
+                            <li>contadores agregados de bloqueio;</li>
+                            <li>listas de permissão, bloqueio e filtros importados;</li>
+                            <li>liberações temporárias e versão do esquema local.</li>
+                        </ul>
+                        <p>Esses dados podem ser redefinidos pela interface e são removidos com a desinstalação, exceto backups que você mesmo exportar.</p>
+                    </div>
+                </section>
+
+                <section>
+                    <span class="section-number">03 / Rede</span>
+                    <div>
+                        <h2>Bloqueio e listas importadas</h2>
+                        <p>O navegador aplica regras locais por <code>declarativeNetRequest</code>. A extensão não recebe cópias dos corpos das requisições bloqueadas. Arquivos de filtro escolhidos por você são analisados e armazenados localmente, sem upload.</p>
+                    </div>
+                </section>
+            </div>
 
             <aside class="policy-note">
-                <strong>Última atualização: 29 de julho de 2026.</strong>
-                Esta página acompanha a política integral distribuída com o código-fonte do projeto.
+                <strong>Última atualização / 29.07.2026</strong>
+                <span>Esta página acompanha a política integral distribuída com o código-fonte.</span>
             </aside>
         </main>
     </div>
