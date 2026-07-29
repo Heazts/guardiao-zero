@@ -1,0 +1,115 @@
+{
+  "manifest_version": 3,
+  "name": "Guardi\u00e3o Zero Pro",
+  "version": "3.1.0",
+  "description": "Prote\u00e7\u00e3o local multifator contra plataformas de apostas, an\u00fancios e rastreadores, sem coleta de dados.",
+  "author": "Guardi\u00e3o Zero Team",
+  "homepage_url": "https://github.com/Heazts/guardiao-zero",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "guardiao-zero-pro@guardiaozero.app",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": {
+        "required": [
+          "none"
+        ]
+      }
+    }
+  },
+  "permissions": [
+    "storage",
+    "declarativeNetRequest",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ],
+  "background": {
+    "scripts": [
+      "src/shared/platform.js",
+      "src/shared/appearance.js",
+      "src/shared/detection/constants.js",
+      "src/shared/lists/list-matcher.js",
+      "src/shared/filters/filter-list-parser.js",
+      "src/shared/detection/detection-engine.js",
+      "src/shared/messaging/message-schema.js",
+      "src/background/blocklist-index.js",
+      "src/background/service-worker.js"
+    ],
+    "service_worker": "src/background/service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "http://*/*",
+        "https://*/*"
+      ],
+      "js": [
+        "src/shared/platform.js",
+        "src/shared/detection/constants.js",
+        "src/content/page-signals.js",
+        "src/content/content-script.js"
+      ],
+      "css": [
+        "src/content/content-styles.css"
+      ],
+      "run_at": "document_start",
+      "all_frames": false
+    }
+  ],
+  "action": {
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon-16.png",
+      "32": "assets/icons/icon-32.png",
+      "48": "assets/icons/icon-48.png",
+      "128": "assets/icons/icon-128.png"
+    },
+    "theme_icons": [
+      {
+        "light": "assets/icons/icon-dark-16.png",
+        "dark": "assets/icons/icon-light-16.png",
+        "size": 16
+      },
+      {
+        "light": "assets/icons/icon-dark-32.png",
+        "dark": "assets/icons/icon-light-32.png",
+        "size": 32
+      },
+      {
+        "light": "assets/icons/icon-dark-48.png",
+        "dark": "assets/icons/icon-light-48.png",
+        "size": 48
+      }
+    ],
+    "default_title": "Guardi\u00e3o Zero Pro"
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "assets/icons/icon-16.png",
+    "32": "assets/icons/icon-32.png",
+    "48": "assets/icons/icon-48.png",
+    "128": "assets/icons/icon-128.png"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+  },
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ads_rules",
+        "enabled": true,
+        "path": "src/background/rules/ads.json"
+      },
+      {
+        "id": "tracker_rules",
+        "enabled": true,
+        "path": "src/background/rules/trackers.json"
+      }
+    ]
+  }
+}

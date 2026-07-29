@@ -1,0 +1,33 @@
+{
+  "name": "guardiao-zero-pro",
+  "version": "3.1.0",
+  "description": "Proteção local multifator contra plataformas de apostas, anúncios e rastreadores.",
+  "type": "module",
+  "scripts": {
+    "build": "node tools/build.mjs --firefox",
+    "build:firefox": "node tools/build.mjs --firefox",
+    "build:chromium": "node tools/build.mjs --chromium",
+    "clean": "node tools/build.mjs --clean",
+    "lint": "node tools/validate.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "benchmark": "node --expose-gc tools/benchmark.mjs",
+    "test:real": "node tools/real-world-evaluation.mjs",
+    "package:amo": "node tools/package-amo.mjs",
+    "check": "npm run lint && npm test && npm run build"
+  },
+  "keywords": [
+    "webextension",
+    "firefox",
+    "chromium",
+    "privacy",
+    "adblock",
+    "gambling-blocker",
+    "anti-phishing"
+  ],
+  "author": "Guardião Zero Team",
+  "license": "MIT",
+  "homepage": "https://github.com/Heazts/guardiao-zero",
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
