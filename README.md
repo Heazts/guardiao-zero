@@ -1,182 +1,156 @@
 # Guardião Zero Pro
 
-### Proteção avançada contra conteúdo de apostas, jogos de azar e rastreamento.
+Extensão Manifest V3 para Firefox e Chromium que reduz a exposição a
+plataformas de apostas, anúncios e rastreadores. A classificação é
+determinística, multifator e executada localmente. Não há telemetria, conta,
+servidor próprio ou envio de conteúdo de navegação.
 
-Extensão de navegador (Manifest V3) com detecção heurística inteligente, bloqueio de anúncios, anti-rastreamento e múltiplas camadas de segurança — tudo processado localmente, sem coleta de dados.
+## Recursos
 
-![Versão](https://img.shields.io/badge/v2.1.0-blue?style=flat-square)
-![Manifest](https://img.shields.io/badge/Manifest_V3-green?style=flat-square)
-![Firefox](https://img.shields.io/badge/Firefox-140%2B-orange?style=flat-square)
-![License](https://img.shields.io/badge/Licença-MIT-brightgreen?style=flat-square)
-![Zero Data](https://img.shields.io/badge/Dados-Zero%20Coleta-red?style=flat-square)
+- detecção contextual por score, grupos de evidência e safeguards;
+- índice local com 272.868 domínios e busca binária de baixo consumo de heap;
+- whitelist tipada com prioridade sobre classificação e regras de rede;
+- blocklist tipada para domínio, subdomínio, regex, TLD, ASN condicional e
+  assinatura;
+- rulesets DNR independentes para anúncios e rastreadores;
+- importação local do subconjunto seguro de EasyList, EasyPrivacy, AdGuard,
+  uBlock Origin, HOSTS e listas personalizadas;
+- gerenciamento, pausa, remoção, relatório de rejeições e quota portátil de
+  4.900 regras importadas;
+- temas claro, escuro ou sistema, accent color, alto contraste, densidade e
+  redução de movimento;
+- interface acessível e responsiva, com fonte Inter e ícones empacotados;
+- backup e restauração locais;
+- política de privacidade navegável dentro da extensão.
 
----
+## Privacidade
 
-## Funcionalidades
+O Guardião Zero Pro não coleta, compartilha nem transmite dados do usuário.
+Preferências, listas e contadores agregados permanecem exclusivamente em
+`storage.local`. Sinais públicos e limitados da página são transitórios e
+usados somente para a decisão atual.
 
-| Recurso | Descrição |
-|---------|-----------|
-| **Detecção Heurística** | Analisa URLs e conteúdo de páginas usando +100 keywords categorizadas |
-| **Bloqueio de Busca** | Intercepta consultas em motores de busca (Google, Bing, DuckDuckGo, etc) |
-| **Remoção de Anúncios** | Oculta anúncios de apostas via seletores CSS e regras DNR |
-| **Anti-Rastreamento** | Bloqueia trackers, pixels de conversão e fingerprinting |
-| **Proteção por Senha** | Hash PBKDF2 (100k iterações), rate limiting e lockout temporário |
-| **Confirmação Consciente** | Aviso detalhado com riscos antes de ações críticas |
-| **Controle de JS** | Gerenciamento de execução de JavaScript por site |
-| **Backup e Diagnóstico** | Ferramentas de integridade, exportação e importação de configurações |
-| **Modo Foco** | Bloqueio mais rigoroso com menos falsos positivos |
-| **Modo Estrito** | Bloqueio agressivo para proteção máxima |
-| **Lista Branca/Negra** | Controle manual de sites permitidos e bloqueados |
-| **Filtros Personalizados** | Regras de bloqueio customizadas com padrões de texto |
+Leia a [Política de Privacidade](PRIVACY.md) e o
+[modelo de segurança](docs/SECURITY.md).
 
----
+## Detecção
 
-## Stack Técnica
+O limiar padrão é 120, configurável entre 100 e 180. Cada categoria de
+evidência tem um teto; repetir um termo não aumenta indefinidamente a
+pontuação. Um bloqueio automático exige:
 
-| Camada | Tecnologia |
-|--------|-----------|
-| **Plataforma** | Manifest V3 (Firefox / Chrome / Edge / Brave) |
-| **Background** | Service Worker (`declarativeNetRequest`) |
-| **Content Script** | Vanilla JS puro (sem bundler, sem dependências externas) |
-| **Criptografia** | Web Crypto API — PBKDF2 + salt (100.000 iterações) |
-| **Armazenamento** | `chrome.storage.local` |
-| **Estilos** | CSS puro com Design System compartilhado |
-| **Idioma** | Português Brasileiro (`pt_BR`) |
+1. score igual ou superior ao limiar;
+2. pelo menos dois grupos positivos independentes;
+3. confirmação operacional, confirmação do índice por conteúdo, ou três
+   grupos fortes;
+4. aprovação do safeguard para contexto jornalístico, educacional ou
+   documental.
 
----
+Nenhuma palavra isolada — inclusive `bet`, `casino` ou `odds` — é suficiente.
+Domínios integrados confiáveis, regras pessoais permitidas e liberações
+temporárias são avaliados primeiro.
 
-## Instalação
+Detalhes: [docs/DETECTION.md](docs/DETECTION.md).
 
-### Firefox (Desenvolvimento)
+## Listas de filtros
 
-```bash
-git clone https://github.com/Heazts/guardiao-zero.git
-cd guardiao-zero
+A importação aceita arquivos locais de até 4 MiB. O parser nunca executa o
+conteúdo importado e traduz apenas regras de rede representáveis com segurança
+por `declarativeNetRequest`. Filtros cosméticos, scriptlets, HTML filtering,
+redirect, CSP, alteração de headers e regex arbitrária são recusados e
+contabilizados.
+
+As categorias seguem os toggles da extensão:
+
+- Anúncios → `blockAds`;
+- Privacidade → `blockTrackers`;
+- Apostas → `blockBetting`;
+- Personalizada → ativa enquanto a proteção geral estiver ativa.
+
+## Desenvolvimento
+
+Requer Node.js 20 ou superior. Não existem dependências npm de runtime.
+
+```text
+npm run lint
+npm test
+npm run benchmark
+npm run test:real
+npm run build:firefox
+npm run build:chromium
 ```
 
-1. Abra `about:debugging#/runtime/this-firefox` no Firefox
-2. Clique em **"Carregar componente temporário"**
-3. Selecione o arquivo `manifest.json` dentro da pasta do projeto
+O projeto-fonte mantém as duas declarações de background necessárias à
+portabilidade. Os builds são direcionados:
 
-### Chrome / Edge / Brave (Desenvolvimento)
+- `build:firefox` gera `dist/` com `background.scripts`;
+- `build:chromium` gera `dist/` com `background.service_worker`.
 
-1. Acesse `chrome://extensions`
-2. Ative o **Modo do desenvolvedor**
-3. Clique em **"Carregar sem compactação"** e selecione a pasta do projeto
+Para validar e empacotar a submissão Firefox:
 
-&gt; **Nota:** A extensão é otimizada para Firefox mas funciona em navegadores baseados em Chromium via Manifest V3.
-
----
-
-## Estrutura do Projeto
-
-```
-guardiao-zero-pro/
-├── manifest.json                    # Manifest V3 — configuração da extensão
-├── README.md
-├── _locales/
-│   └── pt_BR/
-│       └── messages.json            # Strings em Português BR
-├── assets/
-│   └── icons/                       # Ícones 16/32/48/128px
-└── src/
-    ├── background/
-    │   ├── service-worker.js        # Service Worker principal
-    │   └── rules.json               # Regras declarativeNetRequest (bloqueio)
-    ├── content/
-    │   ├── content-script.js        # Injetado em todas as páginas
-    │   └── content-styles.css       # Estilos de ocultação de elementos
-    ├── popup/                       # Interface rápida do popup
-    │   ├── popup.html
-    │   ├── popup.js
-    │   └── popup.css
-    ├── options/                     # Página de configurações (7 abas)
-    │   ├── options.html
-    │   ├── options.js
-    │   └── options.css
-    ├── blocked/                     # Página exibida ao bloquear um site
-    │   ├── blocked.html
-    │   ├── blocked.js
-    │   └── blocked.css
-    ├── help/                        # Central de ajuda
-    │   ├── help.html
-    │   ├── help.js
-    │   └── help.css
-    ├── diagnostics/                 # Verificação de integridade
-    │   ├── diagnostics.html
-    │   ├── diagnostics.js
-    │   └── diagnostics.css
-    └── shared/
-        └── shared-styles.css        # Design system e estilos compartilhados
+```text
+npm run package:amo
 ```
 
----
+O comando usa `web-ext` 10, exige zero warnings e grava o ZIP em
+`web-ext-artifacts/`.
 
-## Segurança e Privacidade
+## Avaliação
 
-- **Zero Telemetria**: Toda análise é local. Nenhum dado é enviado para servidores externos.
-- **PBKDF2 + Salt**: Senhas armazenadas com hash criptográfico (100.000 iterações). Nunca em texto plano.
-- **Constant-Time Comparison**: Proteção contra *timing attacks* na verificação de senha.
-- **Rate Limiting**: Bloqueio após 5 tentativas incorretas (5 minutos de lockout).
-- **DNR (declarativeNetRequest)**: Uso de APIs nativas de bloqueio para máxima performance e privacidade.
-- **Sem Dependências Externas**: Código 100% vanilla JS, sem riscos de *supply chain*.
-- **CSP Compatível**: Utiliza `trustedTypes` / `createPolicy` do Firefox para segurança de injeção.
+`npm test` executa testes unitários, de integração e centenas de cenários de
+regressão determinísticos. Eles não são apresentados como tráfego real.
 
----
+`npm run test:real` acessa somente as URLs públicas declaradas em
+`tests/real-world-corpus.json`, descarta respostas indisponíveis ou
+intersticiais e registra hash, status e fatores sem salvar o HTML.
 
-## Configurações Disponíveis
+Na execução de 29 de julho de 2026:
 
-A página de configurações (`options.html`) possui **7 abas**:
+- 47 URLs reais tentadas;
+- 23 respostas utilizáveis e 24 indisponíveis;
+- 5 TP, 1 FN, 17 TN e 0 FP;
+- precisão positiva de 100%, recall de 83,33% e acurácia de 95,65% no
+  subconjunto disponível.
 
-| Aba | Descrição |
-|-----|-----------|
-| **Geral** | Toggles de proteção, sensibilidade (Baixa/Média/Alta), interface |
-| **Segurança** | Proteção por senha, ações protegidas, confirmação consciente |
-| **Privacidade** | Bloqueio de fingerprinting, referrer, Do Not Track, controle de JS |
-| **Listas** | Lista branca e lista negra de sites |
-| **Filtros** | Filtros personalizados e importação de listas |
-| **Backup** | Exportação/importação de configurações, backups automáticos |
-| **Avançado** | Estatísticas detalhadas, diagnóstico, modo de depuração |
+Esses valores descrevem somente aquela execução e não são promessa sobre toda
+a web. Consulte os [resultados completos](docs/reports/real-world-results.json)
+e o [gráfico gerado](docs/assets/precision-real-world.svg).
 
----
+## Estrutura
 
-## Roadmap
+```text
+assets/                  ícones, fonte Inter e licença OFL
+src/background/          estado, políticas, DNR e índice local
+src/content/             coleta limitada e orquestração da análise
+src/shared/detection/    constantes, score e decisão multifator
+src/shared/filters/      parser conservador de listas
+src/shared/lists/        whitelist e blocklist tipadas
+src/shared/messaging/    schemas e validação de mensagens
+src/{popup,options}/     controles principais e personalização
+src/{blocked,help}/      bloqueio e ajuda
+src/{diagnostics,privacy}/ diagnóstico e política navegável
+tests/                   unidade, integração, regressão e corpus real
+tools/                   validação, benchmark, build, avaliação e pacote AMO
+docs/                    arquitetura, segurança e relatórios
+```
 
-- [x] Regras `declarativeNetRequest` (DNR) implementadas
-- [x] Correção de bugs de navegação e performance
-- [x] Refinamento da proteção por senha (PBKDF2 + rate limiting)
-- [x] Content script com gerenciamento de memória e DOM Observer
-- [x] Tratamento de erros robusto (try/catch em toda comunicação assíncrona)
-- [x] Dead code removido e caminhos relativos corrigidos
-- [ ] Suporte multilíngue (i18n completo)
-- [ ] Modo claro
-- [ ] Sincronização de configurações entre dispositivos
-- [ ] Testes automatizados
-- [ ] Publicação na Firefox Add-ons (AMO)
+## Permissões
 
----
+- `storage`: dados funcionais locais;
+- `declarativeNetRequest`: bloqueio de rede;
+- `webNavigation`: aplicação antecipada de políticas explícitas;
+- hosts HTTP(S): coleta local de sinais públicos necessários à função
+  principal.
 
-## Contribuindo
+A extensão não solicita `declarativeNetRequestFeedback`, cookies, histórico,
+downloads, identidade ou acesso remoto a código.
 
-1. Fork o repositório
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Commit suas alterações (`git commit -m 'Adiciona nova feature'`)
-4. Push para a branch (`git push origin feature/nova-feature`)
-5. Abra um Pull Request
+## Licenças e publicação
 
----
+O código original está sob MIT. Inter está sob OFL-1.1. Consulte
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) antes de redistribuir:
+a proveniência e a licença de `src/filters/heazts-blocklist.txt` ainda precisam
+ser confirmadas pelo mantenedor.
 
-## Licença
-
-MIT License — veja o arquivo [LICENSE](LICENSE) para detalhes.
-
----
-
-## Contato
-
-- **GitHub**: [github.com/Heazts/guardiao-zero](https://github.com/Heazts/guardiao-zero)
-- **Issues**: [github.com/Heazts/guardiao-zero/issues](https://github.com/Heazts/guardiao-zero/issues)
-
----
-
-Feito com dedicação para proteger quem mais precisa.
+O checklist de submissão está em
+[docs/AMO_SUBMISSION.md](docs/AMO_SUBMISSION.md).

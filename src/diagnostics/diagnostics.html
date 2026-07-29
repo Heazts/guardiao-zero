@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="appearance-pending">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Diagnóstico — Guardião Zero Pro</title>
+    <link rel="stylesheet" href="../shared/shared-styles.css">
+    <link rel="stylesheet" href="diagnostics.css">
+</head>
+<body>
+    <div class="page-shell animate-fade-in">
+        <header class="page-header">
+            <a href="../options/options.html" class="back-link">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="m15 18-6-6 6-6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Configurações
+            </a>
+            <div>
+                <span class="eyebrow">Saúde do sistema</span>
+                <h1>Diagnóstico</h1>
+                <p>Estado local dos componentes, regras ativas e autotestes de integridade.</p>
+            </div>
+        </header>
+
+        <main class="diagnostics-main">
+            <section aria-labelledby="overview-title">
+                <div class="section-heading">
+                    <h2 id="overview-title">Visão geral</h2>
+                    <span class="status-badge" id="diag-health">Verificando</span>
+                </div>
+                <dl class="info-grid">
+                    <div class="info-card card"><dt>Versão</dt><dd id="diag-version">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Runtime</dt><dd id="diag-engine">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Proteção</dt><dd id="diag-protection">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Classificador</dt><dd id="diag-ai">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Rulesets de rede</dt><dd id="diag-rules">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Índice de apostas</dt><dd id="diag-domains">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Listas importadas</dt><dd id="diag-filter-sources">Carregando…</dd></div>
+                    <div class="info-card card"><dt>Regras dinâmicas</dt><dd id="diag-dynamic-rules">Carregando…</dd></div>
+                </dl>
+            </section>
+
+            <section class="test-card card" aria-labelledby="test-title">
+                <div class="test-copy">
+                    <h2 id="test-title">Autoteste local</h2>
+                    <p>Valida o detector, a precedência das listas e a integridade do índice sem acessar a internet.</p>
+                </div>
+                <div class="actions-row">
+                    <button id="btn-run-test" class="btn btn-primary" type="button">
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m5 12 4 4L19 6" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        Executar autoteste
+                    </button>
+                    <button id="btn-copy-report" class="btn btn-secondary" type="button">
+                        <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="12" height="12" rx="2"/>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                        </svg>
+                        <span id="copy-report-label">Copiar relatório</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="log-card card" aria-labelledby="log-title">
+                <div class="log-header">
+                    <div>
+                        <h2 id="log-title">Log do autoteste</h2>
+                        <p>Somente eventos desta página de diagnóstico.</p>
+                    </div>
+                    <span class="log-local">Local</span>
+                </div>
+                <pre class="terminal-output" id="test-output" role="log" aria-live="polite" aria-atomic="false">Aguardando comando de autoteste…</pre>
+            </section>
+        </main>
+    </div>
+
+    <script src="../shared/appearance.js"></script>
+    <script src="../shared/platform.js"></script>
+    <script src="diagnostics.js"></script>
+</body>
+</html>

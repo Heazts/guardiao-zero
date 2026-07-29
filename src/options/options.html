@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="appearance-pending">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Configurações — Guardião Zero Pro</title>
+    <script src="../shared/appearance.js"></script>
+    <link rel="stylesheet" href="../shared/shared-styles.css">
+    <link rel="stylesheet" href="options.css">
+</head>
+<body>
+    <div class="options-shell">
+        <aside class="sidebar" aria-label="Navegação das configurações">
+            <div class="sidebar-header">
+                <a href="#protection" class="app-brand">
+                    <img src="../../assets/icons/icon-48.png" alt="" class="brand-mark" width="34" height="34">
+                    <span class="brand-copy">
+                        <span class="brand-name">Guardião Zero</span>
+                        <span class="brand-tagline">Proteção local</span>
+                    </span>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav" aria-label="Seções">
+                <a href="#protection" class="nav-item active" aria-current="page">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    <span>Proteção</span>
+                </a>
+                <a href="#detection" class="nav-item">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 1 1 16 0"/><path d="M12 13 16 9"/><path d="M5 20h14"/></svg>
+                    <span>Detecção</span>
+                </a>
+                <a href="#lists" class="nav-item">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>
+                    <span>Regras pessoais</span>
+                </a>
+                <a href="#filter-lists" class="nav-item">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16v4H4zM4 10h16v4H4zM4 16h10v4H4z"/></svg>
+                    <span>Listas de filtros</span>
+                </a>
+                <a href="#appearance" class="nav-item">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/><circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/><path d="M12 2a10 10 0 0 0 0 20c1.1 0 2-.9 2-2 0-.5-.2-.9-.5-1.3-.3-.3-.5-.8-.5-1.3 0-1.1.9-2 2-2h2.1c2.7 0 4.9-2.2 4.9-4.9C22 5.8 17.5 2 12 2z"/></svg>
+                    <span>Aparência</span>
+                </a>
+                <a href="#data" class="nav-item">
+                    <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.7 4 3 9 3s9-1.3 9-3V5"/><path d="M3 12c0 1.7 4 3 9 3s9-1.3 9-3"/></svg>
+                    <span>Dados locais</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-links">
+                <a href="../diagnostics/diagnostics.html" class="sidebar-link">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                    Diagnóstico
+                </a>
+                <a href="../help/help.html" class="sidebar-link">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 1 1 5.3 1.9c-.9.8-1.9 1.3-1.9 2.6M12 17h.01"/></svg>
+                    Ajuda
+                </a>
+                <a href="../privacy/privacy.html" class="sidebar-link">
+                    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Privacidade
+                </a>
+            </div>
+
+            <div class="sidebar-footer">
+                <span class="privacy-pulse" aria-hidden="true"></span>
+                <span>Zero telemetria · 100% local</span>
+            </div>
+        </aside>
+
+        <main class="main-content" id="main-content">
+            <header class="page-header">
+                <div>
+                    <span class="eyebrow">Painel de controle</span>
+                    <h1 id="page-title">Proteção</h1>
+                    <p id="page-description">Defina as camadas que protegem sua navegação.</p>
+                </div>
+                <span id="save-status" class="save-status" role="status" aria-live="polite">Tudo salvo localmente</span>
+            </header>
+
+            <div class="local-privacy-banner card">
+                <span class="privacy-icon" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                </span>
+                <div>
+                    <strong>Processamento privado por design</strong>
+                    <p>Histórico e conteúdo não saem do navegador. Preferências, listas e contadores ficam somente neste perfil.</p>
+                </div>
+                <a href="../privacy/privacy.html">Ver política</a>
+            </div>
+
+            <section id="protection" class="settings-section active" aria-labelledby="protection-heading">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="protection-heading">Camadas de proteção</h2>
+                        <p>Ative apenas os recursos que fazem sentido para você.</p>
+                    </div>
+                    <span class="status-badge success">Proteção local</span>
+                </div>
+
+                <div class="settings-card card">
+                    <div class="setting-row">
+                        <span class="setting-icon accent" aria-hidden="true">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        </span>
+                        <div class="setting-copy">
+                            <label for="toggle-betting">Sites de apostas</label>
+                            <span id="desc-betting">Bloqueia plataformas após confirmação por múltiplas evidências.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-betting" class="sr-only" aria-describedby="desc-betting" disabled>
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <span class="setting-icon" aria-hidden="true">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8h10M7 12h6"/></svg>
+                        </span>
+                        <div class="setting-copy">
+                            <label for="toggle-ads">Anúncios e promoções</label>
+                            <span id="desc-ads">Interrompe requisições de publicidade antes do carregamento.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-ads" class="sr-only" aria-describedby="desc-ads" disabled>
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-row">
+                        <span class="setting-icon" aria-hidden="true">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </span>
+                        <div class="setting-copy">
+                            <label for="toggle-trackers">Rastreadores</label>
+                            <span id="desc-trackers">Bloqueia pixels e scripts conhecidos de monitoramento.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-trackers" class="sr-only" aria-describedby="desc-trackers" disabled>
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section id="detection" class="settings-section" aria-labelledby="detection-heading">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="detection-heading">Detecção multifator</h2>
+                        <p>Ajuste o equilíbrio entre cobertura e cautela.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card card">
+                    <div class="setting-row">
+                        <span class="setting-icon accent" aria-hidden="true">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 13a8 8 0 1 1 16 0"/><path d="M12 13 16 9"/><path d="M5 20h14"/></svg>
+                        </span>
+                        <div class="setting-copy">
+                            <label for="toggle-ai">Análise heurística avançada</label>
+                            <span id="desc-heuristics">Combina domínio, contexto, ações, formulários e integrações. Nenhum fator isolado bloqueia.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-ai" class="sr-only" aria-describedby="desc-heuristics" disabled>
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-column">
+                        <div class="setting-column-header">
+                            <div class="setting-copy">
+                                <label for="slider-detection-threshold">Limiar de bloqueio</label>
+                                <span id="desc-threshold">Valores maiores exigem mais evidências antes de bloquear.</span>
+                            </div>
+                            <output id="threshold-value" for="slider-detection-threshold" class="score-output">120</output>
+                        </div>
+                        <input type="range" id="slider-detection-threshold" min="100" max="180" step="5" value="120" class="styled-slider" aria-describedby="desc-threshold" disabled>
+                        <div class="range-labels" aria-hidden="true">
+                            <span>Mais abrangente</span>
+                            <span>Mais conservador</span>
+                        </div>
+                    </div>
+
+                    <div class="setting-row danger-row">
+                        <span class="setting-icon danger" aria-hidden="true">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 9v4M12 17h.01"/><path d="M10.3 3.7 2.2 18a2 2 0 0 0 1.7 3h16.2a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"/></svg>
+                        </span>
+                        <div class="setting-copy">
+                            <label for="toggle-extreme">Modo de foco extremo</label>
+                            <span id="desc-extreme">Bloqueia toda navegação HTTP(S), exceto regras permitidas. Ative com cautela.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-extreme" class="sr-only" aria-describedby="desc-extreme" disabled>
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section id="lists" class="settings-section" aria-labelledby="lists-heading">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="lists-heading">Regras pessoais</h2>
+                        <p>Exceções explícitas têm prioridade sobre a classificação automática.</p>
+                    </div>
+                </div>
+
+                <article class="list-manager card">
+                    <div class="list-header">
+                        <div>
+                            <span class="list-kicker allow">Sempre permitir</span>
+                            <h3>Whitelist</h3>
+                            <p>Hosts e URLs que nunca devem ser bloqueados.</p>
+                        </div>
+                    </div>
+                    <div class="list-form">
+                        <div class="field">
+                            <label class="field-label" for="type-whitelist">Tipo</label>
+                            <select id="type-whitelist">
+                                <option value="domain">Domínio exato</option>
+                                <option value="subdomain">Domínio e subdomínios</option>
+                                <option value="url">URL específica</option>
+                                <option value="regex">Expressão regular</option>
+                                <option value="hash">Hash SHA-256</option>
+                                <option value="signature">Assinatura SHA-256</option>
+                            </select>
+                        </div>
+                        <div class="field field-grow">
+                            <label class="field-label" for="input-whitelist">Padrão permitido</label>
+                            <input type="text" id="input-whitelist" placeholder="exemplo.com" autocomplete="off" spellcheck="false">
+                        </div>
+                        <button id="btn-add-whitelist" class="btn btn-primary" disabled>Adicionar</button>
+                    </div>
+                    <ul id="list-whitelist" class="domain-list" aria-live="polite"></ul>
+                </article>
+
+                <article class="list-manager card">
+                    <div class="list-header">
+                        <div>
+                            <span class="list-kicker block">Sempre bloquear</span>
+                            <h3>Blocklist pessoal</h3>
+                            <p>Regras manuais aplicadas antes do detector.</p>
+                        </div>
+                    </div>
+                    <div class="list-form">
+                        <div class="field">
+                            <label class="field-label" for="type-blocklist">Tipo</label>
+                            <select id="type-blocklist">
+                                <option value="domain">Domínio exato</option>
+                                <option value="subdomain">Domínio e subdomínios</option>
+                                <option value="regex">Expressão regular</option>
+                                <option value="tld">TLD</option>
+                                <option value="asn">ASN</option>
+                                <option value="signature">Assinatura SHA-256</option>
+                            </select>
+                        </div>
+                        <div class="field field-grow">
+                            <label class="field-label" for="input-blocklist">Padrão bloqueado</label>
+                            <input type="text" id="input-blocklist" placeholder="exemplo.com" autocomplete="off" spellcheck="false">
+                        </div>
+                        <button id="btn-add-blocklist" class="btn btn-primary" disabled>Adicionar</button>
+                    </div>
+                    <ul id="list-blocklist" class="domain-list" aria-live="polite"></ul>
+                </article>
+            </section>
+
+            <section id="filter-lists" class="settings-section" aria-labelledby="filter-lists-heading">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="filter-lists-heading">Listas de filtros</h2>
+                        <p>Importe filtros de rede compatíveis sem criar assinaturas ou conexões externas.</p>
+                    </div>
+                    <span id="dynamic-rule-usage" class="usage-badge">0 regras</span>
+                </div>
+
+                <div class="import-card card">
+                    <div class="import-hero">
+                        <span class="setting-icon accent large" aria-hidden="true">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+                        </span>
+                        <div>
+                            <h3>Importar arquivo local</h3>
+                            <p>EasyList, EasyPrivacy, AdGuard, uBlock Origin ou HOSTS. Filtros de rede suportados são convertidos para DNR.</p>
+                        </div>
+                    </div>
+                    <div class="import-controls">
+                        <div class="field field-grow">
+                            <label class="field-label" for="filter-list-category">Categoria</label>
+                            <select id="filter-list-category">
+                                <option value="ads">Anúncios</option>
+                                <option value="privacy">Privacidade</option>
+                                <option value="gambling">Apostas</option>
+                                <option value="custom">Personalizada</option>
+                            </select>
+                        </div>
+                        <button id="btn-import-filter-list" class="btn btn-primary">
+                            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M5 21h14"/></svg>
+                            Escolher arquivo
+                        </button>
+                        <input id="file-filter-list" class="sr-only" type="file" accept=".txt,.list,text/plain">
+                    </div>
+                    <p class="import-note">Limite local: 4 MB por arquivo e 4.900 regras dinâmicas ativas, preservando a quota portátil do Firefox. Regras cosméticas, scriptlets e modificações de resposta são ignoradas com relatório.</p>
+                </div>
+
+                <div id="filter-sources" class="filter-sources" aria-live="polite">
+                    <div class="empty-state card">
+                        <span aria-hidden="true">≡</span>
+                        <h3>Nenhuma lista importada</h3>
+                        <p>As listas escolhidas aparecerão aqui e poderão ser pausadas ou removidas.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="appearance" class="settings-section" aria-labelledby="appearance-heading">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="appearance-heading">Aparência</h2>
+                        <p>Personalização sincronizada apenas com este perfil local.</p>
+                    </div>
+                </div>
+
+                <div class="appearance-preview card" aria-hidden="true">
+                    <div class="preview-orbit"></div>
+                    <div class="preview-shield">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    </div>
+                    <div>
+                        <strong>Seu Guardião, do seu jeito.</strong>
+                        <span>Os componentes abaixo atualizam em tempo real.</span>
+                    </div>
+                    <span class="status-badge success">Protegido</span>
+                </div>
+
+                <div class="settings-card card">
+                    <fieldset class="appearance-row">
+                        <legend>Tema</legend>
+                        <p>Siga o navegador ou mantenha uma aparência fixa.</p>
+                        <div class="segmented-control">
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="theme" value="system">
+                                <span>Sistema</span>
+                            </label>
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="theme" value="light">
+                                <span>Claro</span>
+                            </label>
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="theme" value="dark">
+                                <span>Escuro</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="appearance-row">
+                        <legend>Cor principal</legend>
+                        <p>Usada em ações, seleção e indicadores de proteção.</p>
+                        <div class="accent-controls">
+                            <label class="color-picker">
+                                <input id="accent-color" class="appearance-control" type="color" value="#5B5BD6" aria-label="Cor principal personalizada">
+                                <span id="accent-value">#5B5BD6</span>
+                            </label>
+                            <div class="accent-presets" aria-label="Cores sugeridas">
+                                <button type="button" class="accent-swatch" data-accent="#5B5BD6" aria-label="Índigo" title="Índigo"></button>
+                                <button type="button" class="accent-swatch" data-accent="#2563EB" aria-label="Azul" title="Azul"></button>
+                                <button type="button" class="accent-swatch" data-accent="#087454" aria-label="Verde" title="Verde"></button>
+                                <button type="button" class="accent-swatch" data-accent="#B4428D" aria-label="Magenta" title="Magenta"></button>
+                                <button type="button" class="accent-swatch" data-accent="#C65318" aria-label="Laranja" title="Laranja"></button>
+                            </div>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="appearance-row">
+                        <legend>Contraste</legend>
+                        <p>O modo alto reforça bordas, textos secundários e estados.</p>
+                        <div class="segmented-control">
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="contrast" value="normal">
+                                <span>Normal</span>
+                            </label>
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="contrast" value="high">
+                                <span>Alto</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <fieldset class="appearance-row">
+                        <legend>Densidade</legend>
+                        <p>Ajuste o espaço entre controles sem reduzir áreas de toque.</p>
+                        <div class="segmented-control">
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="density" value="comfortable">
+                                <span>Confortável</span>
+                            </label>
+                            <label class="segment">
+                                <input class="sr-only appearance-control" type="radio" name="density" value="compact">
+                                <span>Compacta</span>
+                            </label>
+                        </div>
+                    </fieldset>
+
+                    <div class="setting-row">
+                        <span class="setting-icon" aria-hidden="true">
+                            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        </span>
+                        <div class="setting-copy">
+                            <label for="reduce-motion">Reduzir movimento</label>
+                            <span id="desc-motion">Substitui animações por transições instantâneas.</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="reduce-motion" class="sr-only appearance-control" aria-describedby="desc-motion">
+                            <span class="switch-track"><span class="switch-thumb"></span></span>
+                        </label>
+                    </div>
+                </div>
+            </section>
+
+            <section id="data" class="settings-section" aria-labelledby="data-heading">
+                <div class="section-heading">
+                    <div>
+                        <h2 id="data-heading">Dados locais</h2>
+                        <p>Faça backup ou limpe somente informações armazenadas neste perfil.</p>
+                    </div>
+                </div>
+
+                <div class="settings-card card">
+                    <div class="action-row">
+                        <div class="setting-copy">
+                            <strong>Zerar contadores</strong>
+                            <span>Reinicia estatísticas agregadas. Configurações e listas são preservadas.</span>
+                        </div>
+                        <button id="btn-reset-stats" class="btn btn-secondary">Zerar</button>
+                    </div>
+                    <div class="action-row">
+                        <div class="setting-copy">
+                            <strong>Exportar backup</strong>
+                            <span>Inclui preferências, regras pessoais e listas de filtros importadas.</span>
+                        </div>
+                        <button id="btn-export" class="btn btn-secondary">Exportar JSON</button>
+                    </div>
+                    <div class="action-row">
+                        <div class="setting-copy">
+                            <strong>Restaurar backup</strong>
+                            <span>O arquivo é validado localmente antes de substituir os dados atuais.</span>
+                        </div>
+                        <button id="btn-import" class="btn btn-secondary">Selecionar arquivo</button>
+                        <input id="file-import" class="sr-only" type="file" accept="application/json,.json">
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+        <dialog id="confirm-dialog" class="confirm-dialog" aria-labelledby="confirm-title">
+            <form method="dialog">
+                <span class="dialog-icon" aria-hidden="true">!</span>
+                <h2 id="confirm-title">Confirmar ação</h2>
+                <p id="confirm-message"></p>
+                <div class="dialog-actions">
+                    <button value="cancel" class="btn btn-secondary">Cancelar</button>
+                    <button value="confirm" id="confirm-action" class="btn btn-danger">Confirmar</button>
+                </div>
+            </form>
+        </dialog>
+    </div>
+    <script src="../shared/platform.js"></script>
+    <script src="options.js"></script>
+</body>
+</html>
