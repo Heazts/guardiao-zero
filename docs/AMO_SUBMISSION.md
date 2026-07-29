@@ -143,6 +143,7 @@ Se o AMO solicitar fontes, forneça um arquivo separado que inclua:
 
 - `manifest.json`, `package.json`, README, licença e documentação;
 - `assets/`, `src/`, `tests/` e `tools/`;
+- licenças OFL completas das fontes Inter e Newsreader em `assets/fonts/`;
 - instruções deste documento;
 - qualquer aviso e licença de terceiro aplicável.
 
@@ -188,3 +189,6 @@ julho de 2026:
 - warnings: 0.
 
 Artefato local: `web-ext-artifacts/guardi_o_zero_pro-3.1.0.zip`.
+
+SHA-256:
+`03A18EF142C2187048D2117B7A80399A3E85662625107FB519CAF516239B56A1`.
