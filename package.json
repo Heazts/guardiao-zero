@@ -10,6 +10,7 @@
     "build:rules": "node tools/build-rules.mjs",
     "build:icons": "node tools/make-icons.mjs",
     "build:shots": "node tools/make-listing-shots.mjs",
+    "build:chart": "node tools/make-benchmark-chart.mjs",
     "clean": "node tools/build.mjs --clean",
     "lint": "node tools/validate.mjs",
     "test": "node --test tests/*.test.mjs",

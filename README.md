@@ -9,11 +9,21 @@ plataformas de apostas, anúncios e rastreadores. A classificação é
 determinística, multifator e executada localmente. Não há telemetria, conta,
 servidor próprio ou envio de conteúdo de navegação.
 
-![Benchmark antes e depois](docs/assets/benchmark-evolution.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/benchmark-engine-dark.png">
+  <img src="docs/assets/benchmark-engine-light.png" alt="Benchmark do motor. Gráfico em escala logarítmica comparando duas estratégias de casamento de subdomínio conforme a lista cresce de 10 para 5.000 entradas: a varredura linear sobe quase proporcionalmente ao tamanho da lista, enquanto o labelWalk usado pela extensão fica praticamente plano, na casa das centenas de nanossegundos. Ao lado, uma tabela com os tempos exatos e o ganho por tamanho, e outra com os erros de classificação no corpus de regressão, onde o classificador multifator zera os falsos positivos e negativos do classificador anterior por palavra-chave. Acima, indicadores de consulta de domínio, taxa do parser de listas e custo médio do classificador por página. Os valores exatos ficam nos relatórios JSON versionados.">
+</picture>
 
-O gráfico é gerado por `npm run benchmark` a partir dos 391 cenários
-determinísticos versionados. Os dados completos, incluindo ambiente e tempos,
-ficam em [`docs/reports/benchmark-results.json`](docs/reports/benchmark-results.json).
+O gráfico sai de `npm run build:chart`, que lê os relatórios de
+[`npm run bench:engine`](docs/reports/engine-benchmark.json) e
+[`npm run benchmark`](docs/reports/benchmark-results.json) — nenhum número é
+digitado no gerador. Há uma versão para cada tema porque um PNG tem fundo fixo e
+o GitHub, dois temas.
+
+O corpus de 391 cenários é sintético e serve para detectar regressão entre
+versões. Ele **não** mede precisão em campo e não deve ser citado como se
+medisse. As medições cobrem apenas caminhos internos do motor, não o tempo de
+carregamento das páginas.
 
 ## Bloqueio de anúncios e rastreadores
 
@@ -134,6 +144,7 @@ npm test
 npm run build:rules
 npm run build:icons
 npm run build:shots
+npm run build:chart
 npm run benchmark
 npm run test:real
 npm run build:firefox

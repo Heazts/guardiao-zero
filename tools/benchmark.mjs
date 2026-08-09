@@ -12,7 +12,6 @@ const runtime = await loadRuntime([
 const detector = runtime.GuardiaoDetection;
 const bettingPolicy = runtime.GuardiaoVerifiedBettingDomains;
 const REPORT_URL = new URL('../docs/reports/benchmark-results.json', import.meta.url);
-const CHART_URL = new URL('../docs/assets/benchmark-evolution.svg', import.meta.url);
 let benchmarkSink = 0;
 
 function legacyNormalize(text) {
@@ -303,124 +302,7 @@ report.accuracy.before.accuracyPercent = derivedAccuracy(report.accuracy.before)
 report.accuracy.after.accuracyPercent = derivedAccuracy(report.accuracy.after);
 report.methodology.integrityChecksum = benchmarkSink;
 
-function formatNumber(value, maximumFractionDigits = 2) {
-    return new Intl.NumberFormat('pt-BR', {
-        maximumFractionDigits,
-        minimumFractionDigits: maximumFractionDigits
-    }).format(value);
-}
-
-function metricCard({ x, eyebrow, before, after, unit = '', lowerIsBetter = false }) {
-    const beforeValue = Number(before);
-    const afterValue = Number(after);
-    const scale = Math.max(beforeValue, afterValue, 1);
-    const fractionDigits = unit === '%' ? 2 : 0;
-    const beforeWidth = Math.max(beforeValue > 0 ? 4 : 0, (beforeValue / scale) * 200);
-    const afterWidth = Math.max(afterValue > 0 ? 4 : 0, (afterValue / scale) * 200);
-    return `
-        <g transform="translate(${x} 236)">
-            <text x="24" y="34" class="eyebrow">${eyebrow}</text>
-            <text x="24" y="74" class="metric">${formatNumber(afterValue, fractionDigits)}${unit}</text>
-            <text x="24" y="98" class="caption">resultado atual</text>
-            <text x="24" y="136" class="label">Antes</text>
-            <rect x="72" y="124" width="200" height="14" rx="3" fill="#ededed"/>
-            <rect x="72" y="124" width="${beforeWidth.toFixed(2)}" height="14" rx="3" fill="#a3a3a3"/>
-            <text x="320" y="136" text-anchor="end" class="value">${formatNumber(beforeValue, fractionDigits)}${unit}</text>
-            <text x="24" y="176" class="label">Depois</text>
-            <rect x="72" y="164" width="200" height="14" rx="3" fill="#ededed"/>
-            <rect x="72" y="164" width="${afterWidth.toFixed(2)}" height="14" rx="3" fill="#111"/>
-            <text x="320" y="176" text-anchor="end" class="value">${formatNumber(afterValue, fractionDigits)}${unit}</text>
-            <text x="24" y="210" class="delta">${lowerIsBetter ? 'Menor é melhor' : 'Maior é melhor'}</text>
-        </g>`;
-}
-
-function benchmarkSvg(data) {
-    const before = data.accuracy.before;
-    const after = data.accuracy.after;
-    const heapMiB = data.blocklist.observedSetHeapDeltaBytes / (1024 * 1024);
-    const created = new Intl.DateTimeFormat('pt-BR', {
-        dateStyle: 'long',
-        timeZone: 'America/Fortaleza'
-    }).format(new Date(data.generatedAt));
-    const classifierRatio = data.classifierPerformance.legacyMeanMs === 0
-        ? 0
-        : data.classifierPerformance.multifactorMeanMs
-            / data.classifierPerformance.legacyMeanMs;
-    return `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title description">
-    <title id="title">Benchmark do Guardião Zero Pro</title>
-    <desc id="description">Comparação real entre a classificação anterior e a multifator atual em ${data.corpus.total} cenários determinísticos.</desc>
-    <rect width="1200" height="720" fill="#fff"/>
-    <style>
-        text { font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #111; }
-        .kicker { font-size: 14px; font-weight: 700; letter-spacing: 2px; }
-        .title { font-family: Newsreader, Georgia, serif; font-size: 52px; font-weight: 560; letter-spacing: -2px; }
-        .subtitle { font-size: 17px; fill: #595959; }
-        .eyebrow { font-size: 12px; font-weight: 720; letter-spacing: 1.2px; text-transform: uppercase; }
-        .metric { font-family: Newsreader, Georgia, serif; font-size: 38px; font-weight: 560; letter-spacing: -1px; }
-        .caption, .label, .value { font-size: 12px; fill: #666; }
-        .value { fill: #333; font-weight: 650; }
-        .delta { font-size: 11px; fill: #777; }
-        .note-title { font-size: 15px; font-weight: 700; }
-        .note { font-size: 13px; fill: #555; }
-        .footer { font-size: 11px; fill: #777; }
-    </style>
-    <g transform="translate(64 58)">
-        <rect width="42" height="42" rx="6" fill="#111"/>
-        <path d="M25.7 10.5C15.4 7 7.9 12 7.9 21s7.5 14 17.8 10.5" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square"/>
-        <path d="M21.5 21h9.4M30.9 8v26" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="square"/>
-        <text x="58" y="14" class="kicker">GUARDIÃO ZERO PRO</text>
-        <text x="58" y="58" class="title">Benchmark antes e depois</text>
-        <text x="58" y="88" class="subtitle">${data.corpus.total} cenários · ${data.classifierPerformance.operations.toLocaleString('pt-BR')} classificações · ${created}</text>
-    </g>
-    <line x1="64" y1="210" x2="1136" y2="210" stroke="#111" stroke-width="2"/>
-    <line x1="408" y1="236" x2="408" y2="468" stroke="#dedede"/>
-    <line x1="772" y1="236" x2="772" y2="468" stroke="#dedede"/>
-    <line x1="64" y1="468" x2="1136" y2="468" stroke="#111"/>
-    ${metricCard({
-        x: 64,
-        eyebrow: 'Acurácia',
-        before: before.accuracyPercent,
-        after: after.accuracyPercent,
-        unit: '%'
-    })}
-    ${metricCard({
-        x: 428,
-        eyebrow: 'Falsos positivos',
-        before: before.falsePositive,
-        after: after.falsePositive,
-        lowerIsBetter: true
-    })}
-    ${metricCard({
-        x: 792,
-        eyebrow: 'Falsos negativos',
-        before: before.falseNegative,
-        after: after.falseNegative,
-        lowerIsBetter: true
-    })}
-    <g transform="translate(64 494)">
-        <text x="24" y="34" class="note-title">Política de domínios verificados</text>
-        <text x="24" y="59" class="note">Lista pequena mantida pelo projeto mais o sufixo regulado .bet.br.</text>
-        <text x="24" y="88" class="metric">${formatNumber(heapMiB)} MiB</text>
-        <text x="24" y="112" class="caption">heap adicional observado ao materializar um Set separado; a política mantém um único índice privado</text>
-        <line x1="650" y1="22" x2="650" y2="120" stroke="#dedede"/>
-        <text x="680" y="43" class="note-title">Custo consciente de precisão</text>
-        <text x="680" y="70" class="note">Legado: ${formatNumber(data.classifierPerformance.legacyMeanMs, 4)} ms/op</text>
-        <text x="680" y="94" class="note">Multifator: ${formatNumber(data.classifierPerformance.multifactorMeanMs, 4)} ms/op</text>
-        <text x="680" y="118" class="caption">${formatNumber(classifierRatio, 1)}× mais análise por página para eliminar erros no corpus.</text>
-    </g>
-    <line x1="64" y1="636" x2="1136" y2="636" stroke="#111"/>
-    <text x="64" y="680" class="footer">Fonte: npm run benchmark · execução local reproduzível · dados completos em docs/reports/benchmark-results.json</text>
-</svg>
-`;
-}
-
-await Promise.all([
-    mkdir(new URL('../docs/reports/', import.meta.url), { recursive: true }),
-    mkdir(new URL('../docs/assets/', import.meta.url), { recursive: true })
-]);
-await Promise.all([
-    writeFile(REPORT_URL, `${JSON.stringify(report, null, 2)}\n`, 'utf8'),
-    writeFile(CHART_URL, benchmarkSvg(report).replace(/[ \t]+$/gm, ''), 'utf8')
-]);
+await mkdir(new URL('../docs/reports/', import.meta.url), { recursive: true });
+await writeFile(REPORT_URL, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
 
 console.log(JSON.stringify(report, null, 2));
