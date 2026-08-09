@@ -15,6 +15,17 @@ Correções de interface e unificação da identidade visual.
 - fecha o lockup da marca na altura exata do símbolo: as duas linhas são de linha
   única e herdavam `line-height` 1,55, o que inflava o cabeçalho sem motivo.
 
+### Configurações
+
+- corrige "Zerar contadores", que não funcionava. O handler lia
+  `event.currentTarget` depois de `await confirmAction(...)`, e nessa altura ele
+  já é null — o TypeError acontecia antes da chamada, então confirmar o diálogo
+  não zerava nada;
+- corrige "Exportar backup", que deixava o próprio botão desabilitado até
+  recarregar a página, pelo mesmo motivo no `finally`;
+- `npm run lint` passa a recusar acesso a propriedade de `.currentTarget`, para o
+  padrão não voltar.
+
 ### Tema escuro
 
 - corrige o contraste de tudo que é pintado com a cor de acento. `--accent` é a
@@ -51,6 +62,15 @@ Correções de interface e unificação da identidade visual.
   indicador do item ativo invisível;
 - o ícone da listagem deixa de ter cópia própria e passa a sair do mesmo desenho
   do manifesto, em `docs/assets/brand/`.
+
+### Benchmark
+
+- `npm run build:chart` desenha o gráfico do motor a partir dos relatórios de
+  `bench:engine` e `benchmark`, em PNG claro e escuro para os dois temas do
+  GitHub. Nenhum número é digitado no gerador;
+- remove `docs/assets/benchmark-evolution.svg` e o gerador dele dentro de
+  `tools/benchmark.mjs`: não era mais referenciado e contava a mesma história de
+  precisão a partir de um segundo desenho.
 
 ### Limpeza
 
