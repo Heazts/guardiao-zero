@@ -13,19 +13,19 @@
 
 | Grupo | Teto | Exemplos |
 |---|---:|---|
-| domínio | 95 | blocklist local, token delimitado, TLD |
+| domínio | 95 | política verificada, token delimitado, TLD |
 | URL | 45 | `/sportsbook`, `/live-casino`, `/betslip` |
 | metadados | 60 | título, description, Open Graph, favicon |
 | conteúdo | 75 | frases contextuais, cluster de jogos/links |
 | transação | 80 | botão de aposta, betslip, formulário financeiro |
 | integração | 90 | provedor, API de odds/apostas, WebSocket |
-| storage | 30 | nomes específicos de cookies/DB/storage |
+| storage | 30 | nomes específicos de IndexedDB/storage; nunca valores |
 | rede | 15 | pixels e cluster de tracking (somente suporte) |
 | informativo | -80 | schema de artigo, reportagem/regulação/saúde |
 
 ## Pesos principais
 
-- domínio presente na blocklist empacotada: +90;
+- domínio presente na política empacotada: +90;
 - padrão inequívoco de domínio: +30 a +35;
 - rota inequívoca de plataforma: +30;
 - cassino ao vivo em metadados: +45;
@@ -50,8 +50,10 @@ AND (NOT informationalContext OR operationalEvidence)
 ```
 
 `operationalEvidence` significa transação >= 25 ou integração >= 50.
-`knownDomainConfirmed` exige match da lista local mais metadados, conteúdo ou
-evidência operacional.
+`knownDomainConfirmed` exige match da política local mais metadados, conteúdo
+ou evidência operacional. Antes da coleta DOM, domínios verificados e o sufixo
+`.bet.br` também são bloqueados de forma síncrona por DNR `main_frame`, salvo
+pausa, whitelist ou liberação temporária.
 
 ## Diferenciação de contexto
 
@@ -67,10 +69,15 @@ fraco (+5), porque também aparecem em plataformas reais.
 - JSON-LD: somente `@type`, nunca o objeto completo;
 - IndexedDB/service workers: timeout de 250 ms;
 - recursos: no máximo 160 entradas;
+- URLs auxiliares perdem credenciais, query e fragmento antes da mensagem;
+- somente formulários, integrações e nomes de storage relevantes seguem ao
+  background; cookies e valores de storage não são lidos;
 - observer: 20 segundos, debounce de 2,5 s e no máximo duas reanálises;
 - análise apenas no frame principal;
 - nenhuma varredura DOM quando a camada de apostas está desativada;
 - cache LRU simples limitado a 128 resultados.
 
-O arquivo de 272.868 domínios permanece como texto ASCII ordenado e é
-consultado por busca binária. Isso evita criar centenas de milhares de objetos.
+A política atual contém 28 raízes de apostas mantidas pelo projeto e o sufixo
+`.bet.br`. Ela é carregada como código local pequeno, sem I/O, download ou
+materialização de centenas de milhares de strings. A lista legada sem licença
+não participa do build.

@@ -9,7 +9,6 @@ const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const corpusPath = join(projectRoot, 'tests', 'real-world-corpus.json');
 const resultPath = join(projectRoot, 'docs', 'reports', 'real-world-results.json');
 const graphPath = join(projectRoot, 'docs', 'assets', 'precision-real-world.svg');
-const blocklistPath = join(projectRoot, 'src', 'filters', 'heazts-blocklist.txt');
 const MAX_RESPONSE_BYTES = 2 * 1024 * 1024;
 const TIMEOUT_MS = 12000;
 const CONCURRENCY = 4;
@@ -211,26 +210,6 @@ async function fetchPage(url) {
     }
 }
 
-function findSortedDomain(text, hostname) {
-    const parts = hostname.toLowerCase().replace(/\.$/, '').split('.');
-    for (let index = 0; index <= parts.length - 2; index += 1) {
-        const target = parts.slice(index).join('.');
-        let low = 0;
-        let high = text.length;
-        while (low < high) {
-            const middle = low + Math.floor((high - low) / 2);
-            const start = middle === 0 ? 0 : text.lastIndexOf('\n', middle - 1) + 1;
-            let end = text.indexOf('\n', start);
-            if (end === -1) end = text.length;
-            const line = text.slice(start, end).replace(/\r$/, '');
-            if (line === target) return target;
-            if (line < target) low = end + 1;
-            else high = start;
-        }
-    }
-    return '';
-}
-
 function calculateMetrics(results) {
     const available = results.filter(result => result.available);
     const counts = { tp: 0, fp: 0, tn: 0, fn: 0 };
@@ -322,15 +301,17 @@ async function main() {
 
     const context = await loadRuntime([
         'src/shared/detection/constants.js',
-        'src/shared/detection/detection-engine.js'
+        'src/shared/detection/detection-engine.js',
+        'src/background/verified-betting-domains.js'
     ]);
-    const blocklist = await readFile(blocklistPath, 'utf8');
     const generatedAt = new Date().toISOString();
     const results = await mapConcurrent(corpus.cases, async item => {
         try {
             const page = await fetchPage(item.url);
             const signals = signalsFromHtml(page.finalUrl || item.url, page.html);
-            const systemBlockMatch = findSortedDomain(blocklist, new URL(page.finalUrl || item.url).hostname);
+            const systemBlockMatch = context.GuardiaoVerifiedBettingDomains.findDomain(
+                new URL(page.finalUrl || item.url).hostname
+            );
             const decision = context.GuardiaoDetection.analyze(signals, {
                 systemBlockMatch,
                 threshold: context.GuardiaoConstants.SCORE.thresholdDefault

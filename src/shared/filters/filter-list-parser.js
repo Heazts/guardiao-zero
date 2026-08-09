@@ -4,10 +4,16 @@
  * Parser conservador de filtros de rede para importação local.
  *
  * O módulo aceita somente o subconjunto de EasyList/EasyPrivacy, AdGuard e
- * uBlock Origin que pode ser traduzido diretamente para DNR sem executar
- * código ou aproximar silenciosamente a semântica da regra. Filtros
- * cosméticos, scriptlets, HTML filtering, redirects, modificações de headers
- * e expressões regulares são recusados e contabilizados.
+ * uBlock Origin que pode ser representado sem executar código nem aproximar
+ * silenciosamente a semântica da regra:
+ *
+ * - regras de rede traduzíveis para `declarativeNetRequest`;
+ * - ocultamento de elemento (`##seletor`, `dominio##seletor`, `dominio#@#seletor`),
+ *   cujo efeito é sempre `display: none` e nunca uma declaração vinda da lista.
+ *
+ * Scriptlets, HTML filtering, seletores procedurais, injeção de estilo (`#$#`),
+ * redirects, CSP, modificação de headers e regex arbitrária continuam recusados
+ * e contabilizados.
  */
 globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
     const LIMITS = Object.freeze({
@@ -117,9 +123,24 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
         return bytes;
     }
 
+    // Pontuação ASCII que jamais aparece num hostname. Faixas permitidas:
+    // `-` `.` dígitos, letras, e tudo acima de 0x7F (IDN segue para o caminho
+    // lento, que converte para punycode).
+    const NOT_HOSTNAME_ASCII = /[\x00-\x2c\x2f\x3a-\x40\x5b-\x60\x7b-\x7f]/;
+
     function normalizeDomain(value) {
         const input = cleanString(value, 512).replace(/\.$/, '').toLowerCase();
-        if (!input || /[/\s@:*]/.test(input)) return '';
+        if (!input) return '';
+
+        // `hostRulesFromLine` chama esta função em TODA linha para descobrir se
+        // é formato HOSTS. Sem esta guarda, cada linha em sintaxe Adblock —
+        // `||dominio^$opcoes` — construía uma URL inválida só para vê-la lançar.
+        // Numa lista de 20 mil linhas isso era a maior fatia isolada do parse.
+        if (NOT_HOSTNAME_ASCII.test(input)) return '';
+
+        // Caminho rápido: um hostname ASCII já canônico é exatamente o que
+        // `new URL()` devolveria, sem o custo de construí-la.
+        if (DOMAIN_PATTERN.test(input)) return input;
 
         try {
             const hostname = new URL(`http://${input}`).hostname.replace(/\.$/, '').toLowerCase();
@@ -137,6 +158,7 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
             comments: 0,
             metadata: 0,
             accepted: 0,
+            cosmeticAccepted: 0,
             rejected: 0,
             duplicates: 0,
             truncated: false,
@@ -427,8 +449,157 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
     function unsupportedSyntaxReason(line) {
         if (/(?:##\+js\(|#@#\+js\(|#%#|#@%#)/i.test(line)) return 'unsupported-scriptlet';
         if (/(?:##\^|#@#\^)/.test(line)) return 'unsupported-html-filter';
-        if (/(?:#@?#|#\?#|#@#|##|#\$#|#@\$#)/.test(line)) return 'unsupported-cosmetic-filter';
+        // `#$#` e `#$?#` injetam declarações de estilo arbitrárias; `#?#` é
+        // cosmético procedural. Os dois vão além de ocultar um elemento e
+        // continuam recusados.
+        if (/(?:#\$\??#|#@\$\??#|#\?#|#@\?#)/.test(line)) return 'unsupported-cosmetic-filter';
         return '';
+    }
+
+    // ------------------------------------------------------------------
+    // Ocultamento de elemento
+    //
+    // Suportamos apenas `##seletor` e `dominio##seletor`, com a exceção
+    // `dominio#@#seletor`. O resultado é sempre `display: none` — nunca uma
+    // declaração vinda da lista. Um seletor não executa código, mas pode
+    // apagar a página inteira, então a validação abaixo é a fronteira real.
+    // ------------------------------------------------------------------
+
+    const COSMETIC_LIMITS = Object.freeze({
+        selectorLength: 240,
+        selectorsPerSource: 20000,
+        domainsPerRule: 50
+    });
+
+    /**
+     * Seletores que atingiriam estrutura da página em vez de um anúncio.
+     * Recusar aqui é mais barato — e mais confiável — do que descobrir num
+     * relatório de site quebrado.
+     */
+    const DANGEROUS_TYPE_SELECTOR = /(?:^|[^a-z0-9_.#:-])(?:html|body|head|main|article)(?=$|[^a-z0-9_-])/i;
+    const PROCEDURAL_TOKEN = /:(?:has-text|matches-css|matches-path|xpath|upward|nth-ancestor|watch-attr|min-text-length|others|shadow|remove)\b/i;
+
+    /**
+     * Mascara strings e seletores de atributo antes de procurar elementos
+     * estruturais. Assim `[data-target="body"]` continua legítimo, enquanto
+     * `body:not(...)`, `html#page` e `:is(body)` não escapam pela pontuação.
+     */
+    function selectorCodeOnly(selector) {
+        let code = '';
+        let quote = '';
+        let attributeDepth = 0;
+        let parenthesisDepth = 0;
+
+        for (const token of selector) {
+            if (quote) {
+                code += ' ';
+                if (token === quote) quote = '';
+                continue;
+            }
+            if (token === '"' || token === "'") {
+                quote = token;
+                code += ' ';
+                continue;
+            }
+            if (token === '[') {
+                if (attributeDepth > 0) return { ok: false, code: '' };
+                attributeDepth = 1;
+                code += ' ';
+                continue;
+            }
+            if (token === ']') {
+                if (attributeDepth === 0) return { ok: false, code: '' };
+                attributeDepth = 0;
+                code += ' ';
+                continue;
+            }
+            if (attributeDepth > 0) {
+                code += ' ';
+                continue;
+            }
+            if (token === '(') parenthesisDepth += 1;
+            if (token === ')') {
+                parenthesisDepth -= 1;
+                if (parenthesisDepth < 0) return { ok: false, code: '' };
+            }
+            code += token;
+        }
+
+        return {
+            ok: !quote && attributeDepth === 0 && parenthesisDepth === 0,
+            code
+        };
+    }
+
+    function targetsPageStructure(selector) {
+        const inspected = selectorCodeOnly(selector);
+        if (!inspected.ok) return { ok: false, dangerous: false };
+        const dangerous = /:root\b/i.test(inspected.code)
+            || inspected.code.includes('*')
+            || DANGEROUS_TYPE_SELECTOR.test(inspected.code);
+        return { ok: true, dangerous };
+    }
+
+    function validateSelector(rawSelector) {
+        const selector = cleanString(rawSelector, COSMETIC_LIMITS.selectorLength + 1);
+        if (!selector) return { ok: false, reason: 'empty-selector' };
+        if (selector.length > COSMETIC_LIMITS.selectorLength) {
+            return { ok: false, reason: 'selector-too-long' };
+        }
+        if (PROCEDURAL_TOKEN.test(selector)) {
+            return { ok: false, reason: 'unsupported-procedural-selector' };
+        }
+        // `{` e `}` significariam declaração de estilo; `\` escaparia a saída.
+        if (/[{}\\]/.test(selector)) return { ok: false, reason: 'invalid-selector-syntax' };
+        const structure = targetsPageStructure(selector);
+        if (!structure.ok) return { ok: false, reason: 'invalid-selector-syntax' };
+        if (structure.dangerous) {
+            return { ok: false, reason: 'selector-targets-page-structure' };
+        }
+        if (selector === '*' || /^[a-z]+$/i.test(selector) === false && /^[\s,]*$/.test(selector)) {
+            return { ok: false, reason: 'invalid-selector-syntax' };
+        }
+        return { ok: true, selector };
+    }
+
+    function parseCosmeticLine(line) {
+        const separator = line.match(/#@?#/);
+        if (!separator) return null;
+
+        const index = separator.index;
+        const exception = separator[0] === '#@#';
+        const rawDomains = line.slice(0, index).trim();
+        const rawSelector = line.slice(index + separator[0].length);
+
+        const validation = validateSelector(rawSelector);
+        if (!validation.ok) return { ok: false, reason: validation.reason };
+
+        const domains = [];
+        if (rawDomains) {
+            const parts = rawDomains.split(',');
+            if (parts.length > COSMETIC_LIMITS.domainsPerRule) {
+                return { ok: false, reason: 'too-many-domains' };
+            }
+            for (const part of parts) {
+                const trimmed = part.trim();
+                if (!trimmed) return { ok: false, reason: 'invalid-domain-option' };
+                // `~dominio` exclui; sem suporte a exclusão aqui, recusamos em
+                // vez de aplicar mais amplamente do que a lista pediu.
+                if (trimmed.startsWith('~')) return { ok: false, reason: 'unsupported-domain-exclusion' };
+                const domain = normalizeDomain(trimmed);
+                if (!domain) return { ok: false, reason: 'invalid-domain-option' };
+                domains.push(domain);
+            }
+        }
+
+        return {
+            ok: true,
+            cosmetic: {
+                selector: validation.selector,
+                domains: Array.from(new Set(domains)).sort(),
+                exception
+            }
+        };
     }
 
     function hostRulesFromLine(line) {
@@ -545,6 +716,7 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
                 format: 'unknown',
                 metadata: {},
                 rules: [],
+                cosmetic: [],
                 stats: emptyStats(),
                 errors: [{
                     line: 0,
@@ -566,6 +738,7 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
             format: 'unknown',
             metadata: {},
             rules: [],
+            cosmetic: [],
             stats: emptyStats(bytes),
             errors: []
         };
@@ -576,6 +749,7 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
         }
 
         const uniqueRules = new Set();
+        const uniqueCosmetic = new Set();
         let sawHosts = false;
         let sawNetwork = false;
         let lineStart = 0;
@@ -612,7 +786,37 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
                 reportRejection(result, lineNumber, syntaxReason, trimmed);
                 continue;
             }
-            if (trimmed.startsWith('!') || trimmed.startsWith('#')) {
+            // `!` é sempre comentário. `##` é filtro cosmético e precisa ser
+            // testado ANTES da regra de comentário por `#`, senão todo
+            // ocultamento genérico seria descartado como comentário.
+            if (trimmed.startsWith('!')) {
+                result.stats.comments += 1;
+                continue;
+            }
+            if (/#@?#/.test(trimmed)) {
+                const cosmetic = parseCosmeticLine(trimmed);
+                if (cosmetic && !cosmetic.ok) {
+                    reportRejection(result, lineNumber, cosmetic.reason, trimmed);
+                    continue;
+                }
+                if (cosmetic?.ok) {
+                    if (result.cosmetic.length >= COSMETIC_LIMITS.selectorsPerSource) {
+                        result.stats.truncated = true;
+                        reportRejection(result, lineNumber, 'cosmetic-limit', trimmed);
+                        continue;
+                    }
+                    const key = `${cosmetic.cosmetic.exception ? '@' : ''}${cosmetic.cosmetic.domains.join(',')}##${cosmetic.cosmetic.selector}`;
+                    if (uniqueCosmetic.has(key)) {
+                        result.stats.duplicates += 1;
+                        continue;
+                    }
+                    uniqueCosmetic.add(key);
+                    result.cosmetic.push(cosmetic.cosmetic);
+                    result.stats.cosmeticAccepted += 1;
+                    continue;
+                }
+            }
+            if (trimmed.startsWith('#')) {
                 result.stats.comments += 1;
                 continue;
             }
@@ -667,6 +871,8 @@ globalThis.GuardiaoFilterParser = globalThis.GuardiaoFilterParser || (() => {
         normalizeSource,
         normalizeSources,
         normalizeDomain,
-        utf8ByteLength
+        utf8ByteLength,
+        validateSelector,
+        COSMETIC_LIMITS
     });
 })();

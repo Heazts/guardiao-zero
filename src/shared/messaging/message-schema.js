@@ -20,7 +20,10 @@ globalThis.GuardiaoMessages = globalThis.GuardiaoMessages || (() => {
         'ping',
         'resetStats',
         'runSelfTest',
-        'exportState'
+        'exportState',
+        // O hostname vem de `sender.url`, nunca do conteúdo da mensagem: uma
+        // página não pode pedir os seletores de outro domínio.
+        'getCosmeticFilters'
     ]);
 
     function plainObject(value) {
@@ -79,13 +82,14 @@ globalThis.GuardiaoMessages = globalThis.GuardiaoMessages || (() => {
         })).filter(resource => resource.url);
     }
 
+    // Nomes de cookie não são mais aceitos na fronteira. Um content script
+    // comprometido não consegue reintroduzi-los no estado do background.
     function sanitizeStorage(value) {
         const source = plainObject(value) ? value : {};
         return {
             local: stringArray(source.local, constants.LIMITS.storageKeys, 120),
             session: stringArray(source.session, constants.LIMITS.storageKeys, 120),
-            indexedDB: stringArray(source.indexedDB, constants.LIMITS.storageKeys, 120),
-            cookies: stringArray(source.cookies, constants.LIMITS.storageKeys, 120)
+            indexedDB: stringArray(source.indexedDB, constants.LIMITS.storageKeys, 120)
         };
     }
 

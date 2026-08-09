@@ -4,3 +4,7 @@ node_modules/
 *.log
 .DS_Store
 Thumbs.db
+
+# Empacotamento manual da pasta do projeto inclui .git e o manifesto errado.
+# Use sempre: npm run package:amo
+*.zip

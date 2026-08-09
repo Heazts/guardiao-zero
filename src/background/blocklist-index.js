@@ -1,15 +1,13 @@
 'use strict';
 
 /**
- * Índice de domínio com memória previsível. A lista já é única e ordenada;
- * mantemos um único texto e fazemos busca binária por linha, evitando um Set
- * com centenas de milhares de strings/objetos.
+ * Adaptador compatível para a política curada de domínios de apostas.
+ *
+ * A versão anterior buscava em runtime uma lista sem proveniência comprovada.
+ * O índice agora só consulta dados empacotados e auditáveis fornecidos por
+ * `GuardiaoVerifiedBettingDomains`; não há I/O, download ou fallback remoto.
  */
 globalThis.GuardiaoBlocklistIndex = globalThis.GuardiaoBlocklistIndex || (() => {
-    let listText = '';
-    let domainCount = 0;
-    let loadPromise = null;
-
     function readLineAt(text, start) {
         let end = text.indexOf('\n', start);
         if (end === -1) end = text.length;
@@ -18,6 +16,8 @@ globalThis.GuardiaoBlocklistIndex = globalThis.GuardiaoBlocklistIndex || (() => 
         return { value: text.slice(start, valueEnd), next: end < text.length ? end + 1 : end };
     }
 
+    // Mantidos como utilitários puros para benchmarks e compatibilidade com a
+    // API anterior. Nenhum deles carrega ou seleciona uma fonte de dados.
     function containsSortedDomain(text, target) {
         if (!text || !target) return false;
         let low = 0;
@@ -36,18 +36,7 @@ globalThis.GuardiaoBlocklistIndex = globalThis.GuardiaoBlocklistIndex || (() => 
                 high = start;
             }
         }
-
         return false;
-    }
-
-    function findDomain(hostname) {
-        if (!listText || !hostname) return '';
-        const parts = hostname.toLowerCase().split('.');
-        for (let index = 0; index <= parts.length - 2; index += 1) {
-            const candidate = parts.slice(index).join('.');
-            if (containsSortedDomain(listText, candidate)) return candidate;
-        }
-        return '';
     }
 
     function countLines(text) {
@@ -59,37 +48,79 @@ globalThis.GuardiaoBlocklistIndex = globalThis.GuardiaoBlocklistIndex || (() => 
         return count;
     }
 
-    async function load() {
-        if (listText) return { loaded: true, count: domainCount };
-        if (loadPromise) return loadPromise;
+    function provider() {
+        const candidate = globalThis.GuardiaoVerifiedBettingDomains;
+        return candidate && typeof candidate === 'object' ? candidate : null;
+    }
 
-        loadPromise = (async () => {
-            const api = globalThis.GuardiaoPlatform?.api;
-            if (!api) throw new Error('WebExtension API indisponível');
+    function normalizeHostname(value) {
+        if (typeof value !== 'string') return '';
+        const hostname = value.trim().replace(/\.$/, '').toLowerCase();
+        return hostname && !/[/\s@]/.test(hostname) ? hostname : '';
+    }
 
-            const response = await fetch(api.runtime.getURL('src/filters/heazts-blocklist.txt'));
-            if (!response.ok) throw new Error(`Falha ao carregar blocklist: HTTP ${response.status}`);
-            const text = await response.text();
-            if (!text || text.length < 1000) throw new Error('Blocklist vazia ou corrompida');
+    function fallbackFindDomain(source, hostname) {
+        const domains = Array.isArray(source?.domains) ? source.domains : [];
+        const suffixes = Array.isArray(source?.suffixes) ? source.suffixes : [];
+        for (const candidate of [...domains, ...suffixes]) {
+            const normalized = normalizeHostname(candidate);
+            if (normalized && (hostname === normalized || hostname.endsWith(`.${normalized}`))) {
+                return normalized;
+            }
+        }
+        return '';
+    }
 
-            listText = text;
-            domainCount = countLines(text);
-            return { loaded: true, count: domainCount };
-        })().catch(error => {
-            loadPromise = null;
-            throw error;
-        });
-
-        return loadPromise;
+    function findDomain(rawHostname) {
+        const source = provider();
+        const hostname = normalizeHostname(rawHostname);
+        if (!source || !hostname) return '';
+        if (typeof source.findDomain === 'function') {
+            try {
+                const match = normalizeHostname(source.findDomain(hostname));
+                if (match) return match;
+            } catch {
+                // A representação declarativa abaixo mantém o índice disponível.
+            }
+        }
+        return fallbackFindDomain(source, hostname);
     }
 
     function status() {
+        const source = provider();
+        if (!source) {
+            return {
+                loaded: false,
+                count: 0,
+                bytes: 0,
+                representation: 'verified-domain-policy',
+                provenance: null
+            };
+        }
+
+        let upstream = {};
+        if (typeof source.status === 'function') {
+            try {
+                const value = source.status();
+                if (value && typeof value === 'object' && !Array.isArray(value)) upstream = value;
+            } catch {
+                // O diagnóstico abaixo continua utilizável com os dados básicos.
+            }
+        }
+        const domains = Array.isArray(source.domains) ? source.domains.length : 0;
+        const suffixes = Array.isArray(source.suffixes) ? source.suffixes.length : 0;
         return {
-            loaded: Boolean(listText),
-            count: domainCount,
-            bytes: listText.length,
-            representation: 'sorted-text-binary-search'
+            ...upstream,
+            loaded: true,
+            count: Number.isFinite(upstream.count) ? upstream.count : domains + suffixes,
+            bytes: Number.isFinite(upstream.bytes) ? upstream.bytes : 0,
+            representation: upstream.representation || 'verified-domain-policy',
+            provenance: upstream.provenance || source.provenance || null
         };
+    }
+
+    async function load() {
+        return status();
     }
 
     return Object.freeze({

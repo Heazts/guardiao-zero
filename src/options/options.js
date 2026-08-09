@@ -575,13 +575,20 @@
     }
 
     function initializeDataActions() {
+        // `event.currentTarget` só existe durante o despacho do evento: na
+        // primeira continuação depois de um `await` ele já é null. Guardar a
+        // referência de forma síncrona é obrigatório aqui — sem isso o `finally`
+        // lançava TypeError e o botão ficava desabilitado para sempre, e em
+        // "Zerar contadores" o erro acontecia antes do try, de modo que a ação
+        // nem chegava a rodar.
         element('btn-reset-stats').addEventListener('click', async event => {
+            const button = event.currentTarget;
             const confirmed = await confirmAction(
                 'Zerar todos os contadores agregados? Esta ação não pode ser desfeita.',
                 'Zerar contadores'
             );
             if (!confirmed) return;
-            event.currentTarget.disabled = true;
+            button.disabled = true;
             try {
                 const response = await request('resetStats');
                 renderState(response.state);
@@ -589,12 +596,13 @@
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
-                event.currentTarget.disabled = false;
+                button.disabled = false;
             }
         });
 
         element('btn-export').addEventListener('click', async event => {
-            event.currentTarget.disabled = true;
+            const button = event.currentTarget;
+            button.disabled = true;
             try {
                 const response = await request('exportState');
                 downloadJson('guardiao-zero-pro-backup.json', response.data);
@@ -602,7 +610,7 @@
             } catch (error) {
                 showToast(error.message, 'error');
             } finally {
-                event.currentTarget.disabled = false;
+                button.disabled = false;
             }
         });
 

@@ -1,0 +1,88 @@
+[Adblock Plus 2.0]
+! Title: Guardião Zero — Ocultamento de elementos
+! Description: Contêineres publicitários que sobram depois que a camada de rede
+!   bloqueia o recurso. Sem isto, o bloqueio deixa buracos no layout e não
+!   alcança anúncio nativo nem publicidade servida em primeira parte.
+! License: MIT (mesma do projeto)
+!
+! REGRA DE CURADORIA: um seletor só entra aqui se identificar publicidade por
+!   construção — classe, id ou atributo que a própria plataforma de anúncio
+!   define. Nada de heurística por posição, tamanho ou nome genérico como
+!   `.banner`, `.promo`, `.sidebar`: essas classes têm uso legítimo e o custo de
+!   errar é apagar conteúdo do usuário.
+!
+! O parser recusa automaticamente seletores que atinjam html, body, head, main,
+!   article, :root ou `*`, além de qualquer sintaxe procedural. Ver
+!   tests/cosmetic.test.mjs.
+
+! ---------------------------------------------------------------------------
+! Google AdSense / Ad Manager — marcadores definidos pela própria plataforma
+! ---------------------------------------------------------------------------
+##ins.adsbygoogle
+##.adsbygoogle
+##div[id^="google_ads_iframe_"]
+##div[id^="div-gpt-ad"]
+##iframe[id^="google_ads_iframe_"]
+##iframe[name^="google_ads_iframe_"]
+##[data-google-query-id]
+##.adsbygoogle-noablate
+##ins[data-ad-client]
+##ins[data-ad-slot]
+
+! ---------------------------------------------------------------------------
+! Iframes de rede publicitária identificados pela origem
+! ---------------------------------------------------------------------------
+##iframe[src*="doubleclick.net"]
+##iframe[src*="googlesyndication.com"]
+##iframe[src*="googleadservices.com"]
+##iframe[src*="amazon-adsystem.com"]
+##iframe[src*="adnxs.com"]
+##iframe[src*="criteo.com"]
+##iframe[src*="pubmatic.com"]
+##iframe[src*="rubiconproject.com"]
+##iframe[src*="openx.net"]
+##iframe[src*="smartadserver.com"]
+##iframe[src*="adform.net"]
+##iframe[src*="teads.tv"]
+##iframe[src*="outbrain.com"]
+##iframe[src*="taboola.com"]
+##iframe[src*="mgid.com"]
+##iframe[src*="revcontent.com"]
+##iframe[src*="adsterra.com"]
+##iframe[src*="exoclick.com"]
+##iframe[src*="popads.net"]
+
+! ---------------------------------------------------------------------------
+! Recomendação de conteúdo patrocinado — contêineres nomeados pela plataforma
+! ---------------------------------------------------------------------------
+##[id^="taboola-"]
+##[id^="outbrain_widget_"]
+##.OUTBRAIN
+##.trc_rbox_container
+##.trc_related_container
+##[data-widget-id^="OUTBRAIN"]
+##.mgbox
+##[id^="M"][id$="ScriptRootC"]
+##.revcontent-strip
+##.rc-widget
+
+! ---------------------------------------------------------------------------
+! Marcadores padronizados de publicidade
+! ---------------------------------------------------------------------------
+##[data-ad-manager-id]
+##[data-adunit]
+##[data-adunitid]
+##[data-ad-unit-path]
+##[data-ad-targeting]
+##[aria-label="advertisement" i]
+##[aria-label="publicidade" i]
+##[data-testid="advertisement"]
+
+! ---------------------------------------------------------------------------
+! Prebid e header bidding
+! ---------------------------------------------------------------------------
+##[id^="pb-slot"]
+##[id^="prebid-"]
+##div[id^="ad-slot-"]
+##div[id^="adslot-"]
+##div[class^="adSlot"]

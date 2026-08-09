@@ -1,9 +1,12 @@
 import { readFile, readdir } from 'node:fs/promises';
-import { createReadStream, existsSync } from 'node:fs';
-import { createInterface } from 'node:readline';
+import { existsSync } from 'node:fs';
 import { dirname, extname, join, relative, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import vm from 'node:vm';
+
+import { rulesetsAreCurrent } from './build-rules.mjs';
+import { brandAssetsAreCurrent } from './make-icons.mjs';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const DOMAIN_PATTERN = /^(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$/;
@@ -36,26 +39,58 @@ function localReferencesFromManifest(manifest) {
     return references.filter(Boolean);
 }
 
-async function validateBlocklist(path, errors) {
-    const input = createReadStream(path, { encoding: 'utf8' });
-    const lines = createInterface({ input, crlfDelay: Infinity });
-    let count = 0;
-    let previous = '';
-    for await (const rawLine of lines) {
-        const line = rawLine.trim().toLowerCase();
-        count += 1;
-        if (!DOMAIN_PATTERN.test(line)) {
-            errors.push(`Blocklist: domínio inválido na linha ${count}: ${line.slice(0, 100)}`);
-            if (errors.length > 30) break;
-        }
-        if (previous && line <= previous) {
-            errors.push(`Blocklist: ordem/duplicidade inválida na linha ${count}: ${line}`);
-            if (errors.length > 30) break;
-        }
-        previous = line;
+async function validateBettingPolicy(path, errors) {
+    const source = await readFile(path, 'utf8');
+    const context = vm.createContext({});
+    try {
+        vm.runInContext(source, context, { filename: relative(projectRoot, path) });
+    } catch (error) {
+        errors.push(`Política de apostas inválida: ${error.message}`);
+        return { domains: 0, suffixes: 0 };
     }
-    if (count < 200000) errors.push(`Blocklist inesperadamente pequena: ${count} linhas`);
-    return count;
+
+    const policy = context.GuardiaoVerifiedBettingDomains;
+    if (!policy || !Array.isArray(policy.domains) || !Array.isArray(policy.suffixes)) {
+        errors.push('Política de apostas deve expor arrays domains e suffixes');
+        return { domains: 0, suffixes: 0 };
+    }
+
+    const domains = Array.from(policy.domains, String);
+    const suffixes = Array.from(policy.suffixes, String);
+    let previous = '';
+    for (const [index, domain] of domains.entries()) {
+        if (!DOMAIN_PATTERN.test(domain) || domain !== domain.toLowerCase()) {
+            errors.push(`Política de apostas: domínio inválido na posição ${index + 1}: ${domain}`);
+        }
+        if (previous && domain <= previous) {
+            errors.push(`Política de apostas: ordem/duplicidade inválida: ${domain}`);
+        }
+        previous = domain;
+    }
+    if (domains.length < 10 || domains.length > 500) {
+        errors.push(`Política de apostas deve conter entre 10 e 500 domínios; recebeu ${domains.length}`);
+    }
+
+    previous = '';
+    for (const suffix of suffixes) {
+        if (!DOMAIN_PATTERN.test(suffix) || suffix !== suffix.toLowerCase()) {
+            errors.push(`Política de apostas: sufixo inválido: ${suffix}`);
+        }
+        if (previous && suffix <= previous) {
+            errors.push(`Política de apostas: ordem/duplicidade de sufixo inválida: ${suffix}`);
+        }
+        previous = suffix;
+    }
+    if (!suffixes.includes('bet.br')) errors.push('Política de apostas deve incluir o sufixo regulado bet.br');
+    if (policy.provenance?.license !== 'MIT') errors.push('Política de apostas deve declarar licença MIT');
+    if (!/^https:\/\/www\.gov\.br\/fazenda\//.test(policy.provenance?.policySource || '')) {
+        errors.push('Política de apostas deve registrar a fonte oficial gov.br');
+    }
+    if (!Object.isFrozen(policy) || !Object.isFrozen(policy.domains) || !Object.isFrozen(policy.suffixes)) {
+        errors.push('Política de apostas e seus arrays devem ser imutáveis');
+    }
+
+    return { domains: domains.length, suffixes: suffixes.length };
 }
 
 function validateDnrRules(rules, label, errors) {
@@ -127,6 +162,22 @@ export async function validateProject(options = {}) {
 
     if (manifest.manifest_version !== 3) errors.push('manifest_version deve ser 3');
     if (manifest.version !== packageJson.version) errors.push('Versões de manifest e package divergem');
+    if (!Array.isArray(manifest.background?.scripts) || manifest.background.scripts.length === 0) {
+        errors.push('Manifest fonte deve declarar background.scripts para Firefox');
+    }
+    const backgroundScripts = manifest.background?.scripts || [];
+    const bettingPolicyIndex = backgroundScripts.indexOf(
+        'src/background/verified-betting-domains.js'
+    );
+    const blocklistAdapterIndex = backgroundScripts.indexOf('src/background/blocklist-index.js');
+    if (bettingPolicyIndex === -1) {
+        errors.push('Manifest Firefox deve carregar verified-betting-domains.js');
+    } else if (blocklistAdapterIndex !== -1 && bettingPolicyIndex > blocklistAdapterIndex) {
+        errors.push('verified-betting-domains.js deve carregar antes de blocklist-index.js');
+    }
+    if (manifest.background?.service_worker) {
+        errors.push('Manifest fonte não deve declarar background.service_worker; o build Chromium adiciona essa propriedade');
+    }
     if (manifest.content_scripts?.some(item => item.all_frames !== false)) {
         errors.push('Content script deve executar apenas no frame principal');
     }
@@ -183,7 +234,13 @@ export async function validateProject(options = {}) {
                     ['innerHTML', /\binnerHTML\b/],
                     ['eval', /\beval\s*\(/],
                     ['Function constructor', /\bnew\s+Function\b/],
-                    ['debug DNR API', /onRuleMatchedDebug/]
+                    ['debug DNR API', /onRuleMatchedDebug/],
+                    // currentTarget é null na primeira continuação depois de um
+                    // await, então desreferenciar direto quebra em silêncio em
+                    // qualquer handler async. Guarde numa const síncrona antes:
+                    // `const button = event.currentTarget;`. Passar o valor
+                    // adiante continua permitido; só o acesso a propriedade não.
+                    ['acesso direto a currentTarget', /\.currentTarget\s*\./]
                 ];
                 for (const [label, pattern] of forbidden) {
                     if (pattern.test(source)) errors.push(`${relative(projectRoot, path)} usa ${label}`);
@@ -211,6 +268,7 @@ export async function validateProject(options = {}) {
         join('assets', 'fonts', 'NEWSREADER-OFL.txt'),
         join('assets', 'brand', 'limiar-orbital.svg'),
         join('src', 'privacy', 'privacy.html'),
+        join('src', 'background', 'verified-betting-domains.js'),
         join('docs', 'BRAND_SYSTEM.md'),
         'PRIVACY.md',
         'LICENSE',
@@ -224,14 +282,29 @@ export async function validateProject(options = {}) {
     if (existsSync(join(projectRoot, 'META-INF'))) errors.push('META-INF assinado não deve permanecer no código-fonte modificado');
     if (existsSync(join(projectRoot, 'Microsoft'))) errors.push('Cache do PowerShell não deve permanecer no projeto');
 
-    const blocklistCount = await validateBlocklist(
-        join(projectRoot, 'src', 'filters', 'heazts-blocklist.txt'),
+    // Os rulesets estáticos são derivados das seed lists. Se alguém editar o
+    // JSON à mão, ou esquecer de rodar build:rules, a divergência aparece aqui
+    // em vez de virar cobertura silenciosamente diferente da esperada.
+    const rulesets = await rulesetsAreCurrent();
+    for (const problem of rulesets.drift) errors.push(problem);
+
+    // Mesmo princípio para a identidade: SVG e PNG saem de uma geometria só.
+    // Editar um deles à mão fazia o ícone da barra deixar de ser o símbolo do
+    // cabeçalho sem que nada acusasse.
+    const brand = await brandAssetsAreCurrent();
+    for (const problem of brand.drift) errors.push(problem);
+
+    const bettingPolicy = await validateBettingPolicy(
+        join(projectRoot, 'src', 'background', 'verified-betting-domains.js'),
         errors
     );
-    const result = { ok: errors.length === 0, errors, blocklistCount };
+    const result = { ok: errors.length === 0, errors, bettingPolicy };
     if (!options.quiet) {
         if (result.ok) {
-            console.log(`Validação concluída: ${blocklistCount.toLocaleString('pt-BR')} domínios, nenhum erro.`);
+            console.log(
+                `Validação concluída: ${bettingPolicy.domains.toLocaleString('pt-BR')} `
+                + `domínios verificados + ${bettingPolicy.suffixes} sufixo(s), nenhum erro.`
+            );
         } else {
             console.error(errors.join('\n'));
         }

@@ -98,9 +98,6 @@ globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
         if (!root) return appearance;
 
         const accent = rgbFromHex(appearance.accent);
-        const accentForeground = contrastRatio(accent, [255, 255, 255]) >= 4.5
-            ? [255, 255, 255]
-            : [10, 10, 10];
 
         root.dataset.theme = appearance.theme;
         root.dataset.contrast = appearance.contrast;
@@ -108,7 +105,9 @@ globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
         root.dataset.motion = appearance.motion;
         root.style.setProperty('--accent', rgbCss(accent));
         root.style.setProperty('--accent-rgb', accent.join(' '));
-        root.style.setProperty('--accent-foreground', rgbCss(accentForeground));
+        // O CSS escolhe entre as duas conforme o tema resolvido (inclusive
+        // "system", que só o navegador sabe resolver). Aqui basta garantir que
+        // cada uma tenha 4,5:1 contra o fundo a que se destina.
         root.style.setProperty('--accent-on-light', rgbCss(readableAccent(accent, [255, 255, 255])));
         root.style.setProperty('--accent-on-dark', rgbCss(readableAccent(accent, [10, 10, 10])));
         root.style.colorScheme = appearance.theme === 'system'

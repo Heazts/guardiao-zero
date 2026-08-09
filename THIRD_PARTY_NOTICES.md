@@ -38,26 +38,38 @@ Arquivos redistribuídos:
 - `assets/fonts/NewsreaderVariable.woff2`;
 - `assets/fonts/NEWSREADER-OFL.txt`, com o texto integral da OFL-1.1.
 
-## Lista de domínios `heazts-blocklist.txt`
+## Política de domínios de apostas do projeto
 
-O arquivo `src/filters/heazts-blocklist.txt` foi fornecido como parte do
+O arquivo `src/background/verified-betting-domains.js` é uma obra original,
+mantida manualmente pelos contribuidores do Guardião Zero Pro e distribuída
+sob a licença MIT do projeto. Ele contém uma lista pequena de raízes
+inequivocamente associadas a serviços de apostas e a regra de sufixo `.bet.br`.
+
+A regra de sufixo foi verificada na página pública da Secretaria de Prêmios e
+Apostas, que informa que sites com autorização federal usam `.bet.br`:
+
+<https://www.gov.br/fazenda/pt-br/composicao/orgaos/secretaria-de-premios-e-apostas/apostas-de-quota-fixa>
+
+Nenhuma planilha, lista ou compilação do Ministério da Fazenda foi copiada ou
+adaptada. O link é uma fonte de verificação da política de sufixo, não a fonte
+de uma base redistribuída.
+
+## Lista legada `heazts-blocklist.txt`
+
+O arquivo `src/filters/heazts-blocklist.txt` havia sido fornecido como parte do
 projeto, mas sua origem, autoria, data de obtenção e licença não estavam
-documentadas na árvore recebida.
+documentadas. Ele foi removido da árvore na versão 3.1.2 e não participa da
+validação, dos testes, do build ou do empacotamento.
 
-Por esse motivo:
+Como defesa contra reintrodução acidental, `tools/build.mjs` continua excluindo
+esse caminho e `tools/package-amo.mjs` recusa o release caso o arquivo apareça
+no artefato. Uma cópia só poderá voltar ao projeto depois de documentar fonte,
+titular, licença, versão, alterações e atribuições exigidas.
 
-- este arquivo não deve ser presumido como coberto pela licença MIT do código;
-- sua redistribuição pública não deve ocorrer até que os direitos aplicáveis
-  sejam confirmados;
-- antes da publicação, devem ser registrados a fonte original, o titular, a
-  licença, a versão ou data da lista, as alterações realizadas e as
-  atribuições exigidas;
-- se não for possível confirmar permissão compatível com redistribuição, o
-  arquivo deve ser removido ou substituído por uma fonte com licença clara.
-
-**Estado de publicação:** pendente de confirmação. Este é um bloqueador para
-distribuir o pacote atual ou licenciar todo o repositório de forma
-indiscriminada sob MIT.
+**Estado de publicação:** o bloqueador foi removido do artefato binário porque
+o arquivo não é mais redistribuído. Ele ainda não pode integrar um arquivo de
+código-fonte público nem ser licenciado sob MIT enquanto sua origem não for
+comprovada. Use sempre `npm run package:amo`; não compacte a árvore de trabalho.
 
 ## Escopo da licença MIT
 

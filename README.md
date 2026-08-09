@@ -9,16 +9,70 @@ plataformas de apostas, anúncios e rastreadores. A classificação é
 determinística, multifator e executada localmente. Não há telemetria, conta,
 servidor próprio ou envio de conteúdo de navegação.
 
-![Benchmark antes e depois](docs/assets/benchmark-evolution.svg)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/assets/benchmark-engine-dark.png">
+  <img src="docs/assets/benchmark-engine-light.png" alt="Benchmark do motor. Gráfico em escala logarítmica comparando duas estratégias de casamento de subdomínio conforme a lista cresce de 10 para 5.000 entradas: a varredura linear sobe quase proporcionalmente ao tamanho da lista, enquanto o labelWalk usado pela extensão fica praticamente plano, na casa das centenas de nanossegundos. Ao lado, uma tabela com os tempos exatos e o ganho por tamanho, e outra com os erros de classificação no corpus de regressão, onde o classificador multifator zera os falsos positivos e negativos do classificador anterior por palavra-chave. Acima, indicadores de consulta de domínio, taxa do parser de listas e custo médio do classificador por página. Os valores exatos ficam nos relatórios JSON versionados.">
+</picture>
 
-O gráfico é gerado por `npm run benchmark` a partir dos 391 cenários
-determinísticos versionados. Os dados completos, incluindo ambiente e tempos,
-ficam em [`docs/reports/benchmark-results.json`](docs/reports/benchmark-results.json).
+O gráfico sai de `npm run build:chart`, que lê os relatórios de
+[`npm run bench:engine`](docs/reports/engine-benchmark.json) e
+[`npm run benchmark`](docs/reports/benchmark-results.json) — nenhum número é
+digitado no gerador. Há uma versão para cada tema porque um PNG tem fundo fixo e
+o GitHub, dois temas.
+
+O corpus de 391 cenários é sintético e serve para detectar regressão entre
+versões. Ele **não** mede precisão em campo e não deve ser citado como se
+medisse. As medições cobrem apenas caminhos internos do motor, não o tempo de
+carregamento das páginas.
+
+## Bloqueio de anúncios e rastreadores
+
+O bloqueio de rede é a camada principal e roda antes de qualquer recurso
+carregar, via `declarativeNetRequest`. Os rulesets estáticos são **gerados** a
+partir de seed lists legíveis em sintaxe Adblock:
+
+```text
+src/filters/sources/*.txt   →   tools/build-rules.mjs   →   src/background/rules/*.json
+```
+
+A conversão usa exatamente o mesmo parser que valida listas importadas pelo
+usuário, então regra embarcada e regra importada passam pelas mesmas recusas de
+segurança. Editar cobertura é editar um `.txt`; `npm run build:rules` regenera o
+JSON e `npm run lint` falha se os dois divergirem.
+
+Cobertura embarcada atual: 202 regras de anúncio e 132 de rastreamento, cada uma
+cobrindo 11 tipos de recurso. `main_frame` fica deliberadamente de fora — o
+anúncio já não renderizou, e bloquear navegação de nível superior quebraria
+click-through sem ganho.
+
+Isso **não** substitui EasyList. Para cobertura de escala, importe EasyList e
+EasyPrivacy em Configurações → Listas de filtros; a lista embarcada cobre
+infraestrutura publicitária estável e serve de piso.
+
+### Ocultamento de elementos
+
+O bloqueio de rede impede o recurso de carregar, mas o contêiner do anúncio
+continua ocupando espaço — e anúncio nativo nem chega a fazer requisição de
+terceiro. A segunda camada oculta esses elementos.
+
+São 52 seletores embarcados, gerados de `src/filters/sources/cosmetic.txt` pelo
+mesmo pipeline. O efeito é sempre `display: none`; a lista nunca fornece uma
+declaração de estilo. O parser recusa seletor que atinja estrutura da página
+(`html`, `body`, `main`, `article`, `:root`, `*`), sintaxe procedural, injeção
+de estilo e scriptlet.
+
+A aplicação é **CSS puro, sem `MutationObserver`**: uma regra CSS já vale para
+elementos que ainda não existem, então conteúdo dinâmico, infinite scroll e SPA
+ficam cobertos sem custo por mutação.
+
+Whitelist, liberação temporária e o toggle de anúncios desligam o ocultamento
+com a mesma precedência das demais camadas.
 
 ## Recursos
 
 - detecção contextual por score, grupos de evidência e safeguards;
-- índice local com 272.868 domínios e busca binária de baixo consumo de heap;
+- política local auditável com 28 domínios inequívocos e o sufixo `.bet.br`,
+  aplicada por DNR antes do carregamento e pelo classificador como fallback;
 - whitelist tipada com prioridade sobre classificação e regras de rede;
 - blocklist tipada para domínio, subdomínio, regex, TLD, ASN condicional e
   assinatura;
@@ -36,10 +90,12 @@ ficam em [`docs/reports/benchmark-results.json`](docs/reports/benchmark-results.
 
 ## Privacidade
 
-O Guardião Zero Pro não coleta, compartilha nem transmite dados do usuário.
-Preferências, listas e contadores agregados permanecem exclusivamente em
-`storage.local`. Sinais públicos e limitados da página são transitórios e
-usados somente para a decisão atual.
+O Guardião Zero Pro não envia, compartilha nem transmite dados do usuário para
+o desenvolvedor ou terceiros. Preferências, listas e contadores agregados
+permanecem exclusivamente em `storage.local`. Sinais limitados da página,
+inclusive em páginas autenticadas, são processados local e transitoriamente
+somente para a decisão atual; valores de campos, cookies e storage não são
+lidos.
 
 Leia a [Política de Privacidade](PRIVACY.md) e o
 [modelo de segurança](docs/SECURITY.md).
@@ -80,22 +136,32 @@ As categorias seguem os toggles da extensão:
 
 ## Desenvolvimento
 
-Requer Node.js 20 ou superior. Não existem dependências npm de runtime.
+Requer Node.js 22 ou superior. Não existem dependências npm de runtime.
 
 ```text
 npm run lint
 npm test
+npm run build:rules
+npm run build:icons
+npm run build:shots
+npm run build:chart
 npm run benchmark
 npm run test:real
 npm run build:firefox
 npm run build:chromium
 ```
 
-O projeto-fonte mantém as duas declarações de background necessárias à
-portabilidade. Os builds são direcionados:
+O manifesto-fonte usa `background.scripts`, compatível com Firefox. Os builds
+são direcionados e têm diretórios separados, de modo que as duas versões podem
+ficar carregadas ao mesmo tempo:
 
-- `build:firefox` gera `dist/` com `background.scripts`;
-- `build:chromium` gera `dist/` com `background.service_worker`.
+- `build:firefox` gera `dist/firefox/` com `background.scripts`;
+- `build:chromium` troca essa declaração por `background.service_worker` em
+  `dist/chromium/`.
+
+Para testes, carregue sempre a pasta do alvo. Para o AMO, nunca compacte nem
+envie a raiz do repositório: ela contém documentação, ferramentas e `.git` que
+não pertencem ao add-on.
 
 Para validar e empacotar a submissão Firefox:
 
@@ -103,20 +169,22 @@ Para validar e empacotar a submissão Firefox:
 npm run package:amo
 ```
 
-O comando usa `web-ext` 10, exige zero warnings e grava o ZIP em
-`web-ext-artifacts/`.
+O comando usa `web-ext` 10.6.0 fixado no lockfile, exige zero warnings e grava
+em `web-ext-artifacts/` um ZIP com `firefox` no nome. Esse é o único arquivo que
+deve ser enviado ao AMO; o comando também grava seu SHA-256 e um manifesto de
+release verificável.
 
 ## Avaliação
 
 `npm test` executa testes unitários, de integração e centenas de cenários de
 regressão determinísticos. Eles não são apresentados como tráfego real.
 
-No benchmark local de 29 de julho de 2026, o corpus passou de 98,98% para 100%
-de acurácia, de 1 para 0 falso positivo e de 3 para 0 falsos negativos. O
-classificador multifator usa mais CPU por decisão; em contrapartida, a
-blocklist deixa de materializar aproximadamente 18,25 MiB adicionais de heap.
-Essa é uma medição de regressão reproduzível, não uma promessa de precisão na
-web.
+No benchmark histórico de 29 de julho de 2026, o corpus passou de 98,98% para
+100% de acurácia, de 1 para 0 falso positivo e de 3 para 0 falsos negativos.
+Na 3.1.2, a base legada de 4,18 MiB deixou de participar do build e foi
+substituída por uma política pequena mantida pelo projeto, eliminando sua
+leitura no despertar do background. Essas são medições de regressão e decisões
+de arquitetura, não uma promessa de precisão na web.
 
 `npm run test:real` acessa somente as URLs públicas declaradas em
 `tests/real-world-corpus.json`, descarta respostas indisponíveis ou
@@ -138,6 +206,8 @@ e o [gráfico gerado](docs/assets/precision-real-world.svg).
 
 ```text
 assets/                  marca, ícones, fontes Inter/Newsreader e licenças OFL
+src/filters/sources/     seed lists de anúncios e rastreadores (sintaxe Adblock)
+src/background/rules/    rulesets DNR gerados — não editar à mão
 src/background/          estado, políticas, DNR e índice local
 src/content/             coleta limitada e orquestração da análise
 src/shared/detection/    constantes, score e decisão multifator
@@ -155,12 +225,23 @@ docs/                    arquitetura, segurança e relatórios
 As regras de marca, tipografia, iconografia, linguagem e movimento estão
 documentadas em [docs/BRAND_SYSTEM.md](docs/BRAND_SYSTEM.md).
 
+Os arquivos de marca seguem o mesmo princípio dos rulesets — são **gerados**, não
+editados:
+
+```text
+tools/make-icons.mjs   →   assets/brand/*.svg + assets/icons/*.png + docs/assets/brand/*
+```
+
+Uma única geometria produz o SVG e cada PNG, com rasterizador próprio e sem
+dependências. `npm run build:icons` regenera tudo e `npm run lint` falha se algum
+arquivo versionado divergir da geometria.
+
 ## Permissões
 
 - `storage`: dados funcionais locais;
 - `declarativeNetRequest`: bloqueio de rede;
 - `webNavigation`: aplicação antecipada de políticas explícitas;
-- hosts HTTP(S): coleta local de sinais públicos necessários à função
+- hosts HTTP(S): processamento local de sinais limitados necessários à função
   principal.
 
 A extensão não solicita `declarativeNetRequestFeedback`, cookies, histórico,
@@ -168,10 +249,11 @@ downloads, identidade ou acesso remoto a código.
 
 ## Licenças e publicação
 
-O código original está sob MIT. Inter e Newsreader estão sob OFL-1.1. Consulte
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) antes de redistribuir:
-a proveniência e a licença de `src/filters/heazts-blocklist.txt` ainda precisam
-ser confirmadas pelo mantenedor.
+O código e a política pequena de domínios mantida pelo projeto estão sob MIT;
+Inter e Newsreader estão sob OFL-1.1. A lista legada sem proveniência é
+explicitamente excluída de `dist/` e do ZIP do AMO. Consulte
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) antes de redistribuir ou criar
+um pacote de código-fonte.
 
 O checklist de submissão está em
 [docs/AMO_SUBMISSION.md](docs/AMO_SUBMISSION.md).
