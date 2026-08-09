@@ -250,19 +250,20 @@ Release `3.1.3`, gerado em 09.08.2026:
 
 - artefato: `guardiao-zero-pro-3.1.3-firefox.zip`;
 - tamanho: 675.878 bytes;
-- SHA-256: `1A87A7781C0DAEF2762EB0FCAE98E53C3BC294D6CF1C1B1DDB75CF4DD3DD07FD`;
+- SHA-256: `8468F80B433088B5230A565370EA57DF993EA34DA398A93D7BD91B86487F10EE`;
+- commit: `97120c9d9c8b36c7d6649477dbfbc57c283e5beb`, com `sourceDirty: false`;
 - suíte: 119 de 119 testes aprovados;
 - `web-ext 10.6.0`: 0 erros, 0 avisos e 0 notices;
 - smoke test: instalação temporária e recarga aprovadas no Firefox 153.0.3
   headless;
-- inspeção independente: 68 entradas, manifesto `3.1.3`, sem
-  `background.service_worker`, lista legada, `src/filters`, `.git`,
-  `node_modules` ou `.env`.
+- inspeção independente: 68 entradas, raiz com apenas `manifest.json`, `assets/`
+  e `src/`; manifesto `3.1.3`, sem `background.service_worker`, lista legada,
+  `src/filters`, `.git`, `node_modules` ou `.env`.
 
-O `release.json` deste build registra `sourceDirty: true`, porque foi gerado com
-a árvore ainda não commitada. Antes de tratar o artefato como reproduzível,
-faça o commit e rode `npm run package:amo` de novo: o SHA-256 muda e o manifesto
-passa a apontar para um commit exato.
+O artefato é reproduzível a partir do commit acima com
+`npm ci && npm run package:amo`. Esta seção é escrita depois do build, então o
+commit que a contém é posterior ao commit empacotado — um documento não pode
+conter o próprio hash.
 
 O smoke test prova que o pacote instala e recarrega no Firefox. Ele não substitui
 os cenários manuais de navegação e bloqueio listados acima.
