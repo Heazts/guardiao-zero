@@ -20,12 +20,24 @@
     --font-display: "Newsreader Guardiao", "Iowan Old Style", "Palatino Linotype", Georgia, serif;
     --font-mono: "SFMono-Regular", "Cascadia Code", Consolas, ui-monospace, monospace;
 
+    /*
+     * `--accent` é a cor crua escolhida pelo usuário e não serve, sozinha,
+     * para pintar superfície nenhuma: no tema escuro o padrão #111 ficava
+     * invisível sobre --surface (#151514), então o trilho ligado do toggle e o
+     * botão primário sumiam — restava só o polegar branco flutuando.
+     *
+     * Quem pinta é `--accent-surface`, que aponta para a variante já ajustada
+     * ao fundo do tema (appearance.js garante 4,5:1 contra ele). Como essa
+     * razão é simétrica, `--accent-surface-ink` — o oposto do fundo do tema —
+     * herda os mesmos 4,5:1 sobre a superfície, qualquer que seja o acento.
+     */
     --accent: rgb(17 17 17);
     --accent-rgb: 17 17 17;
-    --accent-foreground: rgb(255 255 255);
     --accent-on-light: rgb(17 17 17);
     --accent-on-dark: rgb(255 255 255);
     --accent-ink: var(--accent-on-light);
+    --accent-surface: var(--accent-on-light);
+    --accent-surface-ink: rgb(255 255 255);
     --accent-soft: rgb(var(--accent-rgb) / 6%);
     --accent-soft-hover: rgb(var(--accent-rgb) / 10%);
 
@@ -67,6 +79,8 @@
 :root[data-theme="dark"] {
     color-scheme: dark;
     --accent-ink: var(--accent-on-dark);
+    --accent-surface: var(--accent-on-dark);
+    --accent-surface-ink: rgb(15 15 14);
     --accent-soft: rgb(var(--accent-rgb) / 16%);
     --accent-soft-hover: rgb(var(--accent-rgb) / 22%);
     --canvas: #121211;
@@ -99,6 +113,8 @@
     :root[data-theme="system"] {
         color-scheme: dark;
         --accent-ink: var(--accent-on-dark);
+        --accent-surface: var(--accent-on-dark);
+        --accent-surface-ink: rgb(15 15 14);
         --accent-soft: rgb(var(--accent-rgb) / 16%);
         --accent-soft-hover: rgb(var(--accent-rgb) / 22%);
         --canvas: #121211;
@@ -144,8 +160,21 @@
     --row-padding: 14px;
 }
 
+/*
+ * Anti-flash: appearance.js remove a classe assim que aplica o tema.
+ * A animação é uma trava de segurança — se o script não executar (falha de
+ * carregamento, API indisponível, exceção), a página revela sozinha em vez de
+ * ficar permanentemente invisível.
+ */
 html.appearance-pending body {
     opacity: 0;
+    animation: appearance-reveal 1ms linear 400ms forwards;
+}
+
+@keyframes appearance-reveal {
+    to {
+        opacity: 1;
+    }
 }
 
 *,
@@ -291,6 +320,9 @@ svg {
     gap: 1px;
 }
 
+/* As duas linhas são de linha única (com ellipsis). O line-height herdado de
+   1.55 só inflava o bloco: com 18 + 1 + 13 px o texto fecha exatamente na
+   altura do símbolo de 32 px e o lockup fica opticamente alinhado. */
 .brand-name {
     overflow: hidden;
     color: var(--text);
@@ -299,17 +331,22 @@ svg {
     font-optical-sizing: auto;
     font-weight: 620;
     letter-spacing: -0.03em;
+    line-height: 18px;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
 
 .brand-tagline {
+    overflow: hidden;
     color: var(--text-muted);
     font-family: var(--font-mono);
     font-size: 10px;
     font-weight: 560;
     letter-spacing: 0.05em;
+    line-height: 13px;
+    text-overflow: ellipsis;
     text-transform: uppercase;
+    white-space: nowrap;
 }
 
 .eyebrow {
@@ -359,9 +396,9 @@ svg {
 }
 
 .btn-primary {
-    border-color: var(--accent);
-    background: var(--accent);
-    color: var(--accent-foreground);
+    border-color: var(--accent-surface);
+    background: var(--accent-surface);
+    color: var(--accent-surface-ink);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -537,13 +574,13 @@ svg {
 
 .switch input:checked + .switch-track,
 .toggle-btn[aria-pressed="true"] .toggle-track {
-    border-color: var(--accent);
-    background: var(--accent);
+    border-color: var(--accent-surface);
+    background: var(--accent-surface);
 }
 
 .switch input:checked + .switch-track .switch-thumb,
 .toggle-btn[aria-pressed="true"] .toggle-thumb {
-    background: var(--accent-foreground);
+    background: var(--accent-surface-ink);
     transform: translateX(20px);
 }
 
@@ -602,7 +639,7 @@ input[type="color"]:focus,
 select:focus,
 textarea:focus,
 .input-select:focus {
-    border-color: var(--accent);
+    border-color: var(--accent-surface);
     outline: 3px solid color-mix(in srgb, var(--focus) 32%, transparent);
     outline-offset: 1px;
 }
@@ -662,7 +699,7 @@ textarea::placeholder {
     appearance: none;
     background: linear-gradient(
         90deg,
-        var(--accent) 0 var(--range-progress, 25%),
+        var(--accent-surface) 0 var(--range-progress, 25%),
         var(--surface-active) var(--range-progress, 25%) 100%
     );
 }
@@ -673,7 +710,7 @@ textarea::placeholder {
     border: 3px solid var(--surface);
     border-radius: 50%;
     appearance: none;
-    background: var(--accent);
+    background: var(--accent-surface);
     box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-xs);
     cursor: pointer;
 }
@@ -683,7 +720,7 @@ textarea::placeholder {
     height: 16px;
     border: 3px solid var(--surface);
     border-radius: 50%;
-    background: var(--accent);
+    background: var(--accent-surface);
     box-shadow: 0 0 0 1px var(--border-strong), var(--shadow-xs);
     cursor: pointer;
 }

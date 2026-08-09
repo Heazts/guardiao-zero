@@ -14,6 +14,25 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             : '';
     }
 
+    /**
+     * URLs auxiliares não precisam carregar credenciais, query string ou
+     * fragmento para o classificador. Origem e caminho preservam os sinais de
+     * domínio/provedor/API sem encaminhar tokens presentes nesses componentes.
+     */
+    function minimizeUrl(value, baseUrl = location.href) {
+        try {
+            const parsed = new URL(value, baseUrl);
+            if (!/^(?:https?|wss?):$/.test(parsed.protocol)) return '';
+            parsed.username = '';
+            parsed.password = '';
+            parsed.search = '';
+            parsed.hash = '';
+            return cleanText(parsed.href, 1000);
+        } catch {
+            return '';
+        }
+    }
+
     function takeElements(selector, maximum, mapper) {
         const result = [];
         const elements = document.querySelectorAll(selector);
@@ -136,11 +155,16 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
                 }
             );
             return {
-                action: cleanText(form.action || form.getAttribute('action'), 1000),
+                action: minimizeUrl(form.getAttribute('action') || ''),
                 text: cleanText(form.textContent, 500),
                 fields
             };
-        });
+        }).filter(form => formIsRelevant(form));
+    }
+
+    function formIsRelevant(form) {
+        const text = [form.action, form.text, ...form.fields].join(' ');
+        return /(?:\bstake\b|bet amount|valor da aposta|\bodds?\b|cota[cç][aã]o|betslip|poss[ií]vel retorno|potential return|\bwager\b|dep[oó]sito|\bdeposit\b|\bsaque\b|\bwithdraw\b|\bpix\b|\bsaldo\b|\bbalance\b)/i.test(text);
     }
 
     function takeFromRoot(root, selector, maximum, mapper) {
@@ -160,7 +184,7 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             const limit = Math.min(storage.length, constants.LIMITS.storageKeys);
             for (let index = 0; index < limit; index += 1) {
                 const key = cleanText(storage.key(index), 120);
-                if (key) keys.push(key);
+                if (key && storageKeyIsRelevant(key)) keys.push(key);
             }
         } catch {
             // Storage bloqueado, sandboxed ou indisponível.
@@ -168,17 +192,23 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
         return keys;
     }
 
-    function collectCookieNames() {
-        try {
-            return document.cookie
-                .split(';')
-                .slice(0, constants.LIMITS.storageKeys)
-                .map(item => cleanText(item.split('=')[0], 120))
-                .filter(Boolean);
-        } catch {
-            return [];
-        }
+    function storageKeyIsRelevant(key) {
+        return constants.STORAGE_PATTERNS.some(pattern => pattern.test(key));
     }
+
+    function relevantStorageKeys(values) {
+        return Array.isArray(values)
+            ? values.map(value => cleanText(value, 120)).filter(value =>
+                value && storageKeyIsRelevant(value)
+            ).slice(0, constants.LIMITS.storageKeys)
+            : [];
+    }
+
+    // A coleta de nomes de cookie foi removida deliberadamente. Ela alimentava
+    // apenas STORAGE_PATTERNS, que localStorage e sessionStorage já cobrem, e
+    // era o sinal de maior custo de privacidade num add-on que declara
+    // `data_collection_permissions: none`. Ler document.cookie em toda página
+    // não se justifica pelo ganho de detecção.
 
     function withTimeout(promise, timeoutMs, fallback) {
         return new Promise(resolve => {
@@ -211,7 +241,7 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             return Array.isArray(databases)
                 ? databases.slice(0, constants.LIMITS.storageKeys)
                     .map(database => cleanText(database?.name, 120))
-                    .filter(Boolean)
+                    .filter(name => name && storageKeyIsRelevant(name))
                 : [];
         } catch {
             return [];
@@ -224,7 +254,7 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             const registrations = await withTimeout(navigator.serviceWorker.getRegistrations(), 250, []);
             return Array.isArray(registrations)
                 ? registrations.slice(0, 20).map(registration =>
-                    cleanText(registration.scope, 1000)
+                    minimizeUrl(registration.scope)
                 ).filter(Boolean)
                 : [];
         } catch {
@@ -239,7 +269,7 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             const resources = [];
             for (let index = start; index < entries.length; index += 1) {
                 const entry = entries[index];
-                const url = cleanText(entry.name, 1000);
+                const url = minimizeUrl(entry.name);
                 if (!url) continue;
                 resources.push({
                     url,
@@ -285,24 +315,112 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
         return (hash >>> 0).toString(16).padStart(8, '0');
     }
 
+    function integrationUrlIsRelevant(value) {
+        const url = minimizeUrl(value);
+        if (!url) return false;
+        const host = hostname(url);
+        return constants.GAMBLING_PROVIDER_HOSTS.some(domain =>
+            host === domain || host.endsWith(`.${domain}`)
+        ) || constants.PAYMENT_HOSTS.some(domain =>
+            host === domain || host.endsWith(`.${domain}`)
+        ) || constants.BETTING_API_TOKENS.some(token => url.toLowerCase().includes(token));
+    }
+
+    function linkIsRelevant(link) {
+        const source = `${link.url} ${link.text}`;
+        return /\b(?:sportsbook|casino|cassino|betslip|slots?)\b|live[- ]betting|apostas?[- ]ao[- ]vivo/i.test(source)
+            || integrationUrlIsRelevant(link.url);
+    }
+
+    /**
+     * A impressão representa todos os sinais limitados entregues ao detector.
+     * Assim, uma alteração no fim do texto ou em ações, formulários, links e
+     * rede não é confundida com uma amostra já analisada.
+     */
+    function signalFingerprint(signals) {
+        return fingerprint([JSON.stringify([
+            signals.url,
+            signals.title,
+            signals.metaDescription,
+            signals.openGraph,
+            signals.structuredDataTypes,
+            signals.favicons,
+            signals.text,
+            signals.menus,
+            signals.buttons,
+            signals.forms,
+            signals.links,
+            signals.images,
+            signals.scripts,
+            signals.iframes,
+            signals.resources,
+            signals.storage,
+            signals.serviceWorkerScopes,
+            signals.websocketUrls,
+            signals.trackerCount,
+            signals.adCount,
+            signals.pixelCount,
+            signals.articleCount
+        ])]);
+    }
+
+    /**
+     * Coleta mínima para contabilizar anúncios e rastreadores que chegaram a
+     * carregar. Não toca no DOM, não extrai texto e não lê storage: percorre
+     * apenas a resource timing, que já cobre script, iframe, imagem e XHR —
+     * inclusive os carregados dinamicamente, que as consultas por seletor
+     * perderiam.
+     *
+     * Usada quando a proteção está ativa mas a classificação de apostas está
+     * desligada; nesse caso não existe motivo para pagar a varredura completa.
+     */
+    function collectObservation() {
+        const uniqueAds = new Set();
+        const uniqueTrackers = new Set();
+        let entries = [];
+        try {
+            entries = performance.getEntriesByType('resource');
+        } catch {
+            entries = [];
+        }
+
+        const limit = Math.min(entries.length, 1200);
+        for (let index = 0; index < limit; index += 1) {
+            const url = entries[index]?.name;
+            if (typeof url !== 'string' || !url) continue;
+            if (hostInList(url, constants.AD_HOSTS)) uniqueAds.add(url);
+            else if (hostInList(url, constants.TRACKER_HOSTS)) uniqueTrackers.add(url);
+        }
+
+        const adCount = uniqueAds.size;
+        const trackerCount = uniqueTrackers.size;
+        return {
+            url: location.href,
+            adCount,
+            trackerCount,
+            pixelCount: 0,
+            fingerprint: fingerprint([location.href, adCount, trackerCount])
+        };
+    }
+
     async function collect() {
         const text = collectVisibleText();
         const links = takeElements('a[href]', constants.LIMITS.links, link => ({
-            url: cleanText(link.href, 1000),
+            url: minimizeUrl(link.href),
             text: cleanText(link.textContent, 160),
             external: Boolean(link.hostname && link.hostname !== location.hostname)
-        }));
+        })).filter(link => link.url && linkIsRelevant(link));
         const images = takeElements('img[src]', constants.LIMITS.images, image => ({
-            url: cleanText(image.currentSrc || image.src, 1000),
+            url: minimizeUrl(image.currentSrc || image.src),
             alt: cleanText(image.alt || image.title, 160),
             width: Number(image.naturalWidth || image.width || 0),
             height: Number(image.naturalHeight || image.height || 0)
         }));
         const scripts = takeElements('script[src]', constants.LIMITS.scripts, script =>
-            cleanText(script.src, 1000)
+            minimizeUrl(script.src)
         );
         const iframes = takeElements('iframe[src]', constants.LIMITS.iframes, frame =>
-            cleanText(frame.src, 1000)
+            minimizeUrl(frame.src)
         );
         const resources = collectResources();
         const resourceUrls = [
@@ -333,7 +451,7 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             favicons: takeElements(
                 'link[rel~="icon"], link[rel="shortcut icon"], link[rel="apple-touch-icon"]',
                 12,
-                link => cleanText(link.href, 1000)
+                link => minimizeUrl(link.href)
             ),
             text,
             menus: takeElements(
@@ -352,19 +470,18 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
             forms: collectForms(),
             links,
             images,
-            scripts,
-            iframes,
-            resources,
+            scripts: scripts.filter(integrationUrlIsRelevant),
+            iframes: iframes.filter(integrationUrlIsRelevant),
+            resources: resources.filter(resource => integrationUrlIsRelevant(resource.url)),
             storage: {
                 local: collectStorageByName('localStorage'),
                 session: collectStorageByName('sessionStorage'),
-                indexedDB: indexedDBNames,
-                cookies: collectCookieNames()
+                indexedDB: indexedDBNames
             },
             serviceWorkerScopes,
             websocketUrls: resources
                 .map(resource => resource.url)
-                .filter(url => /^wss?:/i.test(url))
+                .filter(url => /^wss?:/i.test(url) && integrationUrlIsRelevant(url))
                 .slice(0, 20),
             trackerCount: counts.trackerCount,
             adCount: counts.adCount,
@@ -374,16 +491,19 @@ globalThis.GuardiaoSignals = globalThis.GuardiaoSignals || (() => {
                 document.querySelectorAll('article, [itemtype*="Article"], [role="article"]').length
             )
         };
-        result.fingerprint = fingerprint([
-            result.url,
-            result.title,
-            result.text.slice(0, 500),
-            result.forms.length,
-            result.scripts.length,
-            result.iframes.length
-        ]);
+        result.fingerprint = signalFingerprint(result);
         return result;
     }
 
-    return Object.freeze({ collect, cleanText, privacyCounts, fingerprint });
+    return Object.freeze({
+        collect,
+        collectObservation,
+        cleanText,
+        fingerprint,
+        integrationUrlIsRelevant,
+        minimizeUrl,
+        privacyCounts,
+        relevantStorageKeys,
+        signalFingerprint
+    });
 })();

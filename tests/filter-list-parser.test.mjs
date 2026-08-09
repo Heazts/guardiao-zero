@@ -106,9 +106,18 @@ test('rejeita sintaxes não portáteis e informa cada motivo', () => {
     ].join('\n')));
 
     assert.equal(result.rules.length, 0);
-    assert.equal(result.stats.rejected, 10);
+
+    // Ocultamento de elemento passou a ser suportado: as duas primeiras linhas
+    // viram regra cosmética em vez de recusa. Tudo que executa código, injeta
+    // estilo, reescreve resposta ou altera header continua fora.
+    assert.equal(result.cosmetic.length, 2);
+    assert.deepEqual(
+        result.cosmetic.map(rule => rule.selector).sort(),
+        ['.advert', '.generic-advert']
+    );
+
+    assert.equal(result.stats.rejected, 8);
     assert.deepEqual(result.stats.reasons, {
-        'unsupported-cosmetic-filter': 2,
         'unsupported-scriptlet': 1,
         'unsupported-html-filter': 1,
         'unsupported-redirect': 1,

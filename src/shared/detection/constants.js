@@ -15,11 +15,28 @@ globalThis.GuardiaoConstants = globalThis.GuardiaoConstants || (() => {
         extremeMode: false
     });
 
+    /**
+     * Contadores separados por natureza da evidência.
+     *
+     * `pagesBlocked` conta um evento real: uma navegação que a extensão de fato
+     * interrompeu. É o único número que a extensão pode provar.
+     *
+     * `adsObserved` e `trackersObserved` contam recursos publicitários e de
+     * rastreamento que chegaram a CARREGAR na página, lidos da resource timing.
+     * São indicadores de vazamento — mostram onde as regras de rede têm lacuna
+     * — e nunca devem ser apresentados como "bloqueados".
+     *
+     * Contar requisições realmente bloqueadas exigiria a permissão
+     * `declarativeNetRequestFeedback` e a API de depuração de correspondência
+     * de regra, que o Chrome só expõe em extensão descompactada — e que
+     * tools/validate.mjs proíbe no src justamente para manter essa fronteira.
+     * Enquanto isso for verdade, não existe contador honesto de "anúncios
+     * bloqueados"; existe contador de anúncios que escaparam.
+     */
     const DEFAULT_STATS = Object.freeze({
-        totalBlocked: 0,
-        trackersBlocked: 0,
-        sitesBlocked: 0,
-        adsBlocked: 0,
+        pagesBlocked: 0,
+        adsObserved: 0,
+        trackersObserved: 0,
         lastReset: 0
     });
 
@@ -70,8 +87,6 @@ globalThis.GuardiaoConstants = globalThis.GuardiaoConstants || (() => {
         'youtube.com',
         'youtu.be',
         'github.com',
-        'github.io',
-        'githubusercontent.com',
         'gitlab.com',
         'microsoft.com',
         'live.com',
@@ -100,9 +115,7 @@ globalThis.GuardiaoConstants = globalThis.GuardiaoConstants || (() => {
         'docker.com',
         'kubernetes.io',
         'cloudflare.com',
-        'vercel.app',
         'vercel.com',
-        'netlify.app',
         'amazon.com',
         'amazon.com.br',
         'mercadolivre.com.br',

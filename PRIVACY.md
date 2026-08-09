@@ -1,12 +1,12 @@
 # Política de Privacidade — Guardião Zero Pro
 
-**Última atualização:** 29 de julho de 2026
+**Última atualização:** 9 de agosto de 2026
 
 ## Resumo
 
-O Guardião Zero Pro não coleta, vende, compartilha nem transmite dados do
-usuário para o desenvolvedor, servidores próprios ou terceiros. A detecção e o
-bloqueio são executados localmente no navegador.
+O Guardião Zero Pro não envia, vende nem compartilha dados do usuário com o
+desenvolvedor, servidores próprios ou terceiros. A detecção e o bloqueio são
+executados localmente no navegador, sem coleta externa.
 
 Não há telemetria, analytics, publicidade injetada, identificação de usuário
 ou criação de perfil remoto.
@@ -14,16 +14,28 @@ ou criação de perfil remoto.
 ## Processamento transitório
 
 Para identificar plataformas de apostas, a extensão pode analisar localmente
-sinais da página aberta, como URL e domínio, título, metadados, texto público
-limitado e elementos estruturais ou técnicos relevantes para a classificação.
+sinais da página aberta, como URL e domínio, título, metadados, texto visível,
+rótulos e nomes estruturais de formulários, botões, menus, links e indicadores
+técnicos relevantes para a classificação. Essa análise também pode ocorrer em
+páginas autenticadas quando a proteção de apostas estiver ativa.
+
+A URL da página atual é necessária para aplicar as listas e a política de
+bloqueio. Em URLs auxiliares de imagens, scripts, frames, links e recursos de
+rede, a extensão remove credenciais, parâmetros de consulta e fragmentos antes
+de encaminhar o sinal ao processo de background. A lista genérica de recursos
+de rede sem relevância para o detector é usada, quando necessário, apenas no
+content script para formar contadores agregados de anúncios e rastreadores
+observados.
 
 Esses sinais transitam somente entre o content script e o processo de
 background da própria extensão, dentro do navegador. Eles são usados para a
 decisão atual e não são gravados como histórico de navegação.
 
 A extensão não lê nem armazena valores digitados em campos, senhas, dados de
-pagamento, conteúdo de bancos IndexedDB, valores de cookies ou valores de
-`localStorage` e `sessionStorage`.
+pagamento, conteúdo de bancos IndexedDB, cookies ou valores de `localStorage` e
+`sessionStorage`. Para sinais técnicos, ela pode ler localmente nomes de chaves
+de storage e nomes de bancos IndexedDB, mas somente nomes que correspondam a
+padrões de apostas são incluídos na análise interna. Valores nunca são lidos.
 
 ## Dados mantidos localmente
 

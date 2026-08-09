@@ -3,12 +3,14 @@
 Documento de release para o Guardião Zero Pro. Ele não substitui a validação
 do pacote pelo AMO nem as políticas vigentes da Mozilla.
 
-## Bloqueador anterior à submissão
+## Proveniência da política de apostas
 
-Não publique o pacote enquanto a origem e a licença de
-`src/filters/heazts-blocklist.txt` não forem confirmadas. Consulte
-`THIRD_PARTY_NOTICES.md`. Se os direitos de redistribuição não puderem ser
-demonstrados, remova ou substitua a lista antes de gerar o release.
+O release usa somente `src/background/verified-betting-domains.js`, uma
+política pequena, manual e licenciada sob MIT, mais o sufixo regulado `.bet.br`.
+A lista legada `src/filters/heazts-blocklist.txt`, sem licença comprovada, foi
+removida da árvore. O build também impede que esse caminho seja reintroduzido no
+ZIP. Consulte `THIRD_PARTY_NOTICES.md`. Nunca envie um ZIP manual da raiz do
+repositório.
 
 ## Metadados propostos
 
@@ -45,6 +47,47 @@ Não descreva o detector como machine learning ou inteligência artificial sem
 uma implementação e evidências técnicas correspondentes. Prefira
 “classificação multifator determinística” ou “detecção heurística
 contextual”.
+
+## Ativos da listagem
+
+Tudo que a listagem publica é versionado e regenerável. Nada aqui é feito à mão.
+
+### Capturas
+
+As três capturas ficam em `docs/amo-listing/` e saem de `npm run build:shots`,
+que abre as páginas reais de `src/` num Firefox headless, em tema escuro e
+1280 × 800. Até a 3.1.2 elas eram manuais e moravam em `web-ext-artifacts/`, que
+o git ignora — sumiam num clone novo e envelheciam sem aviso: as da 3.1.2 ainda
+mostravam o ícone antigo e o indicador do item ativo invisível.
+
+| Arquivo | Página |
+| --- | --- |
+| `01-configuracoes.png` | `src/options/options.html` |
+| `02-privacidade-local.png` | `src/privacy/privacy.html` |
+| `03-ajuda-e-transparencia.png` | `src/help/help.html` |
+
+Regenere a cada mudança de interface e confira as imagens antes de enviar — o
+comando não sabe se a captura ainda conta a história certa.
+
+### Ícone
+
+O ícone exibido na listagem vem do `icons` do manifesto; não é preciso enviar
+imagem separada. Se o formulário do AMO pedir um arquivo, use:
+
+- **vetor:** `docs/assets/brand/limiar-orbital-amo.svg` (128 px declarados);
+- **raster:** `docs/assets/brand/limiar-orbital-128.png` ou `-512.png`, caso o
+  campo recuse SVG.
+
+Todos saem de `npm run build:icons`, do mesmo desenho dos ícones do manifesto.
+Não recorte, recolora nem reexporte à mão: a validação compara os arquivos com a
+geometria e falha se algum divergir.
+
+`web-ext lint` (addons-linter 10.6.0) aceita SVG em `icons` e `action.default_icon`
+sem erro, aviso ou notice — verificado nesta árvore. Ainda assim o manifesto
+distribuído usa PNG, por dois motivos: o alvo Chromium não suporta ícone vetorial
+no manifesto, e os tamanhos publicados (16–128 px) já cobrem as superfícies onde
+Firefox e AMO desenham o ícone. Adotar SVG no manifesto seria uma mudança
+deliberada, só para o alvo Firefox, e não um efeito colateral do build.
 
 ## Declaração de coleta de dados
 
@@ -94,28 +137,42 @@ valores de storage.
 
 ## Ambiente de build
 
-- Node.js 22 ou mais recente para usar `web-ext` 10;
-- npm;
+- Node.js 22 ou mais recente;
+- npm e o lockfile versionado;
+- `web-ext` 10.6.0 fixado como dependência de desenvolvimento;
 - nenhuma dependência de runtime;
 - fonte não minificada e não ofuscada.
 
-O build do projeto aceita Node.js 20 ou mais recente, mas o fluxo de release
-adota Node.js 22+ por ser o requisito da linha atual do `web-ext`.
+As dependências npm existem somente para validação e empacotamento e não entram
+na extensão. Em 9 de agosto de 2026, `npm audit --omit=dev` reportou zero
+vulnerabilidades de produção. O `addons-linter` usado pelo `web-ext` ainda
+carrega alertas de negação de serviço em `image-size`; esse código roda apenas
+no build sobre os assets locais e confiáveis do projeto, nunca no navegador.
 
 ## Validação e build
 
 Execute na raiz:
 
 ```text
-npm run lint
-npm test
-npm run build:firefox
-npx --yes web-ext@10 lint --source-dir dist --warnings-as-errors
-npx --yes web-ext@10 build --source-dir dist --artifacts-dir web-ext-artifacts --overwrite-dest
+npm ci
+npm run package:amo
 ```
 
 O ZIP deve conter `manifest.json` e os demais arquivos da extensão na raiz do
 arquivo compactado; não compacte a pasta `dist` como um diretório superior.
+Não envie a raiz do repositório nem um ZIP criado manualmente: isso inclui
+`.git/hooks` e usa arquivos que não pertencem ao artefato já validado.
+
+O fluxo executa lint do projeto, todos os testes, builds Firefox e Chromium,
+`web-ext lint --warnings-as-errors` e empacotamento. No final grava três
+artefatos em `web-ext-artifacts/`:
+
+- `guardiao-zero-pro-{version}-firefox.zip`;
+- o checksum `.zip.sha256`;
+- `guardiao-zero-pro-{version}-firefox.release.json`, com versões das
+  ferramentas, commit, estado da árvore, tamanho e SHA-256.
+
+O mesmo fluxo roda em `.github/workflows/ci.yml` com Node.js 22.
 
 `npm run benchmark` é um benchmark de regressão local. Resultados de corpus
 sintético não devem ser apresentados como teste real nem usados para prometer
@@ -123,7 +180,7 @@ precisão de campo.
 
 ## Testes manuais obrigatórios
 
-1. Carregar `dist/` temporariamente em uma versão suportada do Firefox.
+1. Carregar `dist/firefox/` temporariamente em uma versão suportada do Firefox.
 2. Abrir popup, opções, ajuda, diagnóstico e página de bloqueio.
 3. Verificar temas claro, escuro e sistema, contraste e personalização.
 4. Confirmar persistência local após reiniciar o navegador.
@@ -142,13 +199,20 @@ precisão de campo.
 Se o AMO solicitar fontes, forneça um arquivo separado que inclua:
 
 - `manifest.json`, `package.json`, README, licença e documentação;
+- `package-lock.json`;
 - `assets/`, `src/`, `tests/` e `tools/`;
 - licenças OFL completas das fontes Inter e Newsreader em `assets/fonts/`;
 - instruções deste documento;
 - qualquer aviso e licença de terceiro aplicável.
 
-Exclua `.git/`, `dist/`, `web-ext-artifacts/`, caches e credenciais. Como não
-há dependências npm, não é necessário criar um lockfile vazio.
+Exclua `.git/`, `dist/`, `web-ext-artifacts/`, `node_modules/`, caches e
+credenciais. O revisor pode reconstruir o release com
+`npm ci && npm run package:amo`.
+
+A lista legada `src/filters/heazts-blocklist.txt` foi removida do repositório na
+3.1.3. As travas continuam em `tools/build.mjs` e `tools/package-amo.mjs`, de
+modo que o caminho não pode ser reintroduzido num artefato público sem falhar o
+build.
 
 ## Notas sugeridas ao revisor
 
@@ -167,28 +231,38 @@ exatamente ao código do release.
 
 ## Checklist final
 
-- [ ] Proveniência e licença da blocklist confirmadas ou lista substituída.
-- [ ] `LICENSE`, `PRIVACY.md` e avisos de terceiros revisados.
-- [ ] Versão consistente em manifesto e pacote.
+- [x] Lista sem licença substituída e excluída automaticamente do release.
+- [x] `LICENSE`, `PRIVACY.md` e avisos de terceiros revisados.
+- [x] Versão consistente em manifesto e pacote.
 - [ ] ID Gecko confirmado como único ou igual ao da listagem existente.
 - [ ] Homepage e URL da política publicadas e acessíveis.
-- [ ] Testes automatizados e manuais aprovados.
+- [x] Testes automatizados aprovados.
+- [ ] Cenários manuais completos do checklist aprovados.
 - [ ] Testes reais documentados sem dados fictícios.
-- [ ] `web-ext lint --warnings-as-errors` aprovado.
-- [ ] ZIP final inspecionado e sem arquivos de desenvolvimento.
+- [x] `web-ext lint --warnings-as-errors` aprovado para a nova versão.
+- [x] ZIP final inspecionado e sem arquivos de desenvolvimento.
 - [ ] Capturas, categoria, licença, suporte e política preenchidos no AMO.
 - [ ] Nenhuma chave do GitHub ou credencial AMO incluída no repositório.
 
 ## Evidência desta versão
 
-O pacote 3.1.0 foi validado com `web-ext@10 lint --warnings-as-errors` em 29 de
-julho de 2026:
+Release `3.1.3`, gerado em 09.08.2026:
 
-- erros: 0;
-- notices: 0;
-- warnings: 0.
+- artefato: `guardiao-zero-pro-3.1.3-firefox.zip`;
+- tamanho: 675.878 bytes;
+- SHA-256: `1A87A7781C0DAEF2762EB0FCAE98E53C3BC294D6CF1C1B1DDB75CF4DD3DD07FD`;
+- suíte: 119 de 119 testes aprovados;
+- `web-ext 10.6.0`: 0 erros, 0 avisos e 0 notices;
+- smoke test: instalação temporária e recarga aprovadas no Firefox 153.0.3
+  headless;
+- inspeção independente: 68 entradas, manifesto `3.1.3`, sem
+  `background.service_worker`, lista legada, `src/filters`, `.git`,
+  `node_modules` ou `.env`.
 
-Artefato local: `web-ext-artifacts/guardi_o_zero_pro-3.1.0.zip`.
+O `release.json` deste build registra `sourceDirty: true`, porque foi gerado com
+a árvore ainda não commitada. Antes de tratar o artefato como reproduzível,
+faça o commit e rode `npm run package:amo` de novo: o SHA-256 muda e o manifesto
+passa a apontar para um commit exato.
 
-SHA-256:
-`03A18EF142C2187048D2117B7A80399A3E85662625107FB519CAF516239B56A1`.
+O smoke test prova que o pacote instala e recarrega no Firefox. Ele não substitui
+os cenários manuais de navegação e bloqueio listados acima.

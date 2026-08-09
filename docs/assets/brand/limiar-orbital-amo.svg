@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 47 47" role="img" aria-labelledby="title">
+    <title id="title">Guardião Zero Pro — Limiar Orbital</title>
+    <rect x="1.5" y="1.5" width="44" height="44" rx="7" fill="#111111"/>
+    <g transform="translate(5 3.5)" fill="none" stroke="#ffffff" stroke-width="4" stroke-linecap="square">
+        <path d="M24.5 9.4C14.7 6.1 7.5 10.8 7.5 20C7.5 29.2 14.7 33.9 24.5 30.6"/>
+        <path d="M20.5 20L29.5 20M29.5 7.5L29.5 32.5"/>
+    </g>
+</svg>

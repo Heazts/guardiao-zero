@@ -52,7 +52,13 @@ test('URL, regex, TLD e ASN são suportados com validação', async () => {
 
 test('regex potencialmente catastrófica é rejeitada', () => {
     assert.equal(lists.validateRegex('(a+)+$').ok, false);
+    assert.equal(lists.validateRegex('(a|aa)+$').ok, false);
+    assert.equal(lists.validateRegex('(a|a?)+$').ok, false);
+    assert.equal(lists.validateRegex('^a+a+$').ok, false);
+    assert.equal(lists.validateRegex('^a{1,64}a{1,64}$').ok, false);
     assert.equal(lists.validateRegex('^https://docs\\.example\\.com/').ok, true);
+    assert.equal(lists.validateRegex('^https://[a-z]{4}\\.example\\.com/$').ok, true);
+    assert.equal(lists.validateRegex('^https://example\\.com/a\\+b$').ok, true);
 });
 
 test('hash e assinatura SHA-256 são comparados localmente', async () => {

@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 import { performance } from 'node:perf_hooks';
 
 import { loadRuntime } from '../tests/runtime-loader.mjs';
@@ -7,10 +7,10 @@ import { gamblingScenarios, generatedScenarios, safeScenarios } from '../tests/s
 const runtime = await loadRuntime([
     'src/shared/detection/constants.js',
     'src/shared/detection/detection-engine.js',
-    'src/background/blocklist-index.js'
+    'src/background/verified-betting-domains.js'
 ]);
 const detector = runtime.GuardiaoDetection;
-const blocklistIndex = runtime.GuardiaoBlocklistIndex;
+const bettingPolicy = runtime.GuardiaoVerifiedBettingDomains;
 const REPORT_URL = new URL('../docs/reports/benchmark-results.json', import.meta.url);
 const CHART_URL = new URL('../docs/assets/benchmark-evolution.svg', import.meta.url);
 let benchmarkSink = 0;
@@ -207,63 +207,70 @@ function timeClassifiers(scenarios, iterations = 20, repetitions = 5) {
     };
 }
 
-async function measureBlocklist() {
-    const text = await readFile(
-        new URL('../src/filters/heazts-blocklist.txt', import.meta.url),
-        'utf8'
-    );
+function measureBlocklist() {
+    const compactPolicy = `${bettingPolicy.domains.join('\n')}\n${bettingPolicy.suffixes.join('\n')}\n`;
     global.gc?.();
     const beforeSet = process.memoryUsage().heapUsed;
-    const set = new Set(text.trimEnd().split('\n'));
+    const set = new Set(bettingPolicy.domains);
     global.gc?.();
     const afterSet = process.memoryUsage().heapUsed;
 
-    const probes = ['bet365.com', 'alphabet.com', 'zzzzgame.com', '000000.com'];
+    const probes = ['bet365.com', 'www.bet365.com', 'operadora.bet.br', 'alphabet.com'];
     const runSetLookups = () => {
         let hits = 0;
         for (let iteration = 0; iteration < 2500; iteration += 1) {
             for (const probe of probes) {
-                if (set.has(probe)) hits += 1;
+                let candidate = probe;
+                for (;;) {
+                    if (set.has(candidate)) {
+                        hits += 1;
+                        break;
+                    }
+                    const dot = candidate.indexOf('.');
+                    if (dot === -1) break;
+                    candidate = candidate.slice(dot + 1);
+                }
             }
         }
         return hits;
     };
-    const runBinaryLookups = () => {
+    const runPolicyLookups = () => {
         let hits = 0;
         for (let iteration = 0; iteration < 2500; iteration += 1) {
             for (const probe of probes) {
-                if (blocklistIndex.containsSortedDomain(text, probe)) hits += 1;
+                if (bettingPolicy.findDomain(probe)) hits += 1;
             }
         }
         return hits;
     };
     for (let warmup = 0; warmup < 2; warmup += 1) {
         benchmarkSink += runSetLookups();
-        benchmarkSink += runBinaryLookups();
+        benchmarkSink += runPolicyLookups();
     }
     const setSamples = [];
-    const binarySamples = [];
+    const policySamples = [];
     for (let sample = 0; sample < 7; sample += 1) {
         if (sample % 2 === 0) {
             setSamples.push(measure(runSetLookups));
-            binarySamples.push(measure(runBinaryLookups));
+            policySamples.push(measure(runPolicyLookups));
         } else {
-            binarySamples.push(measure(runBinaryLookups));
+            policySamples.push(measure(runPolicyLookups));
             setSamples.push(measure(runSetLookups));
         }
     }
     const setLookupMs = median(setSamples);
-    const binaryLookupMs = median(binarySamples);
+    const policyLookupMs = median(policySamples);
 
     return {
-        domains: set.size,
-        compactTextUtf8Bytes: Buffer.byteLength(text),
+        domains: bettingPolicy.domains.length,
+        suffixes: bettingPolicy.suffixes.length,
+        compactPolicyUtf8Bytes: Buffer.byteLength(compactPolicy),
         observedSetHeapDeltaBytes: Math.max(0, afterSet - beforeSet),
         repetitions: 7,
         setLookup10kMs: Number(setLookupMs.toFixed(2)),
-        binaryLookup10kMs: Number(binaryLookupMs.toFixed(2)),
+        policyLookup10kMs: Number(policyLookupMs.toFixed(2)),
         setLookupSamplesMs: setSamples.map(value => Number(value.toFixed(2))),
-        binaryLookupSamplesMs: binarySamples.map(value => Number(value.toFixed(2)))
+        policyLookupSamplesMs: policySamples.map(value => Number(value.toFixed(2)))
     };
 }
 
@@ -289,7 +296,7 @@ const report = {
     },
     accuracy: classificationMetrics(safe, gambling),
     classifierPerformance: timeClassifiers(scenarios),
-    blocklist: await measureBlocklist()
+    blocklist: measureBlocklist()
 };
 
 report.accuracy.before.accuracyPercent = derivedAccuracy(report.accuracy.before);
@@ -391,10 +398,10 @@ function benchmarkSvg(data) {
         lowerIsBetter: true
     })}
     <g transform="translate(64 494)">
-        <text x="24" y="34" class="note-title">Memória da blocklist</text>
-        <text x="24" y="59" class="note">O índice binário consulta o texto compacto sem materializar um Set persistente.</text>
+        <text x="24" y="34" class="note-title">Política de domínios verificados</text>
+        <text x="24" y="59" class="note">Lista pequena mantida pelo projeto mais o sufixo regulado .bet.br.</text>
         <text x="24" y="88" class="metric">${formatNumber(heapMiB)} MiB</text>
-        <text x="24" y="112" class="caption">de heap adicional observado no Set anterior; índice atual: 0 MiB adicionais persistentes</text>
+        <text x="24" y="112" class="caption">heap adicional observado ao materializar um Set separado; a política mantém um único índice privado</text>
         <line x1="650" y1="22" x2="650" y2="120" stroke="#dedede"/>
         <text x="680" y="43" class="note-title">Custo consciente de precisão</text>
         <text x="680" y="70" class="note">Legado: ${formatNumber(data.classifierPerformance.legacyMeanMs, 4)} ms/op</text>

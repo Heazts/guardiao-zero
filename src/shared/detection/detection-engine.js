@@ -360,8 +360,7 @@ globalThis.GuardiaoDetection = globalThis.GuardiaoDetection || (() => {
         const storageKeys = [
             ...safeArray(signals.storage?.local),
             ...safeArray(signals.storage?.session),
-            ...safeArray(signals.storage?.indexedDB),
-            ...safeArray(signals.storage?.cookies)
+            ...safeArray(signals.storage?.indexedDB)
         ];
         const matchedKeys = storageKeys.filter(key =>
             constants.STORAGE_PATTERNS.some(pattern => pattern.test(key))

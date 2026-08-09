@@ -22,6 +22,12 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
         const input = boundedString(value, 512).replace(/\.$/, '').toLowerCase();
         if (!input || /[/\s@]/.test(input)) return '';
 
+        // Caminho rápido: um hostname ASCII já na forma canônica é exatamente o
+        // que `new URL()` devolveria, e construir a URL custa ~83% desta função.
+        // Entradas que precisam de normalização real — IDN para punycode, porta,
+        // credenciais — não casam com DOMAIN_PATTERN e seguem pelo caminho lento.
+        if (DOMAIN_PATTERN.test(input)) return input;
+
         try {
             const hostname = new URL(`http://${input}`).hostname.replace(/\.$/, '').toLowerCase();
             return DOMAIN_PATTERN.test(hostname) ? hostname : '';
@@ -57,14 +63,88 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
         return HASH_PATTERN.test(candidate) ? candidate : '';
     }
 
+    /**
+     * Valida o subconjunto de RegExp que pode ser executado no worker.
+     *
+     * O motor RegExp do JavaScript usa backtracking e não oferece timeout. Em
+     * vez de tentar adivinhar todas as formas de ReDoS, aceitamos uma gramática
+     * deliberadamente pequena: literais, classes, curingas de um caractere,
+     * âncoras e repetições de tamanho fixo. Grupos, alternação e qualquer
+     * quantificador variável ficam fora da fronteira de confiança.
+     */
+    function validateSafeRegexGrammar(value) {
+        let canQuantify = false;
+
+        for (let index = 0; index < value.length; index += 1) {
+            const token = value[index];
+
+            if (token === '\\') {
+                if (index + 1 >= value.length) return false;
+                index += 1;
+                canQuantify = true;
+                continue;
+            }
+
+            if (token === '[') {
+                let closed = false;
+                for (index += 1; index < value.length; index += 1) {
+                    if (value[index] === '\\') {
+                        if (index + 1 >= value.length) return false;
+                        index += 1;
+                        continue;
+                    }
+                    if (value[index] === '[') return false;
+                    if (value[index] === ']') {
+                        closed = true;
+                        break;
+                    }
+                }
+                if (!closed) return false;
+                canQuantify = true;
+                continue;
+            }
+
+            if (token === ']') return false;
+            if (token === '(' || token === ')' || token === '|') return false;
+            if (token === '*' || token === '+' || token === '?') return false;
+
+            if (token === '{') {
+                if (!canQuantify) return false;
+                const repetition = value.slice(index).match(/^\{(\d{1,2})\}/);
+                if (!repetition || Number(repetition[1]) > 64) return false;
+                index += repetition[0].length - 1;
+                canQuantify = false;
+                continue;
+            }
+            if (token === '}') return false;
+
+            if (token === '^') {
+                if (index !== 0) return false;
+                canQuantify = false;
+                continue;
+            }
+            if (token === '$') {
+                if (index !== value.length - 1) return false;
+                canQuantify = false;
+                continue;
+            }
+
+            canQuantify = true;
+        }
+
+        return true;
+    }
+
     function validateRegex(pattern) {
         const value = boundedString(pattern);
         if (!value) return { ok: false, error: 'Expressão regular vazia' };
         if (value.length > MAX_PATTERN_LENGTH) return { ok: false, error: 'Expressão regular muito longa' };
-        if (/\\[1-9]/.test(value)) return { ok: false, error: 'Backreferences não são permitidas' };
-        if (/\(\?<|(\(\?[:=!<])/.test(value)) return { ok: false, error: 'Lookarounds e grupos especiais não são permitidos' };
-        if (/\([^)]*[+*][^)]*\)[+*{]/.test(value)) return { ok: false, error: 'Quantificadores aninhados não são permitidos' };
-        if (/(?:\.\*|\.\+){2,}/.test(value)) return { ok: false, error: 'Padrão ambíguo não permitido' };
+        if (!validateSafeRegexGrammar(value)) {
+            return {
+                ok: false,
+                error: 'Use apenas literais, classes, âncoras e repetições fixas de até 64 caracteres'
+            };
+        }
 
         try {
             return { ok: true, regex: new RegExp(value, 'iu') };
@@ -169,13 +249,20 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
         return { entries: normalized, rejected };
     }
 
-    function compile(entries, listName) {
-        const normalized = normalizeEntries(entries, listName);
+    /**
+     * Compila entradas JÁ normalizadas.
+     *
+     * Existe separado de `compile` porque quem acabou de chamar
+     * `normalizeEntries` não deve pagar a normalização de novo — no perfil de
+     * 5.000 entradas por lista isso custava ~216 ms desnecessários a cada
+     * despertar do service worker.
+     */
+    function compileEntries(normalizedEntries, listName) {
         const compiled = {
             listName,
-            entries: normalized.entries,
+            entries: normalizedEntries,
             exactDomains: new Map(),
-            subdomains: [],
+            subdomains: new Map(),
             urls: new Map(),
             regexes: [],
             hashes: new Map(),
@@ -184,11 +271,11 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
             asns: new Map()
         };
 
-        for (const entry of normalized.entries) {
+        for (const entry of normalizedEntries) {
             if (entry.expiresAt && entry.expiresAt <= Date.now()) continue;
 
             if (entry.type === 'domain') compiled.exactDomains.set(entry.pattern, entry);
-            if (entry.type === 'subdomain') compiled.subdomains.push(entry);
+            if (entry.type === 'subdomain') compiled.subdomains.set(entry.pattern, entry);
             if (entry.type === 'url') compiled.urls.set(entry.pattern, entry);
             if (entry.type === 'hash') compiled.hashes.set(entry.pattern, entry);
             if (entry.type === 'signature') compiled.signatures.set(entry.pattern, entry);
@@ -200,8 +287,12 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
             }
         }
 
-        compiled.subdomains.sort((left, right) => right.pattern.length - left.pattern.length);
         return compiled;
+    }
+
+    /** Normaliza e compila. Use `compileEntries` quando já tiver normalizado. */
+    function compile(entries, listName) {
+        return compileEntries(normalizeEntries(entries, listName).entries, listName);
     }
 
     async function sha256Hex(value) {
@@ -229,8 +320,17 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
         const exact = compiled.exactDomains.get(hostname);
         if (exact) return exact;
 
-        for (const entry of compiled.subdomains) {
-            if (domainMatches(hostname, entry.pattern, true)) return entry;
+        // Caminhada por rótulos, da direita para a esquerda, consultando um hash.
+        // Custo O(rótulos) — tipicamente 3 a 5 consultas — em vez de percorrer
+        // todas as entradas. O primeiro acerto é o sufixo mais específico, que é
+        // a semântica desejada. Ver docs/BENCHMARK.md para a medição.
+        let candidate = hostname;
+        for (;;) {
+            const entry = compiled.subdomains.get(candidate);
+            if (entry) return entry;
+            const dot = candidate.indexOf('.');
+            if (dot === -1) break;
+            candidate = candidate.slice(dot + 1);
         }
 
         const tld = hostname.slice(hostname.lastIndexOf('.') + 1);
@@ -275,6 +375,7 @@ globalThis.GuardiaoLists = globalThis.GuardiaoLists || (() => {
         validateRegex,
         domainMatches,
         compile,
+        compileEntries,
         match,
         sha256Hex,
         signatureSource
