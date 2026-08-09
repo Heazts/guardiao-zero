@@ -234,7 +234,13 @@ export async function validateProject(options = {}) {
                     ['innerHTML', /\binnerHTML\b/],
                     ['eval', /\beval\s*\(/],
                     ['Function constructor', /\bnew\s+Function\b/],
-                    ['debug DNR API', /onRuleMatchedDebug/]
+                    ['debug DNR API', /onRuleMatchedDebug/],
+                    // currentTarget é null na primeira continuação depois de um
+                    // await, então desreferenciar direto quebra em silêncio em
+                    // qualquer handler async. Guarde numa const síncrona antes:
+                    // `const button = event.currentTarget;`. Passar o valor
+                    // adiante continua permitido; só o acesso a propriedade não.
+                    ['acesso direto a currentTarget', /\.currentTarget\s*\./]
                 ];
                 for (const [label, pattern] of forbidden) {
                     if (pattern.test(source)) errors.push(`${relative(projectRoot, path)} usa ${label}`);
