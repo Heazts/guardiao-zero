@@ -362,9 +362,9 @@ Para o CHANGELOG público ou para responder em português, se o revisor pedir:
 Release `3.1.3`, gerado em 09.08.2026:
 
 - artefato: `guardiao-zero-pro-3.1.3-firefox.zip`;
-- tamanho: 675.878 bytes;
-- SHA-256: `8468F80B433088B5230A565370EA57DF993EA34DA398A93D7BD91B86487F10EE`;
-- commit: `97120c9d9c8b36c7d6649477dbfbc57c283e5beb`, com `sourceDirty: false`;
+- tamanho: 676.106 bytes;
+- SHA-256: `3C2BB97EB17F8C07D83CF20E501A156060D27B79335FF92E7D87CF02B864C77A`;
+- commit: `1213048cb3c1853ef91fa9ba4c5a55acf045e31f`, com `sourceDirty: false`;
 - suíte: 119 de 119 testes aprovados;
 - `web-ext 10.6.0`: 0 erros, 0 avisos e 0 notices;
 - smoke test: instalação temporária e recarga aprovadas no Firefox 153.0.3
