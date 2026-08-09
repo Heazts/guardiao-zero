@@ -214,20 +214,108 @@ A lista legada `src/filters/heazts-blocklist.txt` foi removida do repositório n
 modo que o caminho não pode ser reintroduzido num artefato público sem falhar o
 build.
 
-## Notas sugeridas ao revisor
+## Notas ao revisor
 
-> Guardião Zero Pro é uma extensão Manifest V3 sem telemetria e sem
-> comunicação com servidores do desenvolvedor. A análise de página ocorre
-> localmente e de forma transitória. Configurações, contadores e listas são
-> mantidos apenas em storage.local. A permissão para hosts HTTP(S) é necessária
-> para a função principal de classificação contextual; valores de inputs,
-> cookies e storages não são lidos. declarativeNetRequest aplica rulesets
-> locais para anúncios, rastreadores e redirecionamentos. O código distribuído
-> não é minificado nem ofuscado e pode ser reproduzido com os comandos
-> documentados.
+Escreva as notas **em inglês**. A listagem é pt-BR, mas a revisão do AMO é feita
+por pessoas de vários países; a nota é para elas, não para o público.
 
-Antes de usar essas notas, confirme que elas continuam correspondendo
-exatamente ao código do release.
+O texto abaixo foi conferido contra o código empacotado da 3.1.3, e não contra a
+intenção do projeto. Cada afirmação é verificável por `grep` no próprio ZIP —
+foi assim que ela foi escrita. Reconfirme a cada release: uma nota que promete
+mais do que o código entrega é pior do que nenhuma nota.
+
+Ele antecipa de propósito as três perguntas que o código levanta em quem lê:
+por que um bloqueador de listas não baixa listas, por que aparecem URLs de CDN
+no pacote, e por que os arquivos gerados podem ser confiados.
+
+### Texto para colar
+
+> **Guardião Zero Pro 3.1.3 — Manifest V3, Firefox 142+**
+>
+> **What it does.** Blocks gambling platforms through local multi-factor
+> classification, and blocks ads and trackers through declarativeNetRequest
+> static rulesets.
+>
+> **No network activity at all.** The extension issues no network requests of
+> any kind. There is no `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`,
+> `sendBeacon` or dynamic `import()` anywhere in the packaged code — grepping
+> the ZIP returns nothing. No telemetry, no analytics, no remote configuration,
+> no remote code. `data_collection_permissions` is declared as `none`.
+>
+> **Filter lists are not downloaded.** Users import EasyList and similar lists
+> through a local file picker (`<input type="file">` in the options page). The
+> extension never fetches them, so importing a list is still an entirely local
+> operation.
+>
+> **URLs you will find in the source are not endpoints.** `service-worker.js`
+> contains a few literal URLs (for example `https://cdn.pragmaticplay.com/client.js`
+> and `https://alphabet.com/beta-release`). They are fixtures for the local
+> self-test on the diagnostics page: synthetic input passed to the classifier to
+> verify it still separates a gambling platform from an article. They are never
+> requested. Other embedded domains are match patterns, not destinations.
+>
+> **Storage.** Only `storage.local`. `storage.sync` is not used. Settings,
+> counters, user lists and temporary allowances never leave the profile.
+>
+> **What the content script reads,** for the gambling classifier only, and
+> transiently — the signals serve the current decision and are never persisted:
+> URL (credentials, query string and fragment are stripped before analysis),
+> title, metadata, visible text, button and menu labels, form field *attributes*
+> (`name`, `id`, `type`, `placeholder`, `aria-label`, `autocomplete`) plus label
+> text, and `localStorage`/`sessionStorage` *key names*, filtered by relevance
+> and capped.
+>
+> It does **not** read values typed by the user, passwords, payment data,
+> cookies, or storage values. `document.cookie` collection was deliberately
+> removed — see the comment in `src/content/page-signals.js`. A field's `value`
+> is read only for `type="submit"` and `type="button"`, i.e. button captions,
+> and via `getAttribute`, never the live property, so user input is never
+> reachable.
+>
+> **Permissions.**
+> `storage` — local preferences, counters and lists.
+> `declarativeNetRequest` — local static rulesets; the extension never receives
+> request bodies.
+> `webNavigation` — applies explicit user policies (personal blocklist, strict
+> mode) at the start of a main-frame navigation.
+> `http/https` host permissions — required for the core function: contextual
+> classification on the sites the user visits.
+>
+> **Generated files.** The DNR rulesets are generated from readable seed lists
+> in `src/filters/sources/` (build-only, not shipped) using the same parser that
+> validates user-imported lists. The icons are generated from a single geometry
+> in `tools/make-icons.mjs`. `npm run lint` regenerates both and fails if any
+> committed file diverges, so a generated artifact cannot silently differ from
+> its source.
+>
+> **Build.** Not minified, not obfuscated, no runtime dependencies. Reproducible
+> with `npm ci && npm run package:amo` from commit
+> `97120c9d9c8b36c7d6649477dbfbc57c283e5beb`.
+>
+> **What changed in 3.1.3.** User interface only: fixed the popup scrollbars,
+> fixed accent contrast in the dark theme, and unified every icon under one
+> generated source. No change to permissions, data handling or network
+> behaviour.
+
+### Versão em português
+
+Para o CHANGELOG público ou para responder em português, se o revisor pedir:
+
+> O Guardião Zero Pro não faz requisição de rede de nenhum tipo — não há `fetch`,
+> `XMLHttpRequest`, `WebSocket`, `EventSource`, `sendBeacon` nem `import()`
+> dinâmico no código empacotado. Listas de filtros são importadas pelo usuário
+> por seletor de arquivo local, nunca baixadas. Só `storage.local` é usado.
+>
+> A análise de página serve apenas ao classificador de apostas e é transitória:
+> lê URL (sem credenciais, query e fragmento), título, metadados, texto visível,
+> rótulos de botões e menus, *atributos* de campos de formulário e *nomes* de
+> chaves de storage. Não lê valores digitados, senhas, dados de pagamento,
+> cookies nem valores de storage.
+>
+> As URLs literais no service worker são fixtures do autoteste local do
+> diagnóstico, nunca requisitadas. Rulesets e ícones são gerados e o
+> `npm run lint` falha se algum divergir da origem. O código não é minificado
+> nem ofuscado.
 
 ## Checklist final
 
