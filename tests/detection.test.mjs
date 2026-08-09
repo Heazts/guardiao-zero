@@ -19,7 +19,13 @@ test('domínios protegidos e termos ambíguos são permitidos', () => {
 
 test('plataformas com sinais independentes são bloqueadas', () => {
     for (const scenario of gamblingScenarios) {
-        const systemMatch = scenario.url.includes('bet365.com') ? 'bet365.com' : '';
+        let systemMatch = '';
+        try {
+            const host = new URL(scenario.url).hostname.toLowerCase();
+            systemMatch = host === 'bet365.com' ? 'bet365.com' : '';
+        } catch {
+            systemMatch = '';
+        }
         const result = detector.analyze(scenario, { threshold: 120, systemBlockMatch: systemMatch });
         assert.equal(result.verdict, 'block', `${scenario.url} teve score ${result.score}`);
         assert.equal(result.safeguards.diverseEvidence, true);
