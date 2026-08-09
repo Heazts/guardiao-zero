@@ -277,5 +277,7 @@ explicitamente excluída de `dist/` e do ZIP do AMO. Consulte
 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) antes de redistribuir ou criar
 um pacote de código-fonte.
 
-O checklist de submissão está em
-[docs/AMO_SUBMISSION.md](docs/AMO_SUBMISSION.md).
+O roteiro de submissão à loja é mantido fora deste repositório: ele descreve o
+processo de publicação, não o funcionamento da extensão. O que é verificável a
+partir do código está em [docs/SECURITY.md](docs/SECURITY.md) e
+[PRIVACY.md](PRIVACY.md).

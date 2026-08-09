@@ -34,8 +34,8 @@ PR mexe na origem de algum deles, regenere e inclua a saída no mesmo commit:
 
 - [ ] `CHANGELOG.md` atualizado
 - [ ] chaves novas presentes nos **doze** idiomas em `_locales/`
-- [ ] `docs/AMO_SUBMISSION.md` continua descrevendo o código de verdade —
-      em especial permissões, tratamento de dados e comportamento de rede
+- [ ] `docs/SECURITY.md` continua descrevendo o código de verdade — em especial
+      permissões, tratamento de dados e comportamento de rede
 - [ ] `PRIVACY.md` e `src/privacy/privacy.html` continuam exatos
 
 ## Riscos

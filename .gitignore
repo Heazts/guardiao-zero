@@ -37,3 +37,8 @@ desktop.ini
 .vscode/
 .idea/
 *.swp
+
+# Documento interno de release: roteiro de submissão ao AMO, notas ao revisor e
+# evidência de cada pacote. Fica no disco de quem publica, fora do repositório
+# público — não descreve o funcionamento da extensão, descreve o processo.
+docs/AMO_SUBMISSION.md
