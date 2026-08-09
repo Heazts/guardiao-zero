@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "জুয়ার প্ল্যাটফর্ম, বিজ্ঞাপন ও ট্র্যাকারের বিরুদ্ধে স্থানীয় বহু-স্তরীয় সুরক্ষা, কোনো তথ্য সংগ্রহ ছাড়াই।",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "স্থানীয় সীমা"
+  },
+  "statusActive": {
+    "message": "সক্রিয়"
+  },
+  "statusPaused": {
+    "message": "বিরতি"
+  },
+  "statusUnavailable": {
+    "message": "অনুপলব্ধ"
+  },
+  "protectionState": {
+    "message": "সুরক্ষার অবস্থা"
+  },
+  "protectionLoading": {
+    "message": "সুরক্ষা লোড হচ্ছে…"
+  },
+  "protectionLoadingHint": {
+    "message": "স্থানীয় স্তরগুলি পরীক্ষা করা হচ্ছে"
+  },
+  "protectionOn": {
+    "message": "সুরক্ষা সক্রিয়"
+  },
+  "protectionOff": {
+    "message": "সুরক্ষা বিরতিতে"
+  },
+  "protectionOnHint": {
+    "message": "স্থানীয় স্তরগুলি চালু আছে"
+  },
+  "protectionOffHint": {
+    "message": "কোনো অনুরোধ ফিল্টার করা হবে না"
+  },
+  "toggleProtection": {
+    "message": "সুরক্ষা পাল্টান"
+  },
+  "localLedger": {
+    "message": "স্থানীয় নথি"
+  },
+  "sinceLastReset": {
+    "message": "শেষ রিসেটের পর থেকে"
+  },
+  "pagesBlocked": {
+    "message": "অবরুদ্ধ পৃষ্ঠা"
+  },
+  "adsObserved": {
+    "message": "যে বিজ্ঞাপন পার হয়েছে"
+  },
+  "trackersObserved": {
+    "message": "যে ট্র্যাকার পার হয়েছে"
+  },
+  "statsNote": {
+    "message": "“অবরুদ্ধ পৃষ্ঠা” একটি বাস্তব ঘটনা। বাকি দুটি সেই সম্পদ গোনে যা নিয়ম সত্ত্বেও লোড হয়েছে — এগুলি ফাঁক দেখায়, সুরক্ষা মাপে না।"
+  },
+  "quickActions": {
+    "message": "দ্রুত ক্রিয়া"
+  },
+  "navSettings": {
+    "message": "সেটিংস"
+  },
+  "navDiagnostics": {
+    "message": "নির্ণয়"
+  },
+  "navHelp": {
+    "message": "সহায়তা"
+  },
+  "localOnly": {
+    "message": "শুধু স্থানীয়"
+  },
+  "noAccountNoTelemetry": {
+    "message": "কোনো অ্যাকাউন্ট নেই · কোনো টেলিমেট্রি নেই"
+  },
+  "extensionUnavailable": {
+    "message": "এক্সটেনশন অনুপলব্ধ"
+  },
+  "extensionUnavailableHint": {
+    "message": "এক্সটেনশন পুনরায় লোড করে আবার চেষ্টা করুন"
+  },
+  "stateUnavailable": {
+    "message": "অবস্থা অনুপলব্ধ"
+  },
+  "saveFailed": {
+    "message": "সংরক্ষণ ব্যর্থ"
+  },
+  "toastProtectionOn": {
+    "message": "সুরক্ষা পুনরায় চালু"
+  },
+  "toastProtectionOff": {
+    "message": "সুরক্ষা বিরতিতে"
+  },
+  "toastToggleFailed": {
+    "message": "সুরক্ষা পরিবর্তন করা যায়নি"
+  },
+  "settingsLanguage": {
+    "message": "ভাষা"
+  },
+  "settingsLanguageHint": {
+    "message": "এক্সটেনশনের সব পর্দায় প্রযোজ্য। “স্বয়ংক্রিয়” ব্রাউজার অনুসরণ করে।"
+  },
+  "languageAuto": {
+    "message": "স্বয়ংক্রিয়"
+  }
+}

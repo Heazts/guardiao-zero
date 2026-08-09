@@ -76,16 +76,16 @@ body {
     gap: 8px;
     min-height: 176px;
     padding: 20px;
-    border-right: 1px solid var(--divider);
+    border-inline-end: 1px solid var(--divider);
 }
 
 .promise-ledger article:first-child {
-    padding-left: 0;
+    padding-inline-start: 0;
 }
 
 .promise-ledger article:last-child {
-    padding-right: 0;
-    border-right: 0;
+    padding-inline-end: 0;
+    border-inline-end: 0;
 }
 
 .promise-ledger article > span {
@@ -139,7 +139,7 @@ body {
     display: grid;
     gap: 4px;
     margin: 0;
-    padding-left: 19px;
+    padding-inline-start: 19px;
     color: var(--text-secondary);
 }
 
@@ -192,7 +192,7 @@ code {
     .promise-ledger article:last-child {
         min-height: auto;
         padding: 20px 0;
-        border-right: 0;
+        border-inline-end: 0;
         border-bottom: 1px solid var(--divider);
     }
 

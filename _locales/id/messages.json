@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "Perlindungan lokal multifaktor terhadap platform judi, iklan, dan pelacak, tanpa pengumpulan data.",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "Ambang lokal"
+  },
+  "statusActive": {
+    "message": "Aktif"
+  },
+  "statusPaused": {
+    "message": "Dijeda"
+  },
+  "statusUnavailable": {
+    "message": "Tidak tersedia"
+  },
+  "protectionState": {
+    "message": "Status perlindungan"
+  },
+  "protectionLoading": {
+    "message": "Memuat perlindungan…"
+  },
+  "protectionLoadingHint": {
+    "message": "Memeriksa lapisan lokal"
+  },
+  "protectionOn": {
+    "message": "Perlindungan aktif"
+  },
+  "protectionOff": {
+    "message": "Perlindungan dijeda"
+  },
+  "protectionOnHint": {
+    "message": "Lapisan lokal berjalan"
+  },
+  "protectionOffHint": {
+    "message": "Tidak ada permintaan yang akan disaring"
+  },
+  "toggleProtection": {
+    "message": "Alihkan perlindungan"
+  },
+  "localLedger": {
+    "message": "Catatan lokal"
+  },
+  "sinceLastReset": {
+    "message": "Sejak penyetelan ulang terakhir"
+  },
+  "pagesBlocked": {
+    "message": "Halaman diblokir"
+  },
+  "adsObserved": {
+    "message": "Iklan yang lolos"
+  },
+  "trackersObserved": {
+    "message": "Pelacak yang lolos"
+  },
+  "statsNote": {
+    "message": "“Halaman diblokir” adalah peristiwa nyata. Dua angka lainnya menghitung sumber daya yang tetap termuat meski ada aturan — keduanya menunjukkan celah, bukan mengukur perlindungan."
+  },
+  "quickActions": {
+    "message": "Tindakan cepat"
+  },
+  "navSettings": {
+    "message": "Pengaturan"
+  },
+  "navDiagnostics": {
+    "message": "Diagnostik"
+  },
+  "navHelp": {
+    "message": "Bantuan"
+  },
+  "localOnly": {
+    "message": "HANYA LOKAL"
+  },
+  "noAccountNoTelemetry": {
+    "message": "Tanpa akun · Tanpa telemetri"
+  },
+  "extensionUnavailable": {
+    "message": "Ekstensi tidak tersedia"
+  },
+  "extensionUnavailableHint": {
+    "message": "Muat ulang ekstensi lalu coba lagi"
+  },
+  "stateUnavailable": {
+    "message": "Status tidak tersedia"
+  },
+  "saveFailed": {
+    "message": "Gagal menyimpan"
+  },
+  "toastProtectionOn": {
+    "message": "Perlindungan dilanjutkan"
+  },
+  "toastProtectionOff": {
+    "message": "Perlindungan dijeda"
+  },
+  "toastToggleFailed": {
+    "message": "Tidak dapat mengubah perlindungan"
+  },
+  "settingsLanguage": {
+    "message": "Bahasa"
+  },
+  "settingsLanguageHint": {
+    "message": "Berlaku untuk semua layar ekstensi. “Otomatis” mengikuti peramban."
+  },
+  "languageAuto": {
+    "message": "Otomatis"
+  }
+}

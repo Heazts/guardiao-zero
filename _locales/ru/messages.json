@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "Локальная многофакторная защита от азартных платформ, рекламы и трекеров, без сбора данных.",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "Локальный порог"
+  },
+  "statusActive": {
+    "message": "Активна"
+  },
+  "statusPaused": {
+    "message": "Приостановлена"
+  },
+  "statusUnavailable": {
+    "message": "Недоступно"
+  },
+  "protectionState": {
+    "message": "Состояние защиты"
+  },
+  "protectionLoading": {
+    "message": "Загрузка защиты…"
+  },
+  "protectionLoadingHint": {
+    "message": "Проверка локальных слоёв"
+  },
+  "protectionOn": {
+    "message": "Защита активна"
+  },
+  "protectionOff": {
+    "message": "Защита приостановлена"
+  },
+  "protectionOnHint": {
+    "message": "Локальные слои работают"
+  },
+  "protectionOffHint": {
+    "message": "Ни один запрос не будет отфильтрован"
+  },
+  "toggleProtection": {
+    "message": "Переключить защиту"
+  },
+  "localLedger": {
+    "message": "Локальный журнал"
+  },
+  "sinceLastReset": {
+    "message": "С последнего сброса"
+  },
+  "pagesBlocked": {
+    "message": "Заблокировано страниц"
+  },
+  "adsObserved": {
+    "message": "Реклама, прошедшая мимо"
+  },
+  "trackersObserved": {
+    "message": "Трекеры, прошедшие мимо"
+  },
+  "statsNote": {
+    "message": "«Заблокировано страниц» — реальное событие. Остальные два считают ресурсы, которые загрузились вопреки правилам: они показывают пробелы, а не измеряют защиту."
+  },
+  "quickActions": {
+    "message": "Быстрые действия"
+  },
+  "navSettings": {
+    "message": "Настройки"
+  },
+  "navDiagnostics": {
+    "message": "Диагностика"
+  },
+  "navHelp": {
+    "message": "Справка"
+  },
+  "localOnly": {
+    "message": "ТОЛЬКО ЛОКАЛЬНО"
+  },
+  "noAccountNoTelemetry": {
+    "message": "Без аккаунта · Без телеметрии"
+  },
+  "extensionUnavailable": {
+    "message": "Расширение недоступно"
+  },
+  "extensionUnavailableHint": {
+    "message": "Перезагрузите расширение и попробуйте снова"
+  },
+  "stateUnavailable": {
+    "message": "Состояние недоступно"
+  },
+  "saveFailed": {
+    "message": "Не удалось сохранить"
+  },
+  "toastProtectionOn": {
+    "message": "Защита возобновлена"
+  },
+  "toastProtectionOff": {
+    "message": "Защита приостановлена"
+  },
+  "toastToggleFailed": {
+    "message": "Не удалось изменить защиту"
+  },
+  "settingsLanguage": {
+    "message": "Язык"
+  },
+  "settingsLanguageHint": {
+    "message": "Применяется ко всем экранам расширения. «Автоматически» следует за браузером."
+  },
+  "languageAuto": {
+    "message": "Автоматически"
+  }
+}

@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "Lokaler mehrstufiger Schutz vor Glücksspielplattformen, Werbung und Trackern, ohne Datenerfassung.",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "Lokale Schwelle"
+  },
+  "statusActive": {
+    "message": "Aktiv"
+  },
+  "statusPaused": {
+    "message": "Pausiert"
+  },
+  "statusUnavailable": {
+    "message": "Nicht verfügbar"
+  },
+  "protectionState": {
+    "message": "Schutzstatus"
+  },
+  "protectionLoading": {
+    "message": "Schutz wird geladen…"
+  },
+  "protectionLoadingHint": {
+    "message": "Lokale Ebenen werden geprüft"
+  },
+  "protectionOn": {
+    "message": "Schutz aktiv"
+  },
+  "protectionOff": {
+    "message": "Schutz pausiert"
+  },
+  "protectionOnHint": {
+    "message": "Lokale Ebenen laufen"
+  },
+  "protectionOffHint": {
+    "message": "Es wird keine Anfrage gefiltert"
+  },
+  "toggleProtection": {
+    "message": "Schutz umschalten"
+  },
+  "localLedger": {
+    "message": "Lokales Protokoll"
+  },
+  "sinceLastReset": {
+    "message": "Seit dem letzten Zurücksetzen"
+  },
+  "pagesBlocked": {
+    "message": "Blockierte Seiten"
+  },
+  "adsObserved": {
+    "message": "Durchgekommene Werbung"
+  },
+  "trackersObserved": {
+    "message": "Durchgekommene Tracker"
+  },
+  "statsNote": {
+    "message": "„Blockierte Seiten“ ist ein echtes Ereignis. Die beiden anderen zählen Ressourcen, die trotz der Regeln geladen wurden — sie zeigen Lücken, sie messen keinen Schutz."
+  },
+  "quickActions": {
+    "message": "Schnellzugriff"
+  },
+  "navSettings": {
+    "message": "Einstellungen"
+  },
+  "navDiagnostics": {
+    "message": "Diagnose"
+  },
+  "navHelp": {
+    "message": "Hilfe"
+  },
+  "localOnly": {
+    "message": "NUR LOKAL"
+  },
+  "noAccountNoTelemetry": {
+    "message": "Kein Konto · Keine Telemetrie"
+  },
+  "extensionUnavailable": {
+    "message": "Erweiterung nicht verfügbar"
+  },
+  "extensionUnavailableHint": {
+    "message": "Laden Sie die Erweiterung neu und versuchen Sie es erneut"
+  },
+  "stateUnavailable": {
+    "message": "Status nicht verfügbar"
+  },
+  "saveFailed": {
+    "message": "Speichern fehlgeschlagen"
+  },
+  "toastProtectionOn": {
+    "message": "Schutz wieder aktiv"
+  },
+  "toastProtectionOff": {
+    "message": "Schutz pausiert"
+  },
+  "toastToggleFailed": {
+    "message": "Schutz konnte nicht geändert werden"
+  },
+  "settingsLanguage": {
+    "message": "Sprache"
+  },
+  "settingsLanguageHint": {
+    "message": "Gilt für alle Bildschirme der Erweiterung. „Automatisch“ folgt dem Browser."
+  },
+  "languageAuto": {
+    "message": "Automatisch"
+  }
+}

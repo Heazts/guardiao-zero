@@ -166,7 +166,7 @@ body {
     }
 
     .faq-content {
-        padding-left: 0;
+        padding-inline-start: 0;
     }
 
     .help-footer {

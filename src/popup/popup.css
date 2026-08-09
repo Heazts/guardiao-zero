@@ -68,7 +68,7 @@ body {
     width: 32px;
     height: 44px;
     align-items: center;
-    border-right: 3px solid var(--accent-surface);
+    border-inline-end: 3px solid var(--accent-surface);
     color: var(--text);
     font: 650 10px/1 var(--font-mono);
     letter-spacing: 0.08em;
@@ -165,7 +165,7 @@ body {
     font-size: 14px;
     font-variant-numeric: tabular-nums;
     font-weight: 680;
-    text-align: right;
+    text-align: end;
 }
 
 .stats-note {
@@ -190,11 +190,11 @@ body {
     font-size: 12px;
     font-weight: 620;
     text-decoration: none;
-    transition: background-color 130ms ease, padding-left 130ms ease;
+    transition: background-color 130ms ease, padding-inline-start 130ms ease;
 }
 
 .quick-actions a:hover {
-    padding-left: 24px;
+    padding-inline-start: 24px;
     background: var(--surface-hover);
 }
 
@@ -226,9 +226,8 @@ body {
 }
 
 .popup-shell .toast-container {
-    right: 12px;
+    inset-inline: 12px;
     bottom: 12px;
-    left: 12px;
 }
 
 .popup-shell .toast {

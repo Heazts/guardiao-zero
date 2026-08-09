@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "Local multi-factor protection against gambling platforms, ads and trackers, with no data collection.",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "Local threshold"
+  },
+  "statusActive": {
+    "message": "Active"
+  },
+  "statusPaused": {
+    "message": "Paused"
+  },
+  "statusUnavailable": {
+    "message": "Unavailable"
+  },
+  "protectionState": {
+    "message": "Protection status"
+  },
+  "protectionLoading": {
+    "message": "Loading protection…"
+  },
+  "protectionLoadingHint": {
+    "message": "Checking the local layers"
+  },
+  "protectionOn": {
+    "message": "Protection active"
+  },
+  "protectionOff": {
+    "message": "Protection paused"
+  },
+  "protectionOnHint": {
+    "message": "Local layers running"
+  },
+  "protectionOffHint": {
+    "message": "No request will be filtered"
+  },
+  "toggleProtection": {
+    "message": "Toggle protection"
+  },
+  "localLedger": {
+    "message": "Local ledger"
+  },
+  "sinceLastReset": {
+    "message": "Since last reset"
+  },
+  "pagesBlocked": {
+    "message": "Pages blocked"
+  },
+  "adsObserved": {
+    "message": "Ads that got through"
+  },
+  "trackersObserved": {
+    "message": "Trackers that got through"
+  },
+  "statsNote": {
+    "message": "Pages blocked is a real event. The other two count resources that loaded despite the rules — they reveal gaps, they do not measure protection."
+  },
+  "quickActions": {
+    "message": "Quick actions"
+  },
+  "navSettings": {
+    "message": "Settings"
+  },
+  "navDiagnostics": {
+    "message": "Diagnostics"
+  },
+  "navHelp": {
+    "message": "Help"
+  },
+  "localOnly": {
+    "message": "LOCAL ONLY"
+  },
+  "noAccountNoTelemetry": {
+    "message": "No account · No telemetry"
+  },
+  "extensionUnavailable": {
+    "message": "Extension unavailable"
+  },
+  "extensionUnavailableHint": {
+    "message": "Reload the extension and try again"
+  },
+  "stateUnavailable": {
+    "message": "Status unavailable"
+  },
+  "saveFailed": {
+    "message": "Could not save"
+  },
+  "toastProtectionOn": {
+    "message": "Protection resumed"
+  },
+  "toastProtectionOff": {
+    "message": "Protection paused"
+  },
+  "toastToggleFailed": {
+    "message": "Could not change protection"
+  },
+  "settingsLanguage": {
+    "message": "Language"
+  },
+  "settingsLanguageHint": {
+    "message": "Applies to every extension screen. \"Automatic\" follows the browser."
+  },
+  "languageAuto": {
+    "message": "Automatic"
+  }
+}

@@ -261,11 +261,23 @@ no pacote, e por que os arquivos gerados podem ser confiados.
 > classification, and blocks ads and trackers through declarativeNetRequest
 > static rulesets.
 >
-> **No network activity at all.** The extension issues no network requests of
-> any kind. There is no `fetch`, `XMLHttpRequest`, `WebSocket`, `EventSource`,
-> `sendBeacon` or dynamic `import()` anywhere in the packaged code — grepping
-> the ZIP returns nothing. No telemetry, no analytics, no remote configuration,
-> no remote code. `data_collection_permissions` is declared as `none`.
+> **No network activity.** The extension issues no network requests. There is no
+> `XMLHttpRequest`, `WebSocket`, `EventSource`, `sendBeacon` or dynamic
+> `import()` anywhere in the packaged code. No telemetry, no analytics, no
+> remote configuration, no remote code. `data_collection_permissions` is
+> declared as `none`.
+>
+> There is exactly **one** `fetch` call, in `src/shared/i18n.js`, and its
+> argument is always `runtime.getURL('_locales/<code>/messages.json')` — it
+> reads the extension's own bundled translation file over `moz-extension://`.
+> Nothing leaves the browser. Grep the package for `fetch(` to confirm there is
+> a single occurrence and that it is that one.
+>
+> The reason it reads the file directly instead of using `browser.i18n` is that
+> the add-on offers an in-app language selector: `browser.i18n` resolves the
+> locale from the browser UI and cannot be changed at runtime. The files read
+> are the same `_locales` catalogs the manifest uses for the store name and
+> description, so there is no second copy that could drift.
 >
 > **Filter lists are not downloaded.** Users import EasyList and similar lists
 > through a local file picker (`<input type="file">` in the options page). The

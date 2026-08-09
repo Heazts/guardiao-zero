@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "جوئے کے پلیٹ فارمز، اشتہارات اور ٹریکرز کے خلاف مقامی کثیر عنصری تحفظ، بغیر کوئی ڈیٹا جمع کیے۔",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "مقامی حد"
+  },
+  "statusActive": {
+    "message": "فعال"
+  },
+  "statusPaused": {
+    "message": "موقوف"
+  },
+  "statusUnavailable": {
+    "message": "دستیاب نہیں"
+  },
+  "protectionState": {
+    "message": "تحفظ کی حالت"
+  },
+  "protectionLoading": {
+    "message": "تحفظ لوڈ ہو رہا ہے…"
+  },
+  "protectionLoadingHint": {
+    "message": "مقامی تہوں کی جانچ ہو رہی ہے"
+  },
+  "protectionOn": {
+    "message": "تحفظ فعال"
+  },
+  "protectionOff": {
+    "message": "تحفظ موقوف"
+  },
+  "protectionOnHint": {
+    "message": "مقامی تہیں کام کر رہی ہیں"
+  },
+  "protectionOffHint": {
+    "message": "کوئی درخواست فلٹر نہیں کی جائے گی"
+  },
+  "toggleProtection": {
+    "message": "تحفظ تبدیل کریں"
+  },
+  "localLedger": {
+    "message": "مقامی ریکارڈ"
+  },
+  "sinceLastReset": {
+    "message": "آخری ری سیٹ کے بعد سے"
+  },
+  "pagesBlocked": {
+    "message": "مسدود صفحات"
+  },
+  "adsObserved": {
+    "message": "وہ اشتہارات جو گزر گئے"
+  },
+  "trackersObserved": {
+    "message": "وہ ٹریکرز جو گزر گئے"
+  },
+  "statsNote": {
+    "message": "”مسدود صفحات“ ایک حقیقی واقعہ ہے۔ باقی دو ان وسائل کو گنتے ہیں جو قواعد کے باوجود لوڈ ہو گئے — یہ خامیاں ظاہر کرتے ہیں، تحفظ نہیں ناپتے۔"
+  },
+  "quickActions": {
+    "message": "فوری اقدامات"
+  },
+  "navSettings": {
+    "message": "ترتیبات"
+  },
+  "navDiagnostics": {
+    "message": "تشخیص"
+  },
+  "navHelp": {
+    "message": "مدد"
+  },
+  "localOnly": {
+    "message": "صرف مقامی"
+  },
+  "noAccountNoTelemetry": {
+    "message": "کوئی اکاؤنٹ نہیں · کوئی ٹیلی میٹری نہیں"
+  },
+  "extensionUnavailable": {
+    "message": "ایکسٹینشن دستیاب نہیں"
+  },
+  "extensionUnavailableHint": {
+    "message": "ایکسٹینشن دوبارہ لوڈ کریں اور پھر کوشش کریں"
+  },
+  "stateUnavailable": {
+    "message": "حالت دستیاب نہیں"
+  },
+  "saveFailed": {
+    "message": "محفوظ نہیں ہو سکا"
+  },
+  "toastProtectionOn": {
+    "message": "تحفظ بحال"
+  },
+  "toastProtectionOff": {
+    "message": "تحفظ موقوف"
+  },
+  "toastToggleFailed": {
+    "message": "تحفظ تبدیل نہیں ہو سکا"
+  },
+  "settingsLanguage": {
+    "message": "زبان"
+  },
+  "settingsLanguageHint": {
+    "message": "ایکسٹینشن کی تمام اسکرینوں پر لاگو ہوتا ہے۔ ”خودکار“ براؤزر کی پیروی کرتا ہے۔"
+  },
+  "languageAuto": {
+    "message": "خودکار"
+  }
+}

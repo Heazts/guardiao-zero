@@ -60,7 +60,7 @@ async function build(target) {
 
     await clean(outputRoot);
     await mkdir(outputRoot, { recursive: true });
-    for (const source of ['manifest.json', 'assets', 'src']) {
+    for (const source of ['manifest.json', '_locales', 'assets', 'src']) {
         const absoluteSource = join(projectRoot, source);
         const absoluteDestination = join(outputRoot, source);
         await cp(absoluteSource, absoluteDestination, {

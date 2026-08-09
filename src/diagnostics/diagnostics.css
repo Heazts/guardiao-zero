@@ -106,12 +106,12 @@ body {
 }
 
 .info-grid > div:nth-child(odd) {
-    padding-right: 22px;
-    border-right: 1px solid var(--divider);
+    padding-inline-end: 22px;
+    border-inline-end: 1px solid var(--divider);
 }
 
 .info-grid > div:nth-child(even) {
-    padding-left: 22px;
+    padding-inline-start: 22px;
 }
 
 .info-grid dt {
@@ -194,9 +194,9 @@ body {
 
     .info-grid > div:nth-child(odd),
     .info-grid > div:nth-child(even) {
-        padding-right: 0;
-        padding-left: 0;
-        border-right: 0;
+        padding-inline-end: 0;
+        padding-inline-start: 0;
+        border-inline-end: 0;
     }
 
     .actions-row {

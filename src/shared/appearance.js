@@ -8,18 +8,27 @@
  * enviado para fora do navegador.
  */
 globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
+    // O idioma viaja junto com as demais preferências de interface: mesma
+    // persistência em storage.local, mesma validação nas duas fronteiras e
+    // mesma propagação entre páginas abertas. `auto` segue o navegador.
+    const LANGUAGES = Object.freeze([
+        'auto', 'pt_BR', 'en', 'zh_CN', 'hi', 'es', 'ar',
+        'fr', 'bn', 'ru', 'ur', 'id', 'de'
+    ]);
     const DEFAULT_APPEARANCE = Object.freeze({
         theme: 'system',
         accent: '#111111',
         contrast: 'normal',
         density: 'comfortable',
-        motion: 'system'
+        motion: 'system',
+        language: 'auto'
     });
     const OPTIONS = Object.freeze({
         theme: new Set(['system', 'light', 'dark']),
         contrast: new Set(['normal', 'high']),
         density: new Set(['comfortable', 'compact']),
-        motion: new Set(['system', 'reduced'])
+        motion: new Set(['system', 'reduced']),
+        language: new Set(LANGUAGES)
     });
     const HEX_COLOR = /^#[0-9a-f]{6}$/i;
 
@@ -40,7 +49,10 @@ globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
                 : DEFAULT_APPEARANCE.density,
             motion: OPTIONS.motion.has(source.motion)
                 ? source.motion
-                : DEFAULT_APPEARANCE.motion
+                : DEFAULT_APPEARANCE.motion,
+            language: OPTIONS.language.has(source.language)
+                ? source.language
+                : DEFAULT_APPEARANCE.language
         };
     }
 
@@ -113,7 +125,10 @@ globalThis.GuardiaoAppearance = globalThis.GuardiaoAppearance || (() => {
         root.style.colorScheme = appearance.theme === 'system'
             ? 'light dark'
             : appearance.theme;
-        root.classList.remove('appearance-pending');
+        // Quando o i18n está presente, a revelação é dele: o tema é aplicado de
+        // forma síncrona, mas a tradução não, e revelar antes dela mostraria o
+        // texto de origem por um quadro antes de trocar.
+        if (!globalThis.GuardiaoI18n) root.classList.remove('appearance-pending');
         root.dispatchEvent(new CustomEvent('guardiao:appearance', {
             detail: appearance
         }));

@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "حماية محلية متعددة العوامل من منصات المقامرة والإعلانات وأدوات التتبّع، دون جمع أي بيانات.",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "العتبة المحلية"
+  },
+  "statusActive": {
+    "message": "مُفعَّل"
+  },
+  "statusPaused": {
+    "message": "متوقّف مؤقتًا"
+  },
+  "statusUnavailable": {
+    "message": "غير متاح"
+  },
+  "protectionState": {
+    "message": "حالة الحماية"
+  },
+  "protectionLoading": {
+    "message": "جارٍ تحميل الحماية…"
+  },
+  "protectionLoadingHint": {
+    "message": "جارٍ فحص الطبقات المحلية"
+  },
+  "protectionOn": {
+    "message": "الحماية مُفعَّلة"
+  },
+  "protectionOff": {
+    "message": "الحماية متوقّفة مؤقتًا"
+  },
+  "protectionOnHint": {
+    "message": "الطبقات المحلية تعمل"
+  },
+  "protectionOffHint": {
+    "message": "لن يُرشَّح أي طلب"
+  },
+  "toggleProtection": {
+    "message": "تبديل الحماية"
+  },
+  "localLedger": {
+    "message": "السجل المحلي"
+  },
+  "sinceLastReset": {
+    "message": "منذ آخر إعادة تعيين"
+  },
+  "pagesBlocked": {
+    "message": "الصفحات المحجوبة"
+  },
+  "adsObserved": {
+    "message": "الإعلانات التي مرّت"
+  },
+  "trackersObserved": {
+    "message": "أدوات التتبّع التي مرّت"
+  },
+  "statsNote": {
+    "message": "«الصفحات المحجوبة» حدث حقيقي. أما الرقمان الآخران فيحصيان الموارد التي حُمِّلت رغم القواعد — فهما يكشفان الثغرات ولا يقيسان الحماية."
+  },
+  "quickActions": {
+    "message": "إجراءات سريعة"
+  },
+  "navSettings": {
+    "message": "الإعدادات"
+  },
+  "navDiagnostics": {
+    "message": "التشخيص"
+  },
+  "navHelp": {
+    "message": "المساعدة"
+  },
+  "localOnly": {
+    "message": "محلي فقط"
+  },
+  "noAccountNoTelemetry": {
+    "message": "بلا حساب · بلا قياس عن بُعد"
+  },
+  "extensionUnavailable": {
+    "message": "الامتداد غير متاح"
+  },
+  "extensionUnavailableHint": {
+    "message": "أعد تحميل الامتداد ثم حاول مرة أخرى"
+  },
+  "stateUnavailable": {
+    "message": "الحالة غير متاحة"
+  },
+  "saveFailed": {
+    "message": "تعذّر الحفظ"
+  },
+  "toastProtectionOn": {
+    "message": "استُؤنفت الحماية"
+  },
+  "toastProtectionOff": {
+    "message": "الحماية متوقّفة مؤقتًا"
+  },
+  "toastToggleFailed": {
+    "message": "تعذّر تغيير الحماية"
+  },
+  "settingsLanguage": {
+    "message": "اللغة"
+  },
+  "settingsLanguageHint": {
+    "message": "ينطبق على جميع شاشات الامتداد. «تلقائي» يتبع المتصفح."
+  },
+  "languageAuto": {
+    "message": "تلقائي"
+  }
+}

@@ -2,6 +2,8 @@
 
 (() => {
     const platform = globalThis.GuardiaoPlatform;
+    const i18n = globalThis.GuardiaoI18n;
+    const t = (key, subs) => (i18n ? i18n.t(key, subs) : key);
     if (!platform?.isAvailable) return;
 
     const elements = {
@@ -80,11 +82,11 @@
         elements.toggle.setAttribute('aria-pressed', String(protectionEnabled));
         elements.heroIcon.classList.toggle('paused', !protectionEnabled);
         elements.statusBadge.className = `status-badge ${protectionEnabled ? 'success' : 'warning'}`;
-        elements.statusBadge.textContent = protectionEnabled ? 'Ativo' : 'Pausado';
-        elements.statusText.textContent = protectionEnabled ? 'Proteção ativa' : 'Proteção pausada';
+        elements.statusBadge.textContent = t(protectionEnabled ? 'statusActive' : 'statusPaused');
+        elements.statusText.textContent = t(protectionEnabled ? 'protectionOn' : 'protectionOff');
         elements.statusDescription.textContent = protectionEnabled
-            ? 'Camadas locais em funcionamento'
-            : 'Nenhuma requisição será filtrada';
+            ? t('protectionOnHint')
+            : t('protectionOffHint');
         animateNumber(elements.blockedCount, currentStats.pagesBlocked);
         animateNumber(elements.adCount, currentStats.adsObserved);
         animateNumber(elements.trackerCount, currentStats.trackersObserved);
@@ -102,15 +104,15 @@
     async function initialize() {
         try {
             const response = await platform.sendMessage('getState');
-            if (!response?.ok) throw new Error(response?.error || 'Estado indisponível');
+            if (!response?.ok) throw new Error(response?.error || t('stateUnavailable'));
             busy = false;
             renderState(response.state);
         } catch {
             busy = true;
             elements.statusBadge.className = 'status-badge danger';
-            elements.statusBadge.textContent = 'Indisponível';
-            elements.statusText.textContent = 'Extensão indisponível';
-            elements.statusDescription.textContent = 'Recarregue a extensão e tente novamente';
+            elements.statusBadge.textContent = t('statusUnavailable');
+            elements.statusText.textContent = t('extensionUnavailable');
+            elements.statusDescription.textContent = t('extensionUnavailableHint');
             elements.toggle.disabled = true;
             for (const target of [elements.blockedCount, elements.adCount, elements.trackerCount]) {
                 target.classList.remove('skeleton');
@@ -129,14 +131,14 @@
             const response = await platform.sendMessage('toggleProtection', {
                 enabled: requestedState
             });
-            if (!response?.ok) throw new Error(response?.error || 'Falha ao salvar');
+            if (!response?.ok) throw new Error(response?.error || t('saveFailed'));
             busy = false;
             renderState(response.state);
-            showToast(requestedState ? 'Proteção reativada' : 'Proteção pausada');
+            showToast(t(requestedState ? 'toastProtectionOn' : 'toastProtectionOff'));
         } catch {
             busy = false;
             renderState({ protectionEnabled, stats: currentStats });
-            showToast('Não foi possível alterar a proteção', true);
+            showToast(t('toastToggleFailed'), true);
         }
     }
 

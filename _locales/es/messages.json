@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "Protección local multifactor contra plataformas de apuestas, anuncios y rastreadores, sin recopilación de datos.",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "Umbral local"
+  },
+  "statusActive": {
+    "message": "Activo"
+  },
+  "statusPaused": {
+    "message": "Pausado"
+  },
+  "statusUnavailable": {
+    "message": "No disponible"
+  },
+  "protectionState": {
+    "message": "Estado de la protección"
+  },
+  "protectionLoading": {
+    "message": "Cargando protección…"
+  },
+  "protectionLoadingHint": {
+    "message": "Comprobando las capas locales"
+  },
+  "protectionOn": {
+    "message": "Protección activa"
+  },
+  "protectionOff": {
+    "message": "Protección pausada"
+  },
+  "protectionOnHint": {
+    "message": "Capas locales en funcionamiento"
+  },
+  "protectionOffHint": {
+    "message": "No se filtrará ninguna solicitud"
+  },
+  "toggleProtection": {
+    "message": "Alternar protección"
+  },
+  "localLedger": {
+    "message": "Registro local"
+  },
+  "sinceLastReset": {
+    "message": "Desde el último reinicio"
+  },
+  "pagesBlocked": {
+    "message": "Páginas bloqueadas"
+  },
+  "adsObserved": {
+    "message": "Anuncios que pasaron"
+  },
+  "trackersObserved": {
+    "message": "Rastreadores que pasaron"
+  },
+  "statsNote": {
+    "message": "Páginas bloqueadas es un evento real. Los otros dos cuentan recursos que llegaron a cargarse pese a las reglas: sirven para revelar huecos, no para medir la protección."
+  },
+  "quickActions": {
+    "message": "Acciones rápidas"
+  },
+  "navSettings": {
+    "message": "Configuración"
+  },
+  "navDiagnostics": {
+    "message": "Diagnóstico"
+  },
+  "navHelp": {
+    "message": "Ayuda"
+  },
+  "localOnly": {
+    "message": "SOLO LOCAL"
+  },
+  "noAccountNoTelemetry": {
+    "message": "Sin cuenta · Sin telemetría"
+  },
+  "extensionUnavailable": {
+    "message": "Extensión no disponible"
+  },
+  "extensionUnavailableHint": {
+    "message": "Vuelve a cargar la extensión e inténtalo de nuevo"
+  },
+  "stateUnavailable": {
+    "message": "Estado no disponible"
+  },
+  "saveFailed": {
+    "message": "No se pudo guardar"
+  },
+  "toastProtectionOn": {
+    "message": "Protección reactivada"
+  },
+  "toastProtectionOff": {
+    "message": "Protección pausada"
+  },
+  "toastToggleFailed": {
+    "message": "No se pudo cambiar la protección"
+  },
+  "settingsLanguage": {
+    "message": "Idioma"
+  },
+  "settingsLanguageHint": {
+    "message": "Se aplica a todas las pantallas de la extensión. «Automático» sigue al navegador."
+  },
+  "languageAuto": {
+    "message": "Automático"
+  }
+}

@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
-    <title>Guardião Zero Pro</title>
+    <title data-i18n-title="appName">Guardião Zero Pro</title>
+    <script src="../shared/i18n.js"></script>
     <script src="../shared/appearance.js"></script>
     <link rel="stylesheet" href="../shared/shared-styles.css">
     <link rel="stylesheet" href="popup.css">
@@ -15,22 +16,22 @@
             <div class="app-brand">
                 <img src="../../assets/brand/limiar-orbital.svg" alt="" class="brand-mark" width="32" height="32">
                 <span class="brand-copy">
-                    <span class="brand-name">Guardião Zero</span>
-                    <span class="brand-tagline">Limiar local</span>
+                    <span class="brand-name" data-i18n="brandName">Guardião Zero</span>
+                    <span class="brand-tagline" data-i18n="brandTagline">Limiar local</span>
                 </span>
             </div>
-            <span class="status-badge success" id="status-badge">Ativo</span>
+            <span class="status-badge success" id="status-badge" data-i18n="statusActive">Ativo</span>
         </header>
 
         <main class="popup-main">
             <section class="protection-console" aria-live="polite">
                 <div class="console-index" id="hero-icon" aria-hidden="true">01</div>
                 <div class="console-copy">
-                    <span>Estado da proteção</span>
-                    <h1 id="status-text">Carregando proteção…</h1>
-                    <p id="status-description">Verificando as camadas locais</p>
+                    <span data-i18n="protectionState">Estado da proteção</span>
+                    <h1 id="status-text" data-i18n="protectionLoading">Carregando proteção…</h1>
+                    <p id="status-description" data-i18n="protectionLoadingHint">Verificando as camadas locais</p>
                 </div>
-                <button id="toggle-protection" class="toggle-btn" aria-label="Alternar proteção" aria-pressed="true" disabled>
+                <button id="toggle-protection" class="toggle-btn" data-i18n-attr="aria-label:toggleProtection" aria-label="Alternar proteção" aria-pressed="true" disabled>
                     <span class="toggle-track"><span class="toggle-thumb"></span></span>
                 </button>
             </section>
@@ -38,42 +39,42 @@
             <section class="stats-section" aria-labelledby="stats-title">
                 <div class="section-label">
                     <span>02</span>
-                    <h2 id="stats-title">Registro local</h2>
-                    <small>Desde o último reset</small>
+                    <h2 id="stats-title" data-i18n="localLedger">Registro local</h2>
+                    <small data-i18n="sinceLastReset">Desde o último reset</small>
                 </div>
                 <dl class="stats-ledger">
                     <div>
-                        <dt>Páginas bloqueadas</dt>
+                        <dt data-i18n="pagesBlocked">Páginas bloqueadas</dt>
                         <dd id="blocked-count" class="skeleton">000</dd>
                     </div>
                     <div>
-                        <dt>Anúncios que passaram</dt>
+                        <dt data-i18n="adsObserved">Anúncios que passaram</dt>
                         <dd id="ad-count" class="skeleton">000</dd>
                     </div>
                     <div>
-                        <dt>Rastreadores que passaram</dt>
+                        <dt data-i18n="trackersObserved">Rastreadores que passaram</dt>
                         <dd id="tracker-count" class="skeleton">000</dd>
                     </div>
                 </dl>
-                <p class="stats-note">Páginas bloqueadas é um evento real. Os outros dois contam recursos que chegaram a carregar apesar das regras — servem para revelar lacunas, não para medir proteção.</p>
+                <p class="stats-note" data-i18n="statsNote">Páginas bloqueadas é um evento real. Os outros dois contam recursos que chegaram a carregar apesar das regras — servem para revelar lacunas, não para medir proteção.</p>
             </section>
         </main>
 
-        <nav class="quick-actions" aria-label="Ações rápidas">
+        <nav class="quick-actions" data-i18n-attr="aria-label:quickActions" aria-label="Ações rápidas">
             <a href="../options/options.html" target="_blank" rel="noopener">
-                <span>Configurações</span><span aria-hidden="true">↗</span>
+                <span data-i18n="navSettings">Configurações</span><span aria-hidden="true">↗</span>
             </a>
             <a href="../diagnostics/diagnostics.html" target="_blank" rel="noopener">
-                <span>Diagnóstico</span><span aria-hidden="true">↗</span>
+                <span data-i18n="navDiagnostics">Diagnóstico</span><span aria-hidden="true">↗</span>
             </a>
             <a href="../help/help.html" target="_blank" rel="noopener">
-                <span>Ajuda</span><span aria-hidden="true">↗</span>
+                <span data-i18n="navHelp">Ajuda</span><span aria-hidden="true">↗</span>
             </a>
         </nav>
 
         <footer class="popup-footer">
-            <span>LOCAL ONLY</span>
-            <span>Sem conta · Sem telemetria</span>
+            <span data-i18n="localOnly">LOCAL ONLY</span>
+            <span data-i18n="noAccountNoTelemetry">Sem conta · Sem telemetria</span>
         </footer>
         <div id="toast-container" class="toast-container" aria-live="polite"></div>
     </div>

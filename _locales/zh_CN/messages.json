@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "本地多因素防护，拦截博彩平台、广告与追踪器，不收集任何数据。",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "本地阈值"
+  },
+  "statusActive": {
+    "message": "已启用"
+  },
+  "statusPaused": {
+    "message": "已暂停"
+  },
+  "statusUnavailable": {
+    "message": "不可用"
+  },
+  "protectionState": {
+    "message": "防护状态"
+  },
+  "protectionLoading": {
+    "message": "正在加载防护…"
+  },
+  "protectionLoadingHint": {
+    "message": "正在检查本地防护层"
+  },
+  "protectionOn": {
+    "message": "防护已启用"
+  },
+  "protectionOff": {
+    "message": "防护已暂停"
+  },
+  "protectionOnHint": {
+    "message": "本地防护层运行中"
+  },
+  "protectionOffHint": {
+    "message": "不会过滤任何请求"
+  },
+  "toggleProtection": {
+    "message": "切换防护"
+  },
+  "localLedger": {
+    "message": "本地记录"
+  },
+  "sinceLastReset": {
+    "message": "自上次重置以来"
+  },
+  "pagesBlocked": {
+    "message": "已拦截页面"
+  },
+  "adsObserved": {
+    "message": "漏网的广告"
+  },
+  "trackersObserved": {
+    "message": "漏网的追踪器"
+  },
+  "statsNote": {
+    "message": "“已拦截页面”是真实事件。另外两项统计的是尽管有规则仍然加载的资源——它们用于暴露漏洞，而不是衡量防护效果。"
+  },
+  "quickActions": {
+    "message": "快捷操作"
+  },
+  "navSettings": {
+    "message": "设置"
+  },
+  "navDiagnostics": {
+    "message": "诊断"
+  },
+  "navHelp": {
+    "message": "帮助"
+  },
+  "localOnly": {
+    "message": "仅本地"
+  },
+  "noAccountNoTelemetry": {
+    "message": "无账号 · 无遥测"
+  },
+  "extensionUnavailable": {
+    "message": "扩展不可用"
+  },
+  "extensionUnavailableHint": {
+    "message": "请重新加载扩展后重试"
+  },
+  "stateUnavailable": {
+    "message": "状态不可用"
+  },
+  "saveFailed": {
+    "message": "保存失败"
+  },
+  "toastProtectionOn": {
+    "message": "防护已恢复"
+  },
+  "toastProtectionOff": {
+    "message": "防护已暂停"
+  },
+  "toastToggleFailed": {
+    "message": "无法更改防护状态"
+  },
+  "settingsLanguage": {
+    "message": "语言"
+  },
+  "settingsLanguageHint": {
+    "message": "适用于扩展的所有界面。“自动”跟随浏览器。"
+  },
+  "languageAuto": {
+    "message": "自动"
+  }
+}

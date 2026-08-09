@@ -1,0 +1,115 @@
+{
+  "extensionName": {
+    "message": "Guardião Zero Pro",
+    "description": "Nome exibido na loja e na barra de ferramentas."
+  },
+  "extensionDescription": {
+    "message": "जुआ प्लेटफ़ॉर्म, विज्ञापनों और ट्रैकर्स के विरुद्ध स्थानीय बहु-कारक सुरक्षा, बिना कोई डेटा एकत्र किए।",
+    "description": "Descrição curta exibida na loja."
+  },
+  "brandName": {
+    "message": "Guardião Zero"
+  },
+  "brandTagline": {
+    "message": "स्थानीय सीमा"
+  },
+  "statusActive": {
+    "message": "सक्रिय"
+  },
+  "statusPaused": {
+    "message": "रोका गया"
+  },
+  "statusUnavailable": {
+    "message": "अनुपलब्ध"
+  },
+  "protectionState": {
+    "message": "सुरक्षा स्थिति"
+  },
+  "protectionLoading": {
+    "message": "सुरक्षा लोड हो रही है…"
+  },
+  "protectionLoadingHint": {
+    "message": "स्थानीय परतों की जाँच हो रही है"
+  },
+  "protectionOn": {
+    "message": "सुरक्षा सक्रिय"
+  },
+  "protectionOff": {
+    "message": "सुरक्षा रोकी गई"
+  },
+  "protectionOnHint": {
+    "message": "स्थानीय परतें चालू हैं"
+  },
+  "protectionOffHint": {
+    "message": "कोई अनुरोध फ़िल्टर नहीं किया जाएगा"
+  },
+  "toggleProtection": {
+    "message": "सुरक्षा बदलें"
+  },
+  "localLedger": {
+    "message": "स्थानीय बही"
+  },
+  "sinceLastReset": {
+    "message": "पिछले रीसेट के बाद से"
+  },
+  "pagesBlocked": {
+    "message": "अवरुद्ध पृष्ठ"
+  },
+  "adsObserved": {
+    "message": "जो विज्ञापन निकल गए"
+  },
+  "trackersObserved": {
+    "message": "जो ट्रैकर निकल गए"
+  },
+  "statsNote": {
+    "message": "“अवरुद्ध पृष्ठ” एक वास्तविक घटना है। अन्य दो उन संसाधनों को गिनते हैं जो नियमों के बावजूद लोड हुए — वे कमियाँ दिखाते हैं, सुरक्षा नहीं मापते।"
+  },
+  "quickActions": {
+    "message": "त्वरित क्रियाएँ"
+  },
+  "navSettings": {
+    "message": "सेटिंग्स"
+  },
+  "navDiagnostics": {
+    "message": "निदान"
+  },
+  "navHelp": {
+    "message": "सहायता"
+  },
+  "localOnly": {
+    "message": "केवल स्थानीय"
+  },
+  "noAccountNoTelemetry": {
+    "message": "कोई खाता नहीं · कोई टेलीमेट्री नहीं"
+  },
+  "extensionUnavailable": {
+    "message": "एक्सटेंशन अनुपलब्ध"
+  },
+  "extensionUnavailableHint": {
+    "message": "एक्सटेंशन पुनः लोड करें और फिर प्रयास करें"
+  },
+  "stateUnavailable": {
+    "message": "स्थिति अनुपलब्ध"
+  },
+  "saveFailed": {
+    "message": "सहेजा नहीं जा सका"
+  },
+  "toastProtectionOn": {
+    "message": "सुरक्षा फिर से चालू"
+  },
+  "toastProtectionOff": {
+    "message": "सुरक्षा रोकी गई"
+  },
+  "toastToggleFailed": {
+    "message": "सुरक्षा बदली नहीं जा सकी"
+  },
+  "settingsLanguage": {
+    "message": "भाषा"
+  },
+  "settingsLanguageHint": {
+    "message": "एक्सटेंशन की सभी स्क्रीन पर लागू होती है। “स्वचालित” ब्राउज़र का अनुसरण करता है।"
+  },
+  "languageAuto": {
+    "message": "स्वचालित"
+  }
+}

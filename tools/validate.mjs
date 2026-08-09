@@ -288,6 +288,47 @@ export async function validateProject(options = {}) {
     const rulesets = await rulesetsAreCurrent();
     for (const problem of rulesets.drift) errors.push(problem);
 
+    // Um idioma com chave faltando não quebra a página — o i18n cai no catálogo
+    // de origem — mas produz uma tela meio traduzida que ninguém percebe até um
+    // usuário reclamar. Aqui a divergência aparece no lint.
+    const localesRoot = join(projectRoot, '_locales');
+    if (existsSync(localesRoot)) {
+        const catalogs = new Map();
+        for (const entry of await readdir(localesRoot, { withFileTypes: true })) {
+            if (!entry.isDirectory()) continue;
+            const file = join(localesRoot, entry.name, 'messages.json');
+            if (!existsSync(file)) {
+                errors.push(`Idioma ${entry.name} sem messages.json`);
+                continue;
+            }
+            try {
+                catalogs.set(entry.name, JSON.parse(await readFile(file, 'utf8')));
+            } catch (error) {
+                errors.push(`_locales/${entry.name}/messages.json inválido: ${error.message}`);
+            }
+        }
+        const manifestLocale = manifest.default_locale;
+        const source = catalogs.get(manifestLocale);
+        if (!source) {
+            errors.push(`default_locale "${manifestLocale}" não tem catálogo em _locales/`);
+        } else {
+            const expected = Object.keys(source).sort();
+            for (const [code, catalog] of catalogs) {
+                if (code === manifestLocale) continue;
+                const actual = new Set(Object.keys(catalog));
+                const missing = expected.filter(key => !actual.has(key));
+                const extra = [...actual].filter(key => !expected.includes(key));
+                if (missing.length) errors.push(`Idioma ${code}: ${missing.length} chave(s) ausente(s): ${missing.slice(0, 5).join(', ')}`);
+                if (extra.length) errors.push(`Idioma ${code}: chave(s) que não existem na origem: ${extra.slice(0, 5).join(', ')}`);
+                for (const key of expected) {
+                    if (actual.has(key) && typeof catalog[key]?.message !== 'string') {
+                        errors.push(`Idioma ${code}: chave ${key} sem "message" em texto`);
+                    }
+                }
+            }
+        }
+    }
+
     // Mesmo princípio para a identidade: SVG e PNG saem de uma geometria só.
     // Editar um deles à mão fazia o ícone da barra deixar de ser o símbolo do
     // cabeçalho sem que nada acusasse.

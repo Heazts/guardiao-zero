@@ -288,6 +288,27 @@
         }
     }
 
+    /**
+     * O seletor é preenchido a partir do registro do i18n, não de uma lista
+     * escrita à mão no HTML — assim acrescentar um idioma não exige lembrar de
+     * editar duas fontes.
+     */
+    function populateLanguages() {
+        const select = element('language-select');
+        const i18n = globalThis.GuardiaoI18n;
+        if (!select || !i18n || select.options.length) return;
+        const auto = document.createElement('option');
+        auto.value = 'auto';
+        auto.textContent = i18n.t('languageAuto');
+        select.append(auto);
+        for (const locale of i18n.LOCALES) {
+            const option = document.createElement('option');
+            option.value = locale.code;
+            option.textContent = locale.label;
+            select.append(option);
+        }
+    }
+
     function renderAppearance(value) {
         const appearance = appearanceService.normalize(value);
         for (const [name, selected] of Object.entries({
@@ -301,6 +322,13 @@
         element('accent-color').value = appearance.accent;
         element('accent-value').textContent = appearance.accent;
         element('reduce-motion').checked = appearance.motion === 'reduced';
+        populateLanguages();
+        const language = element('language-select');
+        if (language) language.value = appearance.language;
+        element('language-select')?.addEventListener('change', event => {
+            void updateAppearance({ language: event.target.value });
+        });
+
         for (const swatch of document.querySelectorAll('.accent-swatch')) {
             swatch.classList.toggle('active', swatch.dataset.accent === appearance.accent);
         }

@@ -33,7 +33,7 @@ body {
 .blocked-signal {
     align-self: start;
     padding-top: 3px;
-    border-right: 1px solid var(--divider);
+    border-inline-end: 1px solid var(--divider);
 }
 
 .blocked-signal > span {
@@ -57,7 +57,7 @@ body {
     width: 58%;
     height: 76%;
     border: 6px solid currentColor;
-    border-right-color: transparent;
+    border-inline-end-color: transparent;
     border-radius: 50%;
 }
 
@@ -172,7 +172,7 @@ body {
 
     .blocked-signal {
         padding-bottom: 24px;
-        border-right: 0;
+        border-inline-end: 0;
         border-bottom: 1px solid var(--divider);
     }
 

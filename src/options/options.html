@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="color-scheme" content="light dark">
     <title>Configurações — Guardião Zero Pro</title>
+    <script src="../shared/i18n.js"></script>
     <script src="../shared/appearance.js"></script>
     <link rel="stylesheet" href="../shared/shared-styles.css">
     <link rel="stylesheet" href="options.css">
@@ -359,6 +360,15 @@
                                 <span>Alto</span>
                             </label>
                         </div>
+                    </fieldset>
+
+                    <fieldset class="appearance-row">
+                        <legend data-i18n="settingsLanguage">Idioma</legend>
+                        <p data-i18n="settingsLanguageHint">Aplica-se a todas as telas da extensão. "Automático" segue o navegador.</p>
+                        <label class="field">
+                            <span class="sr-only" data-i18n="settingsLanguage">Idioma</span>
+                            <select id="language-select" class="input-select"></select>
+                        </label>
                     </fieldset>
 
                     <fieldset class="appearance-row">
