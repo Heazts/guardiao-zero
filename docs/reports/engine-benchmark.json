@@ -1,0 +1,218 @@
+{
+  "generatedAt": "2026-08-09T19:54:08.007Z",
+  "runtime": "v24.18.0",
+  "methodology": {
+    "repetitions": 9,
+    "warmup": 3,
+    "statistic": "mediana; mínimo e máximo reportados",
+    "orderMitigation": "ordem das variantes alternada entre repetições",
+    "deadCodeGuard": "acumulador de resultado",
+    "scope": "apenas caminhos internos do motor; métricas de navegador não são medidas aqui",
+    "integrityChecksum": 269376
+  },
+  "subdomainMatcher": {
+    "10": {
+      "entries": 10,
+      "lookups": 202000,
+      "linear": {
+        "medianMs": 570.2575,
+        "minMs": 562.6654,
+        "maxMs": 581.331,
+        "samplesMs": [
+          562.6654,
+          563.2321,
+          563.5344,
+          568.8973,
+          570.2575,
+          570.2636,
+          570.4859,
+          571.2026,
+          581.331
+        ]
+      },
+      "labelWalk": {
+        "medianMs": 60.9661,
+        "minMs": 59.1159,
+        "maxMs": 79.6077,
+        "samplesMs": [
+          59.1159,
+          59.3597,
+          59.4575,
+          59.8229,
+          60.9661,
+          61.1025,
+          62.8723,
+          77.7316,
+          79.6077
+        ]
+      },
+      "speedup": 9.4,
+      "linearNsPerLookup": 2823.1,
+      "labelWalkNsPerLookup": 301.8
+    },
+    "100": {
+      "entries": 100,
+      "lookups": 20200,
+      "linear": {
+        "medianMs": 564.9988,
+        "minMs": 558.3358,
+        "maxMs": 649.342,
+        "samplesMs": [
+          558.3358,
+          560.6935,
+          561.7757,
+          562.1373,
+          564.9988,
+          570.5272,
+          577.9694,
+          588.4657,
+          649.342
+        ]
+      },
+      "labelWalk": {
+        "medianMs": 6.2798,
+        "minMs": 6.1254,
+        "maxMs": 6.4098,
+        "samplesMs": [
+          6.1254,
+          6.1643,
+          6.2538,
+          6.2655,
+          6.2798,
+          6.2863,
+          6.2978,
+          6.4046,
+          6.4098
+        ]
+      },
+      "speedup": 90,
+      "linearNsPerLookup": 27970.2,
+      "labelWalkNsPerLookup": 310.9
+    },
+    "1000": {
+      "entries": 1000,
+      "lookups": 2020,
+      "linear": {
+        "medianMs": 560.8117,
+        "minMs": 555.9074,
+        "maxMs": 575.3709,
+        "samplesMs": [
+          555.9074,
+          558.9999,
+          559.6199,
+          559.7866,
+          560.8117,
+          563.4217,
+          563.4369,
+          563.7918,
+          575.3709
+        ]
+      },
+      "labelWalk": {
+        "medianMs": 0.6629,
+        "minMs": 0.6409,
+        "maxMs": 0.8237,
+        "samplesMs": [
+          0.6409,
+          0.6415,
+          0.6418,
+          0.6429,
+          0.6629,
+          0.6645,
+          0.6661,
+          0.6745,
+          0.8237
+        ]
+      },
+      "speedup": 846,
+      "linearNsPerLookup": 277629.6,
+      "labelWalkNsPerLookup": 328.2
+    },
+    "5000": {
+      "entries": 5000,
+      "lookups": 404,
+      "linear": {
+        "medianMs": 563.3213,
+        "minMs": 561.7944,
+        "maxMs": 655.1494,
+        "samplesMs": [
+          561.7944,
+          562.0098,
+          562.308,
+          562.5028,
+          563.3213,
+          564.4129,
+          565.3252,
+          566.4454,
+          655.1494
+        ]
+      },
+      "labelWalk": {
+        "medianMs": 0.193,
+        "minMs": 0.1377,
+        "maxMs": 0.1945,
+        "samplesMs": [
+          0.1377,
+          0.1381,
+          0.1382,
+          0.1384,
+          0.193,
+          0.1931,
+          0.1936,
+          0.194,
+          0.1945
+        ]
+      },
+      "speedup": 2918.8,
+      "linearNsPerLookup": 1394359.7,
+      "labelWalkNsPerLookup": 477.7
+    }
+  },
+  "bettingPolicy": {
+    "domains": 28,
+    "suffixes": 1,
+    "policyUtf8Bytes": 437,
+    "lookups": 12000,
+    "findDomain": {
+      "medianMs": 5.8172,
+      "minMs": 5.5968,
+      "maxMs": 6.0243,
+      "samplesMs": [
+        5.5968,
+        5.7773,
+        5.7832,
+        5.7889,
+        5.8172,
+        5.8286,
+        5.8661,
+        5.9038,
+        6.0243
+      ]
+    },
+    "usPerLookup": 0.48
+  },
+  "filterParser": {
+    "inputLines": 12000,
+    "inputBytes": 456909,
+    "acceptedRules": 12000,
+    "rejected": 0,
+    "parse": {
+      "medianMs": 191.2796,
+      "minMs": 188.1014,
+      "maxMs": 200.3077,
+      "samplesMs": [
+        188.1014,
+        188.326,
+        189.6275,
+        189.7697,
+        191.2796,
+        193.9305,
+        194.3982,
+        194.7593,
+        200.3077
+      ]
+    },
+    "rulesPerSecond": 62735,
+    "mibPerSecond": 2.3
+  }
+}

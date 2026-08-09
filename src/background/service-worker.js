@@ -11,7 +11,9 @@ if (!globalThis.GuardiaoBlocklistIndex && typeof importScripts === 'function') {
         '../shared/filters/filter-list-parser.js',
         '../shared/detection/detection-engine.js',
         '../shared/messaging/message-schema.js',
-        './blocklist-index.js'
+        './verified-betting-domains.js',
+        './blocklist-index.js',
+        './cosmetic-filters.js'
     );
 }
 
@@ -85,12 +87,26 @@ const state = {
 };
 
 let readyPromise;
+let stateMutationTail = Promise.resolve();
 
 const DYNAMIC_RULE_LIMIT = 5000;
 const WHITELIST_RULE_LIMIT = 100;
-const IMPORTED_RULE_LIMIT = DYNAMIC_RULE_LIMIT - WHITELIST_RULE_LIMIT;
+const VERIFIED_RULE_LIMIT = 100;
+const IMPORTED_RULE_LIMIT = DYNAMIC_RULE_LIMIT - WHITELIST_RULE_LIMIT - VERIFIED_RULE_LIMIT;
 const DYNAMIC_RULE_BASE = 100000;
-const IMPORTED_RULE_BASE = DYNAMIC_RULE_BASE + WHITELIST_RULE_LIMIT;
+const VERIFIED_RULE_BASE = DYNAMIC_RULE_BASE + WHITELIST_RULE_LIMIT;
+const IMPORTED_RULE_BASE = VERIFIED_RULE_BASE + VERIFIED_RULE_LIMIT;
+
+/**
+ * Todas as operações que leem, aguardam I/O e depois publicam um novo estado
+ * passam por esta fila. Sem ela, duas mensagens podiam calcular o mesmo
+ * snapshot antigo e a última gravação apagava silenciosamente a primeira.
+ */
+function enqueueStateMutation(operation) {
+    const result = stateMutationTail.then(operation);
+    stateMutationTail = result.then(() => undefined, () => undefined);
+    return result;
+}
 
 function errorResponse(error, code = 'INVALID_REQUEST') {
     return {
@@ -110,12 +126,33 @@ function normalizeSettings(rawSettings) {
     return { ...constants.DEFAULT_SETTINGS, ...patch };
 }
 
+/**
+ * Migração de contadores v4 → v5.
+ *
+ * Os nomes antigos afirmavam bloqueio para números que eram observação de
+ * página. O valor é preservado — o usuário não perde histórico — mas passa a
+ * ser guardado sob um nome que descreve o que ele realmente mede.
+ * `totalBlocked` é descartado: somava um evento real com duas estimativas.
+ */
+const LEGACY_STAT_KEYS = Object.freeze({
+    sitesBlocked: 'pagesBlocked',
+    adsBlocked: 'adsObserved',
+    trackersBlocked: 'trackersObserved'
+});
+
 function normalizeStats(rawStats) {
     const source = messages.plainObject(rawStats) ? rawStats : {};
     const result = { ...constants.DEFAULT_STATS };
-    for (const key of ['totalBlocked', 'trackersBlocked', 'sitesBlocked', 'adsBlocked', 'lastReset']) {
-        if (Number.isFinite(source[key]) && source[key] >= 0) result[key] = Math.trunc(source[key]);
+
+    for (const [legacyKey, currentKey] of Object.entries(LEGACY_STAT_KEYS)) {
+        const value = source[legacyKey];
+        if (Number.isFinite(value) && value >= 0) result[currentKey] = Math.trunc(value);
     }
+    for (const key of ['pagesBlocked', 'adsObserved', 'trackersObserved', 'lastReset']) {
+        const value = source[key];
+        if (Number.isFinite(value) && value >= 0) result[key] = Math.trunc(value);
+    }
+
     if (!result.lastReset) result.lastReset = Date.now();
     return result;
 }
@@ -215,19 +252,40 @@ function sourceIsEffective(source, context) {
     return true;
 }
 
-function buildWhitelistDynamicRules(whitelist) {
+/**
+ * Somente entradas explícitas do usuário viram regra de rede.
+ *
+ * `constants.TRUSTED_DOMAINS` é uma salvaguarda do classificador de apostas —
+ * impede falso positivo em alphabet.com, betterstack.com, bancos e domínios
+ * governamentais. Ele nunca deve virar `allow` de DNR: uma regra de prioridade
+ * 100 sobre esses domínios desliga o bloqueio de anúncios e rastreadores em
+ * todos eles, incluindo os que mais servem publicidade. Ver tests/dnr-scope.
+ */
+function activeListEntries(entries, now = Date.now()) {
+    return entries.filter(entry => !entry.expiresAt || entry.expiresAt > now);
+}
+
+function escapeRegex(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function exactDomainUrlRegex(domain) {
+    // Sintaxe deliberadamente limitada ao subconjunto RE2 aceito pelo DNR.
+    // Requisições HTTP(S) canônicas sempre têm uma barra após host/porta.
+    return `^https?://${escapeRegex(domain)}(:[0-9]+)?/`;
+}
+
+function buildWhitelistDynamicRules(whitelist, temporaryAllowed = []) {
     const rules = [];
-    const domains = Array.from(new Set([
-        ...constants.TRUSTED_DOMAINS,
-        ...whitelist
-        .filter(entry => entry.type === 'domain' || entry.type === 'subdomain')
+    const activeWhitelist = activeListEntries(whitelist);
+    const subdomains = Array.from(new Set(activeWhitelist
+        .filter(entry => entry.type === 'subdomain')
         .map(entry => entry.pattern)
-        .filter(Boolean)
-    ]))
+        .filter(Boolean)))
         .sort();
 
-    for (let offset = 0; offset < domains.length && rules.length < WHITELIST_RULE_LIMIT; offset += 500) {
-        const domainBatch = domains.slice(offset, offset + 500);
+    for (let offset = 0; offset < subdomains.length && rules.length < WHITELIST_RULE_LIMIT; offset += 500) {
+        const domainBatch = subdomains.slice(offset, offset + 500);
         rules.push({
             id: DYNAMIC_RULE_BASE + rules.length,
             priority: 100,
@@ -249,9 +307,40 @@ function buildWhitelistDynamicRules(whitelist) {
         });
     }
 
-    for (const entry of whitelist) {
+    const exactDomains = Array.from(new Set(activeWhitelist
+        .filter(entry => entry.type === 'domain')
+        .map(entry => entry.pattern)
+        .filter(Boolean)))
+        .sort();
+    for (const domain of exactDomains) {
         if (rules.length >= WHITELIST_RULE_LIMIT) break;
-        if (entry.type !== 'url') continue;
+        const regexFilter = exactDomainUrlRegex(domain);
+        rules.push({
+            id: DYNAMIC_RULE_BASE + rules.length,
+            priority: 100,
+            action: { type: 'allow' },
+            condition: {
+                regexFilter,
+                resourceTypes: [...filterParser.ALL_RESOURCE_TYPES]
+            }
+        });
+        if (rules.length >= WHITELIST_RULE_LIMIT) break;
+        rules.push({
+            id: DYNAMIC_RULE_BASE + rules.length,
+            priority: 100,
+            action: { type: 'allowAllRequests' },
+            condition: {
+                regexFilter,
+                resourceTypes: ['main_frame']
+            }
+        });
+    }
+
+    const exactUrls = activeWhitelist
+        .filter(entry => entry.type === 'url')
+        .sort((left, right) => left.pattern.localeCompare(right.pattern));
+    for (const entry of exactUrls) {
+        if (rules.length >= WHITELIST_RULE_LIMIT) break;
         rules.push({
             id: DYNAMIC_RULE_BASE + rules.length,
             priority: 100,
@@ -259,6 +348,68 @@ function buildWhitelistDynamicRules(whitelist) {
             condition: {
                 urlFilter: `|${entry.pattern}|`,
                 resourceTypes: [...filterParser.ALL_RESOURCE_TYPES]
+            }
+        });
+    }
+
+    const temporaryDomains = Array.from(new Set(temporaryAllowed
+        .filter(item => item.expiresAt > Date.now())
+        .map(item => item.domain)
+        .filter(Boolean)))
+        .sort();
+    for (
+        let offset = 0;
+        offset < temporaryDomains.length && rules.length < WHITELIST_RULE_LIMIT;
+        offset += 500
+    ) {
+        rules.push({
+            id: DYNAMIC_RULE_BASE + rules.length,
+            priority: 300,
+            action: { type: 'allow' },
+            condition: {
+                requestDomains: temporaryDomains.slice(offset, offset + 500),
+                resourceTypes: ['main_frame']
+            }
+        });
+    }
+    return rules;
+}
+
+function buildVerifiedBettingRules(context) {
+    if (!context.protectionEnabled || !context.settings.blockBetting) return [];
+
+    const verified = globalThis.GuardiaoVerifiedBettingDomains;
+    const domains = Array.from(new Set((Array.isArray(verified?.domains) ? verified.domains : [])
+        .map(domain => lists.normalizeHostname(domain))
+        .filter(Boolean)))
+        .sort();
+    const suffixes = Array.from(new Set([
+        'bet.br',
+        ...(Array.isArray(verified?.suffixes) ? verified.suffixes : [])
+    ].map(domain => lists.normalizeHostname(domain)).filter(Boolean)))
+        .sort();
+    const rules = [];
+
+    for (let offset = 0; offset < domains.length && rules.length < VERIFIED_RULE_LIMIT; offset += 500) {
+        rules.push({
+            id: VERIFIED_RULE_BASE + rules.length,
+            priority: 50,
+            action: { type: 'block' },
+            condition: {
+                requestDomains: domains.slice(offset, offset + 500),
+                resourceTypes: ['main_frame']
+            }
+        });
+    }
+    for (const suffix of suffixes) {
+        if (rules.length >= VERIFIED_RULE_LIMIT) break;
+        rules.push({
+            id: VERIFIED_RULE_BASE + rules.length,
+            priority: 50,
+            action: { type: 'block' },
+            condition: {
+                urlFilter: `||${suffix}^`,
+                resourceTypes: ['main_frame']
             }
         });
     }
@@ -298,20 +449,34 @@ async function syncDynamicRules(overrides = {}) {
     };
     const whitelist = overrides.whitelist || state.whitelist;
     const filterSources = overrides.filterSources || state.filterSources;
+    const temporaryAllowed = overrides.temporaryAllowed || state.temporaryAllowed;
     const expected = context.protectionEnabled
         ? [
-            ...buildWhitelistDynamicRules(whitelist),
+            ...buildWhitelistDynamicRules(whitelist, temporaryAllowed),
+            ...buildVerifiedBettingRules(context),
             ...buildImportedDynamicRules(filterSources, context)
         ]
         : [];
     const current = await api.declarativeNetRequest.getDynamicRules();
-    const managedIds = current
-        .map(rule => rule.id)
-        .filter(id => Number.isInteger(id) && id >= DYNAMIC_RULE_BASE && id < DYNAMIC_RULE_BASE + DYNAMIC_RULE_LIMIT);
-    await api.declarativeNetRequest.updateDynamicRules({
-        removeRuleIds: managedIds,
-        addRules: expected
-    });
+    const managed = current
+        .filter(rule => Number.isInteger(rule.id)
+            && rule.id >= DYNAMIC_RULE_BASE
+            && rule.id < DYNAMIC_RULE_BASE + DYNAMIC_RULE_LIMIT)
+        .sort((left, right) => left.id - right.id);
+
+    // Sem esta comparação, cada despertar do worker removia e readicionava até
+    // 4.900 regras idênticas. A geração é determinística — mesmo estado produz
+    // a mesma lista, na mesma ordem, com os mesmos ids — então divergir aqui
+    // significa que algo realmente mudou.
+    const unchanged = managed.length === expected.length
+        && JSON.stringify(managed) === JSON.stringify(expected);
+
+    if (!unchanged) {
+        await api.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: managed.map(rule => rule.id),
+            addRules: expected
+        });
+    }
     state.dynamicRuleCount = expected.filter(rule => rule.id >= IMPORTED_RULE_BASE).length;
     return expected;
 }
@@ -337,14 +502,17 @@ async function initialize() {
         'blocklist',
         constants.LIMITS.listEntries
     );
-    state.whitelist = whitelistResult.entries;
-    state.blocklist = blocklistResult.entries;
-    state.compiledWhitelist = lists.compile(state.whitelist, 'whitelist');
-    state.compiledBlocklist = lists.compile(state.blocklist, 'blocklist');
+    state.whitelist = activeListEntries(whitelistResult.entries);
+    state.blocklist = activeListEntries(blocklistResult.entries);
+    state.compiledWhitelist = lists.compileEntries(state.whitelist, 'whitelist');
+    state.compiledBlocklist = lists.compileEntries(state.blocklist, 'blocklist');
     state.filterSources = normalizeFilterSources(stored.filterSources);
     state.temporaryAllowed = normalizeTemporaryAllowances(stored.temporaryAllowed);
 
-    await persist({
+    // O worker do Chromium é encerrado por ociosidade e initialize() roda de
+    // novo a cada despertar. Reescrever o estado inteiro quando a normalização
+    // não mudou nada custava ~1,5 MiB de escrita por despertar, sem ganho.
+    const normalized = {
         protectionEnabled: state.protectionEnabled,
         settings: state.settings,
         appearance: state.appearance,
@@ -353,8 +521,14 @@ async function initialize() {
         blocklist: state.blocklist,
         filterSources: state.filterSources,
         temporaryAllowed: state.temporaryAllowed,
-        schemaVersion: 4
-    });
+        schemaVersion: 5
+    };
+    const storedShape = {};
+    for (const key of Object.keys(normalized)) storedShape[key] = stored[key];
+    if (JSON.stringify(storedShape) !== JSON.stringify(normalized)) {
+        await persist(normalized);
+    }
+
     await updateNetworkRules();
     state.initialized = true;
 }
@@ -387,13 +561,15 @@ async function updateNetworkRules(overrides = {}) {
         protectionEnabled: overrides.protectionEnabled ?? state.protectionEnabled,
         settings: overrides.settings || state.settings,
         whitelist: overrides.whitelist || state.whitelist,
-        filterSources: overrides.filterSources || state.filterSources
+        filterSources: overrides.filterSources || state.filterSources,
+        temporaryAllowed: overrides.temporaryAllowed || state.temporaryAllowed
     };
     const previous = {
         protectionEnabled: state.protectionEnabled,
         settings: state.settings,
         whitelist: state.whitelist,
-        filterSources: state.filterSources
+        filterSources: state.filterSources,
+        temporaryAllowed: state.temporaryAllowed
     };
 
     try {
@@ -453,28 +629,78 @@ function urlsHaveSameOrigin(left, right) {
     }
 }
 
-function cleanExpiredAllowances() {
-    const before = state.temporaryAllowed.length;
-    state.temporaryAllowed = state.temporaryAllowed.filter(item => item.expiresAt > Date.now());
-    if (state.temporaryAllowed.length !== before) {
-        void persist({ temporaryAllowed: state.temporaryAllowed });
+async function purgeExpiredStateInternal() {
+    const now = Date.now();
+    const whitelist = activeListEntries(state.whitelist, now);
+    const blocklist = activeListEntries(state.blocklist, now);
+    const temporaryAllowed = state.temporaryAllowed.filter(item => item.expiresAt > now);
+    const whitelistChanged = whitelist.length !== state.whitelist.length;
+    const blocklistChanged = blocklist.length !== state.blocklist.length;
+    const temporaryChanged = temporaryAllowed.length !== state.temporaryAllowed.length;
+    if (!whitelistChanged && !blocklistChanged && !temporaryChanged) return false;
+
+    if (whitelistChanged || temporaryChanged) {
+        await updateNetworkRules({ whitelist, temporaryAllowed });
     }
+    const values = {};
+    if (whitelistChanged) values.whitelist = whitelist;
+    if (blocklistChanged) values.blocklist = blocklist;
+    if (temporaryChanged) values.temporaryAllowed = temporaryAllowed;
+    try {
+        await persist(values);
+    } catch (error) {
+        if (whitelistChanged || temporaryChanged) {
+            await updateNetworkRules().catch(() => {});
+        }
+        throw error;
+    }
+
+    state.whitelist = whitelist;
+    state.blocklist = blocklist;
+    state.temporaryAllowed = temporaryAllowed;
+    if (whitelistChanged) state.compiledWhitelist = lists.compileEntries(whitelist, 'whitelist');
+    if (blocklistChanged) state.compiledBlocklist = lists.compileEntries(blocklist, 'blocklist');
+    if (whitelistChanged || blocklistChanged) state.analysisCache.clear();
+    return true;
+}
+
+function purgeExpiredState() {
+    return enqueueStateMutation(purgeExpiredStateInternal);
 }
 
 function isTemporarilyAllowed(hostname) {
-    cleanExpiredAllowances();
-    return state.temporaryAllowed.some(item => lists.domainMatches(hostname, item.domain, true));
+    const now = Date.now();
+    return state.temporaryAllowed.some(item =>
+        item.expiresAt > now && lists.domainMatches(hostname, item.domain, true)
+    );
+}
+
+async function userWhitelistMatch(url, hostname) {
+    return lists.match(state.compiledWhitelist, { url, hostname });
+}
+
+function builtInTrustedMatch(hostname) {
+    return detector.isTrustedHostname(hostname)
+        ? { type: 'built-in', pattern: hostname }
+        : null;
 }
 
 async function whitelistMatch(url, hostname) {
-    if (detector.isTrustedHostname(hostname)) {
-        return { type: 'built-in', pattern: hostname };
-    }
-    return lists.match(state.compiledWhitelist, { url, hostname });
+    return await userWhitelistMatch(url, hostname) || builtInTrustedMatch(hostname);
 }
 
 async function customBlockMatch(url, hostname) {
     return lists.match(state.compiledBlocklist, { url, hostname });
+}
+
+async function systemBlockMatch(hostname) {
+    try {
+        await blocklistIndex.load();
+        return blocklistIndex.findDomain(hostname);
+    } catch (error) {
+        console.warn('[Guardião Zero Pro] Blocklist indisponível:', safeErrorMessage(error));
+        return '';
+    }
 }
 
 function publicState(includePrivateLists) {
@@ -514,37 +740,39 @@ function trimMap(map, maximum) {
 }
 
 async function updatePrivacyStats(tabId, signals) {
-    if (!state.protectionEnabled) return;
-    const key = `${tabId}:${signals.url}`;
-    const previous = state.privacyObservations.get(key) || { trackers: 0, ads: 0 };
-    const next = {
-        trackers: state.settings.blockTrackers ? signals.trackerCount : 0,
-        ads: state.settings.blockAds ? signals.adCount : 0
-    };
-    const trackerDelta = Math.max(0, next.trackers - previous.trackers);
-    const adDelta = Math.max(0, next.ads - previous.ads);
-    if (trackerDelta === 0 && adDelta === 0) return;
+    return enqueueStateMutation(async () => {
+        if (!state.protectionEnabled) return;
+        const key = `${tabId}:${signals.url}`;
+        const previous = state.privacyObservations.get(key) || { trackers: 0, ads: 0 };
+        const next = {
+            trackers: state.settings.blockTrackers ? signals.trackerCount : 0,
+            ads: state.settings.blockAds ? signals.adCount : 0
+        };
+        const trackerDelta = Math.max(0, next.trackers - previous.trackers);
+        const adDelta = Math.max(0, next.ads - previous.ads);
+        if (trackerDelta === 0 && adDelta === 0) return;
 
-    const nextStats = {
-        ...state.stats,
-        trackersBlocked: state.stats.trackersBlocked + trackerDelta,
-        adsBlocked: state.stats.adsBlocked + adDelta,
-        totalBlocked: state.stats.totalBlocked + trackerDelta + adDelta
-    };
-    await persist({ stats: nextStats });
-    state.privacyObservations.set(key, next);
-    trimMap(state.privacyObservations, constants.LIMITS.cacheEntries);
-    state.stats = nextStats;
+        const nextStats = {
+            ...state.stats,
+            trackersObserved: state.stats.trackersObserved + trackerDelta,
+            adsObserved: state.stats.adsObserved + adDelta
+        };
+        await persist({ stats: nextStats });
+        state.privacyObservations.set(key, next);
+        trimMap(state.privacyObservations, constants.LIMITS.cacheEntries);
+        state.stats = nextStats;
+    });
 }
 
 async function incrementBlockedSite() {
-    const nextStats = {
-        ...state.stats,
-        sitesBlocked: state.stats.sitesBlocked + 1,
-        totalBlocked: state.stats.totalBlocked + 1
-    };
-    await persist({ stats: nextStats });
-    state.stats = nextStats;
+    return enqueueStateMutation(async () => {
+        const nextStats = {
+            ...state.stats,
+            pagesBlocked: state.stats.pagesBlocked + 1
+        };
+        await persist({ stats: nextStats });
+        state.stats = nextStats;
+    });
 }
 
 async function executeBlock(tabId, originalUrl, reason, result) {
@@ -592,7 +820,7 @@ async function handleAnalysis(signals, sender) {
 
     const hostname = hostnameFromUrl(signals.url);
     if (!hostname) return errorResponse('Hostname inválido');
-    if (await whitelistMatch(signals.url, hostname)) {
+    if (await userWhitelistMatch(signals.url, hostname)) {
         return { ok: true, action: 'allow', reason: 'whitelist' };
     }
     if (isTemporarilyAllowed(hostname)) {
@@ -607,6 +835,10 @@ async function handleAnalysis(signals, sender) {
         return { ok: true, action: 'block', policy: 'custom-blocklist' };
     }
 
+    if (builtInTrustedMatch(hostname)) {
+        return { ok: true, action: 'allow', reason: 'trusted-domain' };
+    }
+
     if (state.settings.extremeMode) {
         await executeBlock(sender.tab.id, signals.url, 'Modo de bloqueio extremo', {
             score: constants.SCORE.thresholdMax
@@ -617,15 +849,20 @@ async function handleAnalysis(signals, sender) {
         return { ok: true, action: 'allow', reason: 'betting-filter-disabled' };
     }
 
-    let systemMatch = '';
-    try {
-        await blocklistIndex.load();
-        systemMatch = blocklistIndex.findDomain(hostname);
-    } catch (error) {
-        console.warn('[Guardião Zero Pro] Blocklist indisponível:', safeErrorMessage(error));
+    const systemMatch = await systemBlockMatch(hostname);
+    if (systemMatch) {
+        await executeBlock(sender.tab.id, signals.url, 'Domínio presente na lista integrada', {
+            score: constants.SCORE.thresholdMax
+        });
+        return {
+            ok: true,
+            action: 'block',
+            policy: 'system-blocklist',
+            matchedDomain: systemMatch
+        };
     }
 
-    if (!state.settings.aiDetection && !systemMatch) {
+    if (!state.settings.aiDetection) {
         return { ok: true, action: 'allow', reason: 'advanced-detection-disabled' };
     }
 
@@ -651,19 +888,38 @@ async function handleAnalysis(signals, sender) {
     };
 }
 
-async function handleNavigation(details) {
+async function handleNavigation(details, options = {}) {
     try {
         await ensureReady();
+        await purgeExpiredState();
         if (details.frameId !== 0 || !state.protectionEnabled) return;
         const url = lists.normalizeHttpUrl(details.url, true);
         const hostname = hostnameFromUrl(url);
         if (!hostname) return;
-        if (await whitelistMatch(url, hostname) || isTemporarilyAllowed(hostname)) return;
+        if (await userWhitelistMatch(url, hostname) || isTemporarilyAllowed(hostname)) return;
 
         if (await customBlockMatch(url, hostname)) {
             await executeBlock(details.tabId, url, 'Bloqueio definido pelo usuário');
-        } else if (state.settings.extremeMode) {
+            return;
+        }
+        if (builtInTrustedMatch(hostname)) return;
+
+        if (state.settings.extremeMode) {
             await executeBlock(details.tabId, url, 'Modo de bloqueio extremo');
+            return;
+        }
+        if (state.settings.blockBetting) {
+            const systemMatch = await systemBlockMatch(hostname);
+            if (systemMatch) {
+                await executeBlock(details.tabId, url, 'Domínio presente na lista integrada', {
+                    score: constants.SCORE.thresholdMax
+                });
+                return;
+            }
+        }
+
+        if (options.reanalyze) {
+            await api.tabs.sendMessage(details.tabId, { type: 'reanalyzePage' }).catch(() => {});
         }
     } catch (error) {
         console.error('[Guardião Zero Pro] Falha ao avaliar navegação:', safeErrorMessage(error));
@@ -672,6 +928,9 @@ async function handleNavigation(details) {
 
 async function addListEntry(payload) {
     const key = payload.list;
+    if (payload.entry.expiresAt && payload.entry.expiresAt <= Date.now()) {
+        return publicState(true);
+    }
     const current = key === 'whitelist' ? state.whitelist : state.blocklist;
     const duplicate = current.some(entry =>
         entry.type === payload.entry.type && entry.pattern === payload.entry.pattern
@@ -691,11 +950,11 @@ async function addListEntry(payload) {
             throw error;
         }
         state.whitelist = next;
-        state.compiledWhitelist = lists.compile(next, key);
+        state.compiledWhitelist = lists.compileEntries(next, key);
     } else {
         await persist({ blocklist: next });
         state.blocklist = next;
-        state.compiledBlocklist = lists.compile(next, key);
+        state.compiledBlocklist = lists.compileEntries(next, key);
     }
     state.analysisCache.clear();
     return publicState(true);
@@ -713,12 +972,12 @@ async function removeListEntry(payload) {
             throw error;
         }
         state.whitelist = next;
-        state.compiledWhitelist = lists.compile(next, key);
+        state.compiledWhitelist = lists.compileEntries(next, key);
     } else {
         const next = state.blocklist.filter(entry => entry.id !== payload.id);
         await persist({ blocklist: next });
         state.blocklist = next;
-        state.compiledBlocklist = lists.compile(next, key);
+        state.compiledBlocklist = lists.compileEntries(next, key);
     }
     state.analysisCache.clear();
     return publicState(true);
@@ -839,7 +1098,7 @@ async function removeFilterSource(payload) {
 
 function exportState() {
     return {
-        schemaVersion: 4,
+        schemaVersion: 5,
         exportedAt: new Date().toISOString(),
         extensionVersion: api.runtime.getManifest().version,
         protectionEnabled: state.protectionEnabled,
@@ -898,6 +1157,8 @@ async function importState(data) {
             ? normalizeFilterSources(data.filterSources)
             : state.filterSources
     };
+    next.whitelist = activeListEntries(next.whitelist);
+    next.blocklist = activeListEntries(next.blocklist);
 
     await updateNetworkRules(next);
     try {
@@ -909,7 +1170,7 @@ async function importState(data) {
         whitelist: next.whitelist,
         blocklist: next.blocklist,
         filterSources: next.filterSources,
-        schemaVersion: 4
+        schemaVersion: 5
         });
     } catch (error) {
         await updateNetworkRules().catch(() => {});
@@ -922,11 +1183,57 @@ async function importState(data) {
     state.whitelist = next.whitelist;
     state.blocklist = next.blocklist;
     state.filterSources = next.filterSources;
-    state.compiledWhitelist = lists.compile(next.whitelist, 'whitelist');
-    state.compiledBlocklist = lists.compile(next.blocklist, 'blocklist');
+    state.compiledWhitelist = lists.compileEntries(next.whitelist, 'whitelist');
+    state.compiledBlocklist = lists.compileEntries(next.blocklist, 'blocklist');
     state.analysisCache.clear();
     await broadcastState();
     return publicState(true);
+}
+
+/**
+ * Seletores de ocultamento aplicáveis a um hostname.
+ *
+ * Regras por domínio valem para o domínio e seus descendentes, então subimos a
+ * cadeia de rótulos. Uma exceção (`#@#`) em qualquer nível remove o seletor —
+ * é assim que uma lista corrige um falso positivo sem que o usuário precise
+ * liberar o site inteiro.
+ */
+function cosmeticSelectorsFor(hostname) {
+    const data = globalThis.GuardiaoCosmeticData;
+    if (!data) return [];
+
+    const selectors = new Set(data.generic);
+    const removed = new Set();
+
+    let candidate = hostname;
+    for (;;) {
+        for (const selector of data.specific[candidate] || []) selectors.add(selector);
+        for (const selector of data.exceptions[candidate] || []) removed.add(selector);
+        const dot = candidate.indexOf('.');
+        if (dot === -1) break;
+        candidate = candidate.slice(dot + 1);
+    }
+
+    return Array.from(selectors).filter(selector => !removed.has(selector));
+}
+
+async function handleCosmeticRequest(sender) {
+    if (!isContentSender(sender)) return errorResponse('Origem inválida', 'FORBIDDEN');
+    // Ocultar contêiner é parte do bloqueio de anúncio; segue o mesmo toggle.
+    if (!state.protectionEnabled || !state.settings.blockAds) {
+        return { ok: true, selectors: [] };
+    }
+
+    const url = lists.normalizeHttpUrl(sender.url, true);
+    const hostname = hostnameFromUrl(url);
+    if (!hostname) return { ok: true, selectors: [] };
+
+    // Precedência: uma exceção explícita do usuário desliga o ocultamento,
+    // igual ao que faz com a classificação e com as regras de rede.
+    if (await whitelistMatch(url, hostname)) return { ok: true, selectors: [] };
+    if (isTemporarilyAllowed(hostname)) return { ok: true, selectors: [] };
+
+    return { ok: true, selectors: cosmeticSelectorsFor(hostname) };
 }
 
 async function getDiagnostics() {
@@ -975,7 +1282,7 @@ async function runSelfTest() {
     await blocklistIndex.load();
     lines.push({
         ok: blocklistIndex.findDomain('www.bet365.com') === 'bet365.com',
-        label: 'Índice binário da blocklist'
+        label: 'Política verificada de domínios'
     });
 
     const safeResult = detector.analyze({
@@ -1034,71 +1341,93 @@ async function handleMessage(parsed, sender) {
     if (PRIVILEGED_MESSAGES.has(type) && !isExtensionPageSender(sender)) {
         return errorResponse('Ação disponível apenas nas páginas da extensão', 'FORBIDDEN');
     }
+    await purgeExpiredState();
 
     if (type === 'ping') return { ok: true, pong: true };
     if (type === 'getState') return { ok: true, state: publicState(isExtensionPageSender(sender)) };
     if (type === 'analyzePage') return handleAnalysis(payload, sender);
+    if (type === 'getCosmeticFilters') return handleCosmeticRequest(sender);
 
     if (type === 'toggleProtection') {
-        const previous = state.protectionEnabled;
-        await updateNetworkRules({ protectionEnabled: payload.enabled });
-        try {
-            await persist({ protectionEnabled: payload.enabled });
-        } catch (error) {
-            await updateNetworkRules({ protectionEnabled: previous }).catch(() => {});
-            throw error;
-        }
-        state.protectionEnabled = payload.enabled;
-        await broadcastState();
-        return { ok: true, state: publicState(true) };
+        return enqueueStateMutation(async () => {
+            const previous = state.protectionEnabled;
+            await updateNetworkRules({ protectionEnabled: payload.enabled });
+            try {
+                await persist({ protectionEnabled: payload.enabled });
+            } catch (error) {
+                await updateNetworkRules({ protectionEnabled: previous }).catch(() => {});
+                throw error;
+            }
+            state.protectionEnabled = payload.enabled;
+            await broadcastState();
+            return { ok: true, state: publicState(true) };
+        });
     }
 
     if (type === 'updateSettings') {
-        const previous = state.settings;
-        const next = { ...state.settings, ...payload.settings };
-        await updateNetworkRules({ settings: next });
-        try {
-            await persist({ settings: next });
-        } catch (error) {
-            await updateNetworkRules({ settings: previous }).catch(() => {});
-            throw error;
-        }
-        state.settings = next;
-        state.analysisCache.clear();
-        await broadcastState();
-        return { ok: true, state: publicState(true) };
+        return enqueueStateMutation(async () => {
+            const previous = state.settings;
+            const next = { ...state.settings, ...payload.settings };
+            await updateNetworkRules({ settings: next });
+            try {
+                await persist({ settings: next });
+            } catch (error) {
+                await updateNetworkRules({ settings: previous }).catch(() => {});
+                throw error;
+            }
+            state.settings = next;
+            state.analysisCache.clear();
+            await broadcastState();
+            return { ok: true, state: publicState(true) };
+        });
     }
 
     if (type === 'updateAppearance') {
-        const next = appearanceService.normalize({
-            ...state.appearance,
-            ...payload.appearance
+        return enqueueStateMutation(async () => {
+            const next = appearanceService.normalize({
+                ...state.appearance,
+                ...payload.appearance
+            });
+            await persist({ appearance: next });
+            state.appearance = next;
+            return { ok: true, state: publicState(true) };
         });
-        await persist({ appearance: next });
-        state.appearance = next;
-        return { ok: true, state: publicState(true) };
     }
 
-    if (type === 'addListEntry') return { ok: true, state: await addListEntry(payload) };
-    if (type === 'removeListEntry') return { ok: true, state: await removeListEntry(payload) };
+    if (type === 'addListEntry') {
+        return enqueueStateMutation(async () => ({ ok: true, state: await addListEntry(payload) }));
+    }
+    if (type === 'removeListEntry') {
+        return enqueueStateMutation(async () => ({ ok: true, state: await removeListEntry(payload) }));
+    }
     if (type === 'importFilterList') {
-        const result = await importFilterList(payload);
-        return { ok: true, ...result };
+        return enqueueStateMutation(async () => {
+            const result = await importFilterList(payload);
+            return { ok: true, ...result };
+        });
     }
     if (type === 'toggleFilterSource') {
-        return { ok: true, state: await toggleFilterSource(payload) };
+        return enqueueStateMutation(async () => ({
+            ok: true,
+            state: await toggleFilterSource(payload)
+        }));
     }
     if (type === 'removeFilterSource') {
-        return { ok: true, state: await removeFilterSource(payload) };
+        return enqueueStateMutation(async () => ({
+            ok: true,
+            state: await removeFilterSource(payload)
+        }));
     }
     if (type === 'exportState') return { ok: true, data: exportState() };
 
     if (type === 'resetStats') {
-        const nextStats = { ...constants.DEFAULT_STATS, lastReset: Date.now() };
-        await persist({ stats: nextStats });
-        state.stats = nextStats;
-        state.privacyObservations.clear();
-        return { ok: true, state: publicState(true) };
+        return enqueueStateMutation(async () => {
+            const nextStats = { ...constants.DEFAULT_STATS, lastReset: Date.now() };
+            await persist({ stats: nextStats });
+            state.stats = nextStats;
+            state.privacyObservations.clear();
+            return { ok: true, state: publicState(true) };
+        });
     }
 
     if (type === 'allowTemporary') {
@@ -1108,16 +1437,28 @@ async function handleMessage(parsed, sender) {
             return errorResponse('URL não corresponde ao bloqueio atual', 'URL_MISMATCH');
         }
         const domain = hostnameFromUrl(payload.url);
-        const next = state.temporaryAllowed.filter(item => item.domain !== domain);
-        next.push({ domain, expiresAt: Date.now() + payload.duration });
-        await persist({ temporaryAllowed: next });
-        state.temporaryAllowed = next;
-        return { ok: true };
+        return enqueueStateMutation(async () => {
+            const next = state.temporaryAllowed
+                .filter(item => item.domain !== domain && item.expiresAt > Date.now())
+                .slice(-99);
+            next.push({ domain, expiresAt: Date.now() + payload.duration });
+            await updateNetworkRules({ temporaryAllowed: next });
+            try {
+                await persist({ temporaryAllowed: next });
+            } catch (error) {
+                await updateNetworkRules({ temporaryAllowed: state.temporaryAllowed }).catch(() => {});
+                throw error;
+            }
+            state.temporaryAllowed = next;
+            return { ok: true };
+        });
     }
 
     if (type === 'getDiagnostics') return { ok: true, diagnostics: await getDiagnostics() };
     if (type === 'runSelfTest') return { ok: true, selfTest: await runSelfTest() };
-    if (type === 'importState') return { ok: true, state: await importState(payload.data) };
+    if (type === 'importState') {
+        return enqueueStateMutation(async () => ({ ok: true, state: await importState(payload.data) }));
+    }
 
     return errorResponse('Mensagem não implementada');
 }
@@ -1141,6 +1482,24 @@ api.runtime.onMessage.addListener((message, sender, sendResponse) => {
 api.webNavigation.onBeforeNavigate.addListener(details => {
     void handleNavigation(details);
 });
+
+// Plataformas de aposta são quase sempre SPAs: trocam de rota sem uma nova
+// navegação, então onBeforeNavigate nunca dispara depois da primeira carga.
+// Sem isto, uma rota /sportsbook alcançada por push de histórico escapava
+// assim que a janela de reanálise do content script fechava.
+if (api.webNavigation.onHistoryStateUpdated) {
+    api.webNavigation.onHistoryStateUpdated.addListener(details => {
+        void handleNavigation(details, { reanalyze: true });
+    });
+}
+
+// Algumas SPAs usam apenas o fragmento (#/sportsbook), sem pushState. O evento
+// de histórico não cobre esse caso em todos os navegadores.
+if (api.webNavigation.onReferenceFragmentUpdated) {
+    api.webNavigation.onReferenceFragmentUpdated.addListener(details => {
+        void handleNavigation(details, { reanalyze: true });
+    });
+}
 
 api.runtime.onInstalled.addListener(() => {
     void ensureReady();

@@ -1,0 +1,265 @@
+[Adblock Plus 2.0]
+! Title: Guardião Zero — Infraestrutura de anúncios
+! Description: Domínios de infraestrutura publicitária de terceiros (exchanges,
+!   SSP/DSP, redes, verificação e anúncios nativos). Curada para baixo risco de
+!   falso positivo: nenhum domínio aqui serve função de site (CDN, autenticação,
+!   pagamento, CAPTCHA, fontes).
+! License: MIT (mesma do projeto)
+!
+! Formato: sintaxe Adblock. Convertido para declarativeNetRequest em build por
+!   tools/build-rules.mjs, usando o mesmo parser validado da importação local.
+!
+! `$~document` exclui main_frame de propósito: bloquear navegação de nível
+!   superior quebraria click-through e recomendações iniciadas pelo usuário,
+!   sem ganho — o anúncio já não renderizou.
+!
+! NÃO incluir aqui, por serem infraestrutura legítima de sites:
+!   google.com, gstatic.com, googleapis.com, recaptcha.net, hcaptcha.com,
+!   cloudflare.com, stripe.com, paypal.com, jsdelivr.net, unpkg.com
+
+! ---------------------------------------------------------------------------
+! Google / Alphabet — superfícies exclusivamente publicitárias
+! ---------------------------------------------------------------------------
+||doubleclick.net^$~document
+||googleadservices.com^$~document
+||googlesyndication.com^$~document
+||googletagservices.com^$~document
+||adservice.google.com^$~document
+||pagead2.googlesyndication.com^$~document
+||partner.googleadservices.com^$~document
+||2mdn.net^$~document
+||admob.com^$~document
+||doubleclickbygoogle.com^$~document
+
+! ---------------------------------------------------------------------------
+! Amazon
+! ---------------------------------------------------------------------------
+||amazon-adsystem.com^$~document
+||assoc-amazon.com^$~document
+||adtago.s3.amazonaws.com^$~document
+
+! ---------------------------------------------------------------------------
+! Exchanges, SSPs e DSPs de grande escala
+! ---------------------------------------------------------------------------
+||adnxs.com^$~document
+||adnxs-simple.com^$~document
+||adsrvr.org^$~document
+||pubmatic.com^$~document
+||rubiconproject.com^$~document
+||openx.net^$~document
+||openx.com^$~document
+||casalemedia.com^$~document
+||indexww.com^$~document
+||contextweb.com^$~document
+||3lift.com^$~document
+||triplelift.com^$~document
+||sharethrough.com^$~document
+||districtm.io^$~document
+||gumgum.com^$~document
+||sovrn.com^$~document
+||lijit.com^$~document
+||conversantmedia.com^$~document
+||mediamath.com^$~document
+||mathtag.com^$~document
+||turn.com^$~document
+||bidswitch.net^$~document
+||smartadserver.com^$~document
+||smartadserver.net^$~document
+||adform.net^$~document
+||adformdsp.net^$~document
+||improvedigital.com^$~document
+||360yield.com^$~document
+||yieldmo.com^$~document
+||yieldlab.net^$~document
+||adscale.de^$~document
+||stroeerdigitalgroup.de^$~document
+||teads.tv^$~document
+||spotxchange.com^$~document
+||spotx.tv^$~document
+||springserve.com^$~document
+||telaria.com^$~document
+||tremorhub.com^$~document
+||unrulymedia.com^$~document
+||adtelligent.com^$~document
+||betweendigital.com^$~document
+||adkernel.com^$~document
+||emxdgt.com^$~document
+||nexx360.io^$~document
+||onetag-sys.com^$~document
+||richaudience.com^$~document
+||smilewanted.com^$~document
+||themediagrid.com^$~document
+||undertone.com^$~document
+||zetaglobal.net^$~document
+||adhigh.net^$~document
+||adriver.ru^$~document
+||adfox.ru^$~document
+
+! ---------------------------------------------------------------------------
+! Criteo e retargeting
+! ---------------------------------------------------------------------------
+||criteo.com^$~document
+||criteo.net^$~document
+||emailretargeting.com^$~document
+||adroll.com^$~document
+||adrollmail.com^$~document
+||veinteractive.com^$~document
+||exactag.com^$~document
+||sociomantic.com^$~document
+||nanigans.com^$~document
+||steelhousemedia.com^$~document
+
+! ---------------------------------------------------------------------------
+! Anúncios nativos e recomendação de conteúdo
+! ---------------------------------------------------------------------------
+||taboola.com^$~document
+||taboolasyndication.com^$~document
+||outbrain.com^$~document
+||outbrainimg.com^$~document
+||zemanta.com^$~document
+||revcontent.com^$~document
+||mgid.com^$~document
+||dable.io^$~document
+||plista.com^$~document
+||ligatus.com^$~document
+||contentexchange.me^$~document
+||engageya.com^$~document
+||adskeeper.com^$~document
+||adskeeper.co.uk^$~document
+||smartfeed.pro^$~document
+||nativery.com^$~document
+||strossle.com^$~document
+
+! ---------------------------------------------------------------------------
+! Redes de display e monetização
+! ---------------------------------------------------------------------------
+||media.net^$~document
+||adblade.com^$~document
+||adcolony.com^$~document
+||applovin.com^$~document
+||chartboost.com^$~document
+||inmobi.com^$~document
+||ironsrc.com^$~document
+||ironsource.mobi^$~document
+||unityads.unity3d.com^$~document
+||vungle.com^$~document
+||tapjoy.com^$~document
+||startapp.com^$~document
+||supersonicads.com^$~document
+||mopub.com^$~document
+||smaato.net^$~document
+||smaato.com^$~document
+||pubnative.net^$~document
+||fyber.com^$~document
+||inner-active.mobi^$~document
+||adcash.com^$~document
+||propellerads.com^$~document
+||popads.net^$~document
+||popcash.net^$~document
+||exoclick.com^$~document
+||exosrv.com^$~document
+||juicyads.com^$~document
+||trafficjunky.com^$~document
+||trafficjunky.net^$~document
+||hilltopads.net^$~document
+||adsterra.com^$~document
+||adservme.com^$~document
+||adsupply.com^$~document
+||clickadu.com^$~document
+||adnium.com^$~document
+||adspyglass.com^$~document
+||admaven.com^$~document
+||mybestadnetwork.com^$~document
+
+! ---------------------------------------------------------------------------
+! Header bidding e wrappers
+! ---------------------------------------------------------------------------
+||prebid.org^$~document
+||amazon-adsystem.com^$~document
+||aps.amazon.com^$~document
+||confiant-integrations.net^$~document
+||adlightning.com^$~document
+||yieldbot.com^$~document
+||pbstck.com^$~document
+
+! ---------------------------------------------------------------------------
+! Verificação, mensuração e antifraude publicitária
+! ---------------------------------------------------------------------------
+||moatads.com^$~document
+||moat.com^$~document
+||doubleverify.com^$~document
+||adsafeprotected.com^$~document
+||iasds01.com^$~document
+||integralads.com^$~document
+||serving-sys.com^$~document
+||flashtalking.com^$~document
+||adsymptotic.com^$~document
+||agkn.com^$~document
+||eyeota.net^$~document
+||exelator.com^$~document
+||bluekai.com^$~document
+||krxd.net^$~document
+||demdex.net^$~document
+||everesttech.net^$~document
+||omtrdc.net^$~document
+||rlcdn.com^$~document
+||liadm.com^$~document
+||crwdcntrl.net^$~document
+||tapad.com^$~document
+||adentifi.com^$~document
+||id5-sync.com^$~document
+||adsrvr.com^$~document
+
+! ---------------------------------------------------------------------------
+! Vídeo e áudio publicitário
+! ---------------------------------------------------------------------------
+||imasdk.googleapis.com^$~document
+||innovid.com^$~document
+||adsafety.net^$~document
+||videoplaza.tv^$~document
+||stickyadstv.com^$~document
+||freewheel.tv^$~document
+||fwmrm.net^$~document
+||beachfront.com^$~document
+||aniview.com^$~document
+||primis.tech^$~document
+||vidoomy.com^$~document
+||connatix.com^$~document
+||adplayer.pro^$~document
+
+! ---------------------------------------------------------------------------
+! Pop-ups, interstitials e monetização agressiva
+! ---------------------------------------------------------------------------
+||popunder.net^$~document
+||onclickads.net^$~document
+||onclickmax.com^$~document
+||onclasrv.com^$~document
+||zeropark.com^$~document
+||propelmedia.com^$~document
+||bodelen.com^$~document
+||clickfuse.com^$~document
+||intellipopup.com^$~document
+||adnotbad.com^$~document
+||pushnami.com^$~document
+||pushwoosh.com^$~document
+||sendpulse.com^$~document
+||notix.io^$~document
+||push-notification.org^$~document
+
+! ---------------------------------------------------------------------------
+! Regionais — Brasil e América Latina
+! ---------------------------------------------------------------------------
+||afilio.com.br^$~document
+||lomadee.com^$~document
+||zanox.com^$~document
+||awin1.com^$~document
+||hotmart.com.br^$~document
+||monetizze.com.br^$~document
+||eadv.it^$~document
+||navegg.com^$~document
+||rtbhouse.com^$~document
+||e-planning.net^$~document
+||adhood.com^$~document
+||seedtag.com^$~document
+||weborama.fr^$~document
+||weborama.com^$~document

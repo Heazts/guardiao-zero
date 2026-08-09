@@ -21,7 +21,7 @@
                 <div>
                     <span class="eyebrow">Zero data</span>
                     <h1>O que acontece no navegador permanece no navegador.</h1>
-                    <p>O Guardião Zero Pro não coleta, armazena remotamente, compartilha nem transmite dados do usuário. Todo o processamento da extensão é local.</p>
+                    <p>O Guardião Zero Pro não envia, vende nem compartilha dados do usuário com o desenvolvedor, servidores próprios ou terceiros. Todo o processamento da extensão é local, sem coleta externa.</p>
                 </div>
             </section>
 
@@ -36,8 +36,9 @@
                     <span class="section-number">01 / Análise</span>
                     <div>
                         <h2>O que é analisado localmente</h2>
-                        <p>Para diferenciar uma plataforma operacional de conteúdo informativo, a extensão pode analisar URL, título, metadados, texto público limitado, botões, formulários e integrações técnicas visíveis.</p>
-                        <p>Ela não lê valores digitados, senhas, dados de pagamento, conteúdo de IndexedDB, valores de cookies, <code>localStorage</code> ou <code>sessionStorage</code>.</p>
+                        <p>Para diferenciar uma plataforma operacional de conteúdo informativo, a extensão pode analisar URL, título, metadados, texto visível, botões, menus, formulários, links e integrações técnicas relevantes. Essa análise também pode ocorrer em páginas autenticadas quando a proteção de apostas estiver ativa.</p>
+                        <p>Em URLs auxiliares de imagens, scripts, frames, links e recursos de rede, credenciais, parâmetros de consulta e fragmentos são removidos antes da análise no processo de background.</p>
+                        <p>Ela não lê valores digitados, senhas, dados de pagamento, conteúdo de bancos IndexedDB, cookies ou valores de <code>localStorage</code> e <code>sessionStorage</code>. Nomes de chaves de storage e de bancos IndexedDB podem ser lidos localmente, mas somente os nomes correspondentes a padrões de apostas seguem para a análise interna.</p>
                     </div>
                 </section>
 
@@ -65,7 +66,7 @@
             </div>
 
             <aside class="policy-note">
-                <strong>Última atualização / 29.07.2026</strong>
+                <strong>Última atualização / 09.08.2026</strong>
                 <span>Esta página acompanha a política integral distribuída com o código-fonte.</span>
             </aside>
         </main>

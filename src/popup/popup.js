@@ -19,7 +19,7 @@
     const animations = new WeakMap();
     let protectionEnabled = true;
     let busy = true;
-    let currentStats = { sitesBlocked: 0, adsBlocked: 0, trackersBlocked: 0 };
+    let currentStats = { pagesBlocked: 0, adsObserved: 0, trackersObserved: 0 };
 
     function formatNumber(value) {
         const number = Number.isFinite(value) ? Math.max(0, value) : 0;
@@ -65,15 +65,15 @@
     function renderState(state) {
         protectionEnabled = state.protectionEnabled !== false;
         currentStats = {
-            sitesBlocked: Number.isFinite(state.stats?.sitesBlocked)
-                ? state.stats.sitesBlocked
-                : currentStats.sitesBlocked,
-            adsBlocked: Number.isFinite(state.stats?.adsBlocked)
-                ? state.stats.adsBlocked
-                : currentStats.adsBlocked,
-            trackersBlocked: Number.isFinite(state.stats?.trackersBlocked)
-                ? state.stats.trackersBlocked
-                : currentStats.trackersBlocked
+            pagesBlocked: Number.isFinite(state.stats?.pagesBlocked)
+                ? state.stats.pagesBlocked
+                : currentStats.pagesBlocked,
+            adsObserved: Number.isFinite(state.stats?.adsObserved)
+                ? state.stats.adsObserved
+                : currentStats.adsObserved,
+            trackersObserved: Number.isFinite(state.stats?.trackersObserved)
+                ? state.stats.trackersObserved
+                : currentStats.trackersObserved
         };
 
         elements.toggle.disabled = busy;
@@ -85,9 +85,9 @@
         elements.statusDescription.textContent = protectionEnabled
             ? 'Camadas locais em funcionamento'
             : 'Nenhuma requisição será filtrada';
-        animateNumber(elements.blockedCount, currentStats.sitesBlocked);
-        animateNumber(elements.adCount, currentStats.adsBlocked);
-        animateNumber(elements.trackerCount, currentStats.trackersBlocked);
+        animateNumber(elements.blockedCount, currentStats.pagesBlocked);
+        animateNumber(elements.adCount, currentStats.adsObserved);
+        animateNumber(elements.trackerCount, currentStats.trackersObserved);
     }
 
     function showToast(message, error = false) {
@@ -145,13 +145,13 @@
         if (area !== 'local') return;
         if (changes.stats?.newValue) {
             currentStats = {
-                sitesBlocked: changes.stats.newValue.sitesBlocked || 0,
-                adsBlocked: changes.stats.newValue.adsBlocked || 0,
-                trackersBlocked: changes.stats.newValue.trackersBlocked || 0
+                pagesBlocked: changes.stats.newValue.pagesBlocked || 0,
+                adsObserved: changes.stats.newValue.adsObserved || 0,
+                trackersObserved: changes.stats.newValue.trackersObserved || 0
             };
-            animateNumber(elements.blockedCount, currentStats.sitesBlocked);
-            animateNumber(elements.adCount, currentStats.adsBlocked);
-            animateNumber(elements.trackerCount, currentStats.trackersBlocked);
+            animateNumber(elements.blockedCount, currentStats.pagesBlocked);
+            animateNumber(elements.adCount, currentStats.adsObserved);
+            animateNumber(elements.trackerCount, currentStats.trackersObserved);
         }
         if (changes.protectionEnabled) {
             protectionEnabled = changes.protectionEnabled.newValue !== false;

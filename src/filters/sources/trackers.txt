@@ -1,0 +1,185 @@
+[Adblock Plus 2.0]
+! Title: Guardião Zero — Rastreamento e telemetria de terceiros
+! Description: Analytics, gravação de sessão, fingerprinting, atribuição e
+!   data brokers. Curada para baixo risco de falso positivo.
+! License: MIT (mesma do projeto)
+!
+! Formato: sintaxe Adblock. Convertido para declarativeNetRequest em build por
+!   tools/build-rules.mjs, usando o mesmo parser validado da importação local.
+!
+! DELIBERADAMENTE FORA DESTA LISTA — bloquear quebraria função de site:
+!   connect.facebook.net  → login social do Facebook depende do SDK
+!   accounts.google.com   → autenticação
+!   recaptcha.net / hcaptcha.com / turnstile → CAPTCHA
+!   onesignal.com         → opt-in legítimo de notificação em muitos sites
+!   sentry.io / newrelic.com / datadoghq.com → observabilidade de erro do
+!     próprio site, não rastreamento publicitário do usuário
+!   *.stripe.com / paypal.com → pagamento
+
+! ---------------------------------------------------------------------------
+! Analytics de grande escala
+! ---------------------------------------------------------------------------
+||google-analytics.com^$~document
+||analytics.google.com^$~document
+||ssl.google-analytics.com^$~document
+||googletagmanager.com^$~document
+||stats.g.doubleclick.net^$~document
+||scorecardresearch.com^$~document
+||quantserve.com^$~document
+||quantcast.com^$~document
+||comscore.com^$~document
+||chartbeat.com^$~document
+||chartbeat.net^$~document
+||parsely.com^$~document
+||parse.ly^$~document
+||statcounter.com^$~document
+||histats.com^$~document
+||sitemeter.com^$~document
+||clicky.com^$~document
+||getclicky.com^$~document
+||matomo.cloud^$~document
+||plausible.io^$~document
+||simpleanalytics.com^$~document
+||cnzz.com^$~document
+||umeng.com^$~document
+||growingio.com^$~document
+
+! ---------------------------------------------------------------------------
+! Analytics de produto e eventos
+! ---------------------------------------------------------------------------
+||mixpanel.com^$~document
+||amplitude.com^$~document
+||heapanalytics.com^$~document
+||heap.io^$~document
+||kissmetrics.com^$~document
+||kissmetrics.io^$~document
+||segment.io^$~document
+||segment.com^$~document
+||segmentify.com^$~document
+||rudderstack.com^$~document
+||mparticle.com^$~document
+||tealiumiq.com^$~document
+||tiqcdn.com^$~document
+||ensighten.com^$~document
+||adobedtm.com^$~document
+||pendo.io^$~document
+||countly.com^$~document
+||posthog.com^$~document
+
+! ---------------------------------------------------------------------------
+! Gravação de sessão e mapas de calor — alto impacto em privacidade
+! ---------------------------------------------------------------------------
+||hotjar.com^$~document
+||hotjar.io^$~document
+||fullstory.com^$~document
+||mouseflow.com^$~document
+||crazyegg.com^$~document
+||inspectlet.com^$~document
+||luckyorange.com^$~document
+||luckyorange.net^$~document
+||smartlook.com^$~document
+||clarity.ms^$~document
+||contentsquare.net^$~document
+||decibelinsight.net^$~document
+||quantummetric.com^$~document
+||glassboxdigital.io^$~document
+||sessioncam.com^$~document
+||logrocket.com^$~document
+||lr-ingest.io^$~document
+
+! ---------------------------------------------------------------------------
+! Fingerprinting e identificação de dispositivo
+! ---------------------------------------------------------------------------
+||fingerprintjs.com^$~document
+||fpjs.io^$~document
+||deviceatlas.com^$~document
+||threatmetrix.com^$~document
+||iovation.com^$~document
+||maxmind.com^$~document
+||perimeterx.net^$~document
+||siftscience.com^$~document
+||augur.io^$~document
+||fraudlogix.com^$~document
+
+! ---------------------------------------------------------------------------
+! Atribuição e deep linking
+! ---------------------------------------------------------------------------
+||appsflyer.com^$~document
+||adjust.com^$~document
+||adj.st^$~document
+||branch.io^$~document
+||app.link^$~document
+||kochava.com^$~document
+||singular.net^$~document
+||tenjin.io^$~document
+||appsflyer.net^$~document
+||attribution.io^$~document
+
+! ---------------------------------------------------------------------------
+! Data brokers, DMPs e sincronização de identidade
+! ---------------------------------------------------------------------------
+||acxiom.com^$~document
+||liveramp.com^$~document
+||neustar.biz^$~document
+||towerdata.com^$~document
+||datalogix.com^$~document
+||lotame.com^$~document
+||nielsen.com^$~document
+||imrworldwide.com^$~document
+||gigya.com^$~document
+||zqtk.net^$~document
+||bidr.io^$~document
+||ipredictive.com^$~document
+||simpli.fi^$~document
+||owneriq.net^$~document
+||semasio.net^$~document
+||thebrighttag.com^$~document
+||btloader.com^$~document
+
+! ---------------------------------------------------------------------------
+! Pixels sociais de rastreamento
+! ---------------------------------------------------------------------------
+||analytics.tiktok.com^$~document
+||analytics.twitter.com^$~document
+||ads-twitter.com^$~document
+||t.co^$~document
+||ads.linkedin.com^$~document
+||px.ads.linkedin.com^$~document
+||snapchat.com/tr^$~document
+||sc-static.net^$~document
+||ads.pinterest.com^$~document
+||ct.pinterest.com^$~document
+||bat.bing.com^$~document
+||clarity.microsoft.com^$~document
+||ads.yahoo.com^$~document
+||analytics.yahoo.com^$~document
+||sp.analytics.yahoo.com^$~document
+
+! ---------------------------------------------------------------------------
+! E-mail marketing e rastreamento de abertura
+! ---------------------------------------------------------------------------
+||mailchimp.com/track^$~document
+||list-manage.com^$~document
+||sendgrid.net^$~document
+||mktoresp.com^$~document
+||marketo.net^$~document
+||pardot.com^$~document
+||hubspot.com/__ptq.gif^$~document
+||hs-analytics.net^$~document
+||hsforms.net^$~document
+||exacttarget.com^$~document
+||sailthru.com^$~document
+||klaviyo.com^$~document
+||omnisrc.com^$~document
+
+! ---------------------------------------------------------------------------
+! Regionais — Brasil e América Latina
+! ---------------------------------------------------------------------------
+||navdmp.com^$~document
+||chaordicsystems.com^$~document
+||linximpulse.net^$~document
+||smarthint.co^$~document
+||rdstation.com.br^$~document
+||resultadosdigitais.com.br^$~document
+||dinamize.com^$~document
+||leadlovers.site^$~document

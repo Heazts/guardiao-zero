@@ -16,9 +16,33 @@ definido pelo usuário. A identidade traduz esse comportamento no símbolo
 - o símbolo substitui o escudo genérico, removido de todas as superfícies
   principais.
 
-O arquivo vetorial canônico é `assets/brand/limiar-orbital.svg`. Os ícones raster
-do manifesto são derivados da mesma geometria por `tools/make_icons.py`.
 O símbolo não deve ser substituído por texto, emoji ou glifo tipográfico.
+
+## Origem única dos arquivos
+
+A geometria do símbolo existe uma única vez, em `tools/make-icons.mjs`. Tanto os
+SVG quanto os PNG são emitidos a partir dela por `npm run build:icons`; nenhum
+arquivo de marca deve ser editado à mão. `npm run lint` recalcula os dois e falha
+se algum divergir, de modo que o ícone da barra não pode deixar de ser o mesmo
+símbolo do cabeçalho sem que a validação acuse.
+
+| Arquivo | Uso |
+| --- | --- |
+| `assets/brand/limiar-orbital.svg` | selo vetorial das telas da extensão |
+| `assets/icons/icon-{16,32,48,128}.png` | `icons` e `action.default_icon` |
+| `assets/icons/icon-{light,dark}-{16,32,48}.png` | `action.theme_icons` |
+| `docs/assets/brand/limiar-orbital-amo.svg` | vetor de 128 px para AMO e imprensa |
+| `docs/assets/brand/limiar-orbital-glyph.svg` | glifo sem selo, em `currentColor` |
+| `docs/assets/brand/limiar-orbital-{128,512}.png` | raster para lojas e imprensa |
+
+Duas molduras derivam do mesmo desenho. O **selo** (fundo de tinta) dá ao símbolo
+62 % do quadrado: com mais que isso o contraforma do `C` fecha em 16 px e o ícone
+vira uma mancha. O **glifo** (sem fundo, usado nas `theme_icons`) pode ocupar 81 %,
+porque não tem moldura competindo por espaço. Só a moldura muda — as curvas, o
+traço e as proporções internas são os mesmos.
+
+O kit de loja fica em `docs/`, e não em `assets/`, para não entrar no pacote
+enviado à AMO: o `.zip` só deve conter o que a extensão realmente carrega.
 
 ## Voz visual
 

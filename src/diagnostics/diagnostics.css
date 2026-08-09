@@ -47,7 +47,7 @@ body {
 .intro-code {
     align-self: start;
     padding-top: 8px;
-    border-top: 4px solid var(--accent);
+    border-top: 4px solid var(--accent-surface);
     color: var(--text);
     font: 650 clamp(30px, 6vw, 58px)/1 var(--font-mono);
     letter-spacing: -0.08em;
