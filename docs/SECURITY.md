@@ -34,6 +34,9 @@ e para a mesma URL presente nela.
 - allow rules de whitelist com prioridade 100;
 - deduplicação de bloqueios e estatísticas;
 - sem `eval`, `new Function`, `innerHTML` ou código remoto;
+- leitura de tradução restrita ao próprio pacote: o único `fetch` da extensão
+  recebe sempre `runtime.getURL('_locales/…')`, nunca uma URL de origem externa
+  nem um valor derivado de conteúdo de página;
 - sem `declarativeNetRequestFeedback`, API exclusiva de debug.
 
 ## Dados não coletados

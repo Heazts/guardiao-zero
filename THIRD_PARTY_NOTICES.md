@@ -58,8 +58,10 @@ de uma base redistribuída.
 
 O arquivo `src/filters/heazts-blocklist.txt` havia sido fornecido como parte do
 projeto, mas sua origem, autoria, data de obtenção e licença não estavam
-documentadas. Ele foi removido da árvore na versão 3.1.2 e não participa da
-validação, dos testes, do build ou do empacotamento.
+documentadas. Desde a 3.1.2 ele ficou fora da validação, dos testes, do build e
+do empacotamento; na 3.1.3 foi removido também do repositório. As travas em
+`tools/build.mjs` e `tools/package-amo.mjs` continuam no lugar para impedir que
+o caminho seja reintroduzido num artefato público.
 
 Como defesa contra reintrodução acidental, `tools/build.mjs` continua excluindo
 esse caminho e `tools/package-amo.mjs` recusa o release caso o arquivo apareça

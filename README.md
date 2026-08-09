@@ -81,12 +81,34 @@ com a mesma precedência das demais camadas.
   uBlock Origin, HOSTS e listas personalizadas;
 - gerenciamento, pausa, remoção, relatório de rejeições e quota portátil de
   4.900 regras importadas;
+- interface em doze idiomas, com seletor próprio e suporte a escrita da direita
+  para a esquerda;
 - temas claro, escuro ou sistema, accent color, alto contraste, densidade e
   redução de movimento;
 - identidade própria Limiar Orbital, composição editorial numerada, Newsreader
   nos títulos, Inter nos controles e ícones próprios empacotados;
 - backup e restauração locais;
 - política de privacidade navegável dentro da extensão.
+
+## Idiomas
+
+A interface existe em português, inglês, chinês simplificado, hindi, espanhol,
+árabe, francês, bengali, russo, urdu, indonésio e alemão. O idioma é escolhido
+em Configurações → Aparência; o padrão segue o navegador.
+
+`browser.i18n` não é usada para as telas porque ela deriva o idioma da interface
+do navegador e não pode ser trocada em tempo de execução, o que inviabilizaria o
+seletor. Os catálogos ficam em `_locales/<code>/messages.json` — os mesmos
+arquivos que o manifesto usa para nome e descrição na loja, de modo que não há
+duas fontes podendo divergir. `npm run lint` falha se algum idioma tiver chave
+faltando, sobrando ou sem texto.
+
+Árabe e urdu são escritos da direita para a esquerda: o CSS usa propriedades
+lógicas e o layout espelha por inteiro.
+
+Nesta versão o popup, a navegação e os metadados de loja estão traduzidos; as
+demais telas ainda aparecem em português, via fallback, enquanto os catálogos
+são completados. As traduções não passaram por revisão de falante nativo.
 
 ## Privacidade
 

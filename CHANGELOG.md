@@ -26,6 +26,25 @@ Correções de interface e unificação da identidade visual.
 - `npm run lint` passa a recusar acesso a propriedade de `.currentTarget`, para o
   padrão não voltar.
 
+### Idiomas
+
+- a interface passa a existir em doze idiomas — português, inglês, chinês
+  simplificado, hindi, espanhol, árabe, francês, bengali, russo, urdu, indonésio
+  e alemão — com seletor próprio em Configurações → Aparência, além do modo
+  automático que segue o navegador;
+- `browser.i18n` não resolve sozinha, porque deriva o idioma da interface do
+  navegador e não pode ser trocada em tempo de execução. O catálogo é lido de
+  `_locales/<code>/messages.json`, os mesmos arquivos que o manifesto usa para
+  nome e descrição na loja, então não existem duas fontes que possam divergir;
+- árabe e urdu são RTL: trinta propriedades físicas do CSS viraram lógicas e o
+  polegar do toggle ganhou regra `:dir(rtl)`, já que `translateX` é geométrico e
+  não tem equivalente lógico;
+- `npm run lint` recusa catálogo com chave faltando, sobrando ou sem texto.
+
+Nesta versão apenas o popup, a navegação e os metadados de loja estão
+traduzidos. As demais telas continuam em português e serão convertidas em
+seguida; até lá o texto de origem aparece como fallback, sem quebrar a página.
+
 ### Tema escuro
 
 - corrige o contraste de tudo que é pintado com a cor de acento. `--accent` é a

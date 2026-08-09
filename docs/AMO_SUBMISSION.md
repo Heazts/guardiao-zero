@@ -19,7 +19,10 @@ repositório.
 - **ID Gecko:** `guardiao-zero-pro@guardiaozero.app`
 - **Categoria principal:** Privacidade e Segurança
 - **Licença do código:** MIT
-- **Idioma principal:** Português do Brasil (`pt-BR`)
+- **Idioma principal:** Português do Brasil (`pt-BR`), que é o `default_locale`
+  do manifesto. O nome e a descrição são localizados por `_locales/` para os
+  doze idiomas publicados; o AMO exibe cada um conforme o idioma do visitante,
+  sem que seja preciso preencher os campos manualmente.
 - **Homepage:** `https://github.com/Heazts/guardiao-zero`
 - **Política de privacidade:**
   `https://github.com/Heazts/guardiao-zero/blob/main/PRIVACY.md`
@@ -338,10 +341,13 @@ no pacote, e por que os arquivos gerados podem ser confiados.
 
 Para o CHANGELOG público ou para responder em português, se o revisor pedir:
 
-> O Guardião Zero Pro não faz requisição de rede de nenhum tipo — não há `fetch`,
-> `XMLHttpRequest`, `WebSocket`, `EventSource`, `sendBeacon` nem `import()`
-> dinâmico no código empacotado. Listas de filtros são importadas pelo usuário
-> por seletor de arquivo local, nunca baixadas. Só `storage.local` é usado.
+> O Guardião Zero Pro não faz requisição de rede — não há `XMLHttpRequest`,
+> `WebSocket`, `EventSource`, `sendBeacon` nem `import()` dinâmico no código
+> empacotado. Existe um único `fetch`, em `src/shared/i18n.js`, e o argumento é
+> sempre `runtime.getURL('_locales/…')`: ele lê o arquivo de tradução do próprio
+> pacote, por `moz-extension://`, e nada sai do navegador. Listas de filtros são
+> importadas pelo usuário por seletor de arquivo local, nunca baixadas. Só
+> `storage.local` é usado.
 >
 > A análise de página serve apenas ao classificador de apostas e é transitória:
 > lê URL (sem credenciais, query e fragmento), título, metadados, texto visível,

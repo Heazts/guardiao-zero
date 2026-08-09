@@ -1,10 +1,39 @@
+# Saídas de build. Tudo aqui é regenerável com os comandos do README.
 dist/
 web-ext-artifacts/
+coverage/
+
+# Dependências: o lockfile é versionado, a pasta não.
 node_modules/
-*.log
-.DS_Store
-Thumbs.db
+*.tgz
 
 # Empacotamento manual da pasta do projeto inclui .git e o manifesto errado.
 # Use sempre: npm run package:amo
 *.zip
+
+# Segredos. O projeto não usa nenhuma variável de ambiente — não há .env.example
+# a manter. As regras existem como rede de proteção: se um arquivo desses
+# aparecer um dia, ele não vai para um repositório público por descuido.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+credentials.json
+
+# Registros e despejos locais.
+*.log
+npm-debug.log*
+*.heapsnapshot
+*.cpuprofile
+
+# Sistema operacional e editores.
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+*.swp
