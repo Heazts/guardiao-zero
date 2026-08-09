@@ -214,6 +214,31 @@ A lista legada `src/filters/heazts-blocklist.txt` foi removida do repositório n
 modo que o caminho não pode ser reintroduzido num artefato público sem falhar o
 build.
 
+## Notas de atualização
+
+Campo público do formulário: aparece na página da extensão, para quem já usa.
+Vai **em português**, ao contrário da nota ao revisor, e fala de efeito visível —
+não de arquitetura. Ninguém instala um bloqueador para ler sobre rasterizador.
+
+Fecha sempre dizendo o que **não** mudou: numa extensão de privacidade, uma
+atualização silenciosa sobre permissões é a que mais gera desconfiança.
+
+### Texto para colar — 3.1.3
+
+> Correções de interface.
+>
+> • O popup não abre mais com barras de rolagem — o conteúdo foi ajustado para
+> caber inteiro na janela.
+>
+> • No tema escuro, o botão de ligar e desligar a proteção, os botões principais
+> e os indicadores de seção voltaram a ficar visíveis. Antes se confundiam com o
+> fundo.
+>
+> • O ícone passou a ser o mesmo em todo lugar: barra de ferramentas,
+> gerenciador de extensões e telas internas.
+>
+> Permissões, tratamento de dados e regras de bloqueio continuam iguais.
+
 ## Notas ao revisor
 
 Escreva as notas **em inglês**. A listagem é pt-BR, mas a revisão do AMO é feita
