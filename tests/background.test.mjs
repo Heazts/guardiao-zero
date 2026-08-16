@@ -22,6 +22,16 @@ const blocklistFixture = [
     )
 ].sort().join('\n');
 
+/**
+ * `requestDomains` é uma lista de hosts exatos, então a asserção compara item a
+ * item. `Array.prototype.includes` daria o mesmo resultado aqui, mas é o mesmo
+ * nome usado para busca de substring em string: quem lê — e a análise estática
+ * — não consegue distinguir sem inferir o tipo do receptor.
+ */
+function listsDomain(domains, expected) {
+    return Array.isArray(domains) && domains.some(domain => domain === expected);
+}
+
 const event = () => ({
     addListener(listener) {
         this.listener = listener;
@@ -302,8 +312,8 @@ test('whitelist exata não libera subdomínios nas regras DNR', async () => {
 
     assert.equal(response.ok, true);
     assert.equal(dynamicRules.some(rule =>
-        rule.condition.requestDomains?.includes('somente-este.example')
-        || rule.condition.initiatorDomains?.includes('somente-este.example')
+        listsDomain(rule.condition.requestDomains, 'somente-este.example')
+        || listsDomain(rule.condition.initiatorDomains, 'somente-este.example')
     ), false);
     const exactRules = dynamicRules.filter(rule =>
         rule.condition.regexFilter?.includes('somente-este\\.example')
@@ -319,7 +329,7 @@ test('política verificada bloqueia cedo domínios curados e o sufixo bet.br', a
     const verifiedDomainRule = dynamicRules.find(rule =>
         rule.action.type === 'block'
         && rule.condition.resourceTypes?.includes('main_frame')
-        && rule.condition.requestDomains?.includes('bet365.com')
+        && listsDomain(rule.condition.requestDomains, 'bet365.com')
     );
     const brazilianSuffixRule = dynamicRules.find(rule =>
         rule.action.type === 'block'
@@ -346,7 +356,7 @@ test('whitelist explícita tem prioridade sobre a regra antecipada bet.br', asyn
     );
     const allowRule = dynamicRules.find(rule =>
         rule.action.type === 'allow'
-        && rule.condition.requestDomains?.includes('licenciado.bet.br')
+        && listsDomain(rule.condition.requestDomains, 'licenciado.bet.br')
     );
     assert.ok(blockRule);
     assert.ok(allowRule);
@@ -402,7 +412,7 @@ test('liberação temporária vence o bloqueio DNR antecipado', async () => {
     const temporaryRule = dynamicRules.find(rule =>
         rule.action.type === 'allow'
         && rule.condition.resourceTypes?.includes('main_frame')
-        && rule.condition.requestDomains?.includes('www.bet365.com')
+        && listsDomain(rule.condition.requestDomains, 'www.bet365.com')
     );
     assert.ok(temporaryRule);
     assert.ok(temporaryRule.priority > blockPriority);
