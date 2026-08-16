@@ -35,12 +35,20 @@ function capture(command, args) {
     return result.status === 0 ? result.stdout.trim() : '';
 }
 
-function runNpm(args) {
-    if (process.platform === 'win32') {
-        run(process.env.ComSpec || 'cmd.exe', ['/d', '/s', '/c', 'npm.cmd', ...args]);
-    } else {
-        run('npm', args);
+/**
+ * Os gates rodam pelo próprio Node, nunca por um shell.
+ *
+ * A rota anterior no Windows era `%ComSpec% /c npm.cmd …`, o que colocava um
+ * interpretador de comandos — e o valor de uma variável de ambiente — dentro do
+ * caminho que produz o ZIP enviado ao AMO. Os comandos continuam vindo de
+ * `package.json`, então não há uma segunda definição dos gates para divergir.
+ */
+function runPackageScript(name) {
+    const command = projectScripts[name];
+    if (typeof command !== 'string' || !command.startsWith('node ')) {
+        throw new Error(`O script "${name}" precisa existir em package.json e começar com "node "`);
     }
+    run(process.execPath, command.slice('node '.length).trim().split(/\s+/));
 }
 
 async function loadPinnedWebExt() {
@@ -66,7 +74,8 @@ async function loadPinnedWebExt() {
     if (!relativeBin) throw new Error('Executável web-ext não encontrado no pacote fixado');
     return {
         version: webExtPackage.version,
-        bin: resolve(dirname(webExtPackagePath), relativeBin)
+        bin: resolve(dirname(webExtPackagePath), relativeBin),
+        scripts: projectPackage.scripts || {}
     };
 }
 
@@ -93,13 +102,14 @@ const nodeMajor = Number(process.versions.node.split('.')[0]);
 if (nodeMajor < 22) throw new Error(`Node.js 22+ é obrigatório; encontrado ${process.version}`);
 
 const webExt = await loadPinnedWebExt();
+const projectScripts = webExt.scripts;
 await mkdir(artifacts, { recursive: true });
 
 // Gates de release: o ZIP nunca é criado a partir de uma árvore não testada.
-runNpm(['run', 'lint']);
-runNpm(['test']);
-runNpm(['run', 'build:firefox']);
-runNpm(['run', 'build:chromium']);
+runPackageScript('lint');
+runPackageScript('test');
+runPackageScript('build:firefox');
+runPackageScript('build:chromium');
 
 const manifest = await assertFirefoxManifest();
 run(process.execPath, [

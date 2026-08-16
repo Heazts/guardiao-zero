@@ -74,7 +74,11 @@ async function prepare(page, workDir) {
         const attribute = match.startsWith('src') ? 'src' : 'href';
         return `${attribute}="${pathToFileURL(resolve(pageDir, reference)).href}"`;
     });
-    html = html.replace(/<script\b[^>]*><\/script>/g, '');
+    // A tag de fechamento também aceita atributos e maiúsculas, e um script
+    // pode ter corpo: casar só `<script …></script>` deixava passar formas
+    // válidas. O espaço no lugar da remoção impede que o texto ao redor se
+    // junte e recrie uma tag que já tinha sido tirada.
+    html = html.replace(/<script\b[^>]*>[\s\S]*?<\/script\b[^>]*>/gi, ' ');
     // Duas correções que só valem para a captura, nunca para o produto:
     // a barra de rolagem estreitava o viewport e aparecia nas imagens antigas;
     // e `animate-fade-in` parte de opacity 0 — o Firefox fotografa logo após o
